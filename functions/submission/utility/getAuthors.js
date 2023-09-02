@@ -1,3 +1,5 @@
+const { default: axios } = require("axios");
+
 /**
  * Detects co-authors from pings and curly bracket syntax in a given message
  * @author Evorp
@@ -14,9 +16,8 @@ module.exports = async function getAuthors(message) {
 
 	if (names.length) {
 		// fetch all contributors and check if their username matches the one in curly brackets
-		const res = await fetch(`https://api.faithfulpack.net/v2/users/names`);
-		const contributionJSON = await res.json();
-		for (let user of contributionJSON) {
+		const contributions = (await axios.get(`${process.env.API_URL}users/names`)).data;
+		for (let user of contributions) {
 			// if no username set it will throw an error otherwise
 			if (!user.username) continue;
 

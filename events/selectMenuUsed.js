@@ -1,11 +1,11 @@
-const client = require("../index").Client;
+const client = require("@index").Client;
 const { MessageEmbed } = require("discord.js");
 
-const strings = require("../resources/strings.json");
-const settings = require("../resources/settings.json");
-const makeEmbed = require("../functions/submission/makeEmbed");
-const getAuthors = require("../functions/submission/getAuthors");
-const textures = require("../helpers/firestorm/texture");
+const strings = require("@resources/strings.json");
+const settings = require("@resources/settings.json");
+const makeEmbed = require("@submission/makeEmbed");
+const getAuthors = require("@submission/utility/getAuthors");
+const { default: axios } = require("axios");
 
 /**
  * "fake" event created to split up the generic interaction event
@@ -33,7 +33,8 @@ module.exports = {
 							authors: await getAuthors(message),
 						};
 
-						const texture = await textures.get(id);
+						/** @type {import("../helpers/jsdoc").Texture} */
+						const texture = (await axios.get(`${process.env.API_URL}textures/${id}/all`)).data;
 						if (choiceMessage.deletable) await choiceMessage.delete();
 
 						return await makeEmbed(client, message, texture, attachments[index], param);

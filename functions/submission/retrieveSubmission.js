@@ -1,14 +1,14 @@
-const settings = require("../../resources/settings.json");
+const settings = require("@resources/settings.json");
 
-const getMessages = require("../../helpers/getMessages");
-const changeStatus = require("./changeStatus");
-const { imageButtons } = require("../../helpers/buttons");
+const getMessages = require("@helpers/getMessages");
+const changeStatus = require("./utility/changeStatus");
+const { imageButtons } = require("@helpers/buttons");
 const { MessageEmbed } = require("discord.js");
 
 const DEBUG = process.env.DEBUG.toLowerCase() == "true";
 
 /**
- * @typedef {Object} MappedMessage
+ * @typedef MappedMessage
  * @property {import("discord.js").MessageReaction} upvote
  * @property {import("discord.js").MessageReaction} downvote
  * @property {import("discord.js").MessageEmbed} embed

@@ -1,7 +1,7 @@
 const { MessageEmbed, MessageActionRow, MessageSelectMenu } = require("discord.js");
-const addDeleteButton = require("../../helpers/addDeleteButton");
+const addDeleteButton = require("@helpers/addDeleteButton");
 
-const settings = require("../../resources/settings.json");
+const settings = require("@resources/settings.json");
 
 /**
  * Selection menu for dealing with multiple valid options
@@ -13,10 +13,9 @@ module.exports = async function choiceEmbed(message, choices) {
 	const emojis = settings.emojis.default_select;
 	const components = [];
 	const choicesLength = choices.length; // we're modifying choices directly so it needs to be saved first
-	const maxRows = 4; // actually 5 but - 1 because we are adding a delete button to it (the 5th one)
-	let currentRow = 0;
 
-	do {
+	const maxRows = 4; // actually 5 but - 1 because we are adding a delete button to it (the 5th one)
+	for (let currentRow = 0; currentRow <= maxRows && choices.length; ++currentRow) {
 		/** @type {import("discord.js").MessageSelectOptionData[]} */
 		const options = [];
 		for (let i = 0; i < emojis.length; ++i) {
@@ -33,7 +32,7 @@ module.exports = async function choiceEmbed(message, choices) {
 
 		const row = new MessageActionRow().addComponents(menu);
 		components.push(row);
-	} while (choices.length !== 0 && currentRow++ < maxRows);
+	}
 
 	const embed = new MessageEmbed()
 		.setTitle(`${choicesLength} results found`)

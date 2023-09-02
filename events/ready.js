@@ -1,16 +1,16 @@
-const client = require("../index").Client;
+const client = require("@index").Client;
 const { CronJob } = require("cron");
 
 const DEV = process.env.DEV.toLowerCase() == "true";
 const MAINTENANCE = process.env.MAINTENANCE.toLowerCase() == "true";
-const fetchSettings = require("../functions/fetchSettings");
+const fetchSettings = require("@functions/fetchSettings");
 
-const settings = require("../resources/settings.json");
+const settings = require("@resources/settings.json");
 
-const retrieveSubmission = require("../functions/submission/retrieveSubmission");
-const downloadResults = require("../functions/submission/downloadResults");
-const pushTextures = require("../functions/submission/pushTextures");
-const saveDB = require("../functions/saveDB");
+const retrieveSubmission = require("@submission/retrieveSubmission");
+const downloadResults = require("@submission/downloadResults");
+const pushTextures = require("@submission/pushTextures");
+const saveDB = require("@functions/saveDB");
 
 /**
  * Send submission messages to their respective channels
@@ -72,7 +72,7 @@ const downloadToBot = new CronJob("15 0 * * *", async () => {
  */
 const pushToGithub = new CronJob("30 0 * * *", async () => {
 	await pushTextures();
-	await saveDB(`Daily Backup`);
+	await saveDB(client);
 });
 
 module.exports = {
