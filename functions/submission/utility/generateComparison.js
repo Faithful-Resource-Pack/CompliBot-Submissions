@@ -1,36 +1,41 @@
 const settings = require("@resources/settings.json");
 const stitch = require("@functions/images/stitch");
-const { magnifyAttachment } = require("@functions/images/magnify");
+const { magnifyAttachment, magnifyBuffer } = require("@functions/images/magnify");
 const { loadImage } = require("@napi-rs/canvas");
+const { default: axios } = require("axios");
+const minecraftSorter = require("@helpers/minecraftSorter");
+const animate = require("@functions/images/animate");
+const { MessageAttachment } = require("discord.js");
 
 /**
  * @author Evorp
  * @param {String} pack pack to compare against (e.g. faithful_32x, classic_faithful_64x)
  * @param {import("discord.js").MessageAttachment} attachment raw texture being submitted
- * @param {{path: String, version: String, edition: String}} info used for searching for references/current
- * @returns {Promise<{comparisonImage: MessageAttachment, hasReference: Boolean}>} compared texture and info
+ * @param {{ path: String, version: String, edition: String, animation: String }} info used for searching for references/current
+ * @returns {Promise<{comparisonImage: MessageAttachment, hasReference: Boolean | String}>} compared texture and info
  */
 module.exports = async function generateComparison(pack, attachment, info) {
-	let defaultRepo;
+	let referenceRepo;
 	switch (pack) {
 		case "faithful_64x":
-			defaultRepo = settings.repositories.raw.faithful_32x;
+			referenceRepo = settings.repositories.raw.faithful_32x;
 			break;
 		case "classic_faithful_64x":
-			defaultRepo = settings.repositories.raw.classic_faithful_32x;
+			referenceRepo = settings.repositories.raw.classic_faithful_32x;
 			break;
 		case "classic_faithful_32x_progart":
-			defaultRepo = settings.repositories.raw.progart;
+			referenceRepo = settings.repositories.raw.progart;
 			break;
 		default:
-			defaultRepo = settings.repositories.raw.default;
+			referenceRepo = settings.repositories.raw.default;
 			break;
 	}
 
-	const upscaledImage = await loadImage(attachment.url);
+	const newImage = await loadImage(attachment.url);
 
 	/**
 	 * IMAGE LOADING
+	 * - tries to go from left to right: Reference | New | Current
 	 */
 
 	/** @type {import("@napi-rs/canvas").Image[]} */
@@ -38,7 +43,7 @@ module.exports = async function generateComparison(pack, attachment, info) {
 
 	try {
 		images.push(
-			await loadImage(`${defaultRepo[info.edition.toLowerCase()]}${info.version}/${info.path}`),
+			await loadImage(`${referenceRepo[info.edition.toLowerCase()]}${info.version}/${info.path}`),
 		);
 	} catch {
 		// reference texture doesn't exist so we use the default repo
@@ -55,7 +60,8 @@ module.exports = async function generateComparison(pack, attachment, info) {
 		}
 	}
 
-	images.push(upscaledImage);
+	// pushing after the reference texture for better ordering
+	images.push(newImage);
 
 	try {
 		images.push(
@@ -74,14 +80,42 @@ module.exports = async function generateComparison(pack, attachment, info) {
 		const img = await loadImage(images[0]);
 		return {
 			comparisonImage: await magnifyAttachment(img, "magnified.png"),
-			hasReference: null,
+			hasReference: false,
 		};
 	}
 
-	/**
-	 * STITCH LOADED IMAGES
-	 */
-	const stitched = await stitch(images);
+	const [stitched, totalGaps] = await stitch(images);
+
+	if (info.animation) {
+		let mcmeta = {};
+		try {
+			mcmeta = (
+				await axios.get(
+					`${settings.repositories.raw.default.java}${
+						info.animation.versions.sort(minecraftSorter).reverse()[0]
+					}/${info.animation.name}.mcmeta`,
+				)
+			).data;
+		} catch {
+			// no mcmeta found so we just assume default settings
+		}
+
+		const { magnified, width, height, factor } = await magnifyBuffer(stitched, true);
+		const allGaps = totalGaps * factor;
+
+		const animated = await animate(await loadImage(magnified), mcmeta, {
+			width,
+			height: (width - allGaps) / images.length,
+			totalHeight: height,
+		});
+
+		return {
+			comparisonImage: new MessageAttachment(animated, "compared.gif"),
+			hasReference: images.length == 3,
+			mcmeta,
+		};
+	}
+
 	return {
 		comparisonImage: await magnifyAttachment(stitched, "compared.png"),
 		hasReference: images.length == 3,

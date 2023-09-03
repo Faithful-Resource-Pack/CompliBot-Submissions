@@ -7,9 +7,10 @@ const addDeleteButton = require("@helpers/addDeleteButton");
 /**
  * base logic, returns buffer
  * @param {String | Image} origin url to magnify
- * @returns {Promise<{ magnified: Buffer, width: Number, height: Number }>} buffer for magnified image
+ * @param {Boolean} isAnimation whether to magnify the image as a tilesheet
+ * @returns {Promise<{ magnified: Buffer, width: Number, height: Number, factor: Number }>} buffer for magnified image
  */
-async function magnifyBuffer(origin) {
+async function magnifyBuffer(origin, isAnimation) {
 	const tmp = await loadImage(origin).catch((err) => Promise.reject(err));
 
 	const dimension =
@@ -17,9 +18,10 @@ async function magnifyBuffer(origin) {
 			? await getDimensions(origin)
 			: { width: tmp.width, height: tmp.height };
 
-	let factor = 64;
-	const surface = dimension.width * dimension.height;
+	// ignore height if tilesheet, otherwise it's not scaled as much
+	const surface = isAnimation ? dimension.width ** 2 : dimension.width * dimension.height;
 
+	let factor = 64;
 	if (surface == 256) factor = 32;
 	if (surface > 256) factor = 16;
 	if (surface > 1024) factor = 8;
@@ -34,7 +36,7 @@ async function magnifyBuffer(origin) {
 
 	canvasResultCTX.imageSmoothingEnabled = false;
 	canvasResultCTX.drawImage(tmp, 0, 0, width, height);
-	return { magnified: canvasResult.toBuffer("image/png"), width, height };
+	return { magnified: canvasResult.toBuffer("image/png"), width, height, factor };
 }
 
 /**

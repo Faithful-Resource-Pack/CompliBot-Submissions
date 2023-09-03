@@ -2,7 +2,6 @@ const settings = require("@resources/settings.json");
 const DEBUG = process.env.DEBUG.toLowerCase() == "true";
 
 const minecraftSorter = require("@helpers/minecraftSorter");
-
 const getPackByChannel = require("./utility/getPackByChannel");
 const getDimensions = require("@functions/images/getDimensions");
 const getImages = require("@helpers/getImages");
@@ -18,29 +17,30 @@ const { MessageEmbed, MessageAttachment } = require("discord.js");
  * @param {import("discord.js").Message} message used for channel and author information
  * @param {import("../../helpers/jsdoc").Texture} texture texture information
  * @param {import("discord.js").MessageAttachment} attachment raw texture to embed
- * @param {{ description: String?, authors: String[] }} param additional info (e.g. description, coauthors)
+ * @param {{ description: String?, authors: String[] }} params additional info (e.g. description, coauthors)
  */
-module.exports = async function makeEmbed(client, message, texture, attachment, param = {}) {
+module.exports = async function makeEmbed(client, message, texture, attachment, params = {}) {
 	const packName = await getPackByChannel(message.channel.id, "submit");
 	let imgButtons;
 
 	// load previous contributions if applicable
-	if (param.description.startsWith("+")) {
+	if (params.description.startsWith("+")) {
 		const allContributions = texture.contributions.filter((i) => i.pack == packName);
 		if (allContributions.length) {
 			const lastContribution = allContributions.sort((a, b) => (a.date > b.date ? -1 : 1))[0];
 			for (let author of lastContribution.authors)
-				if (!param.authors.includes(author)) param.authors.push(author);
+				if (!params.authors.includes(author)) params.authors.push(author);
 		}
 	}
 
+	// create base embed
 	const embed = new MessageEmbed()
 		.setAuthor({ name: message.author.username, iconURL: message.author.displayAvatarURL() })
 		.setColor(settings.colors.blue)
 		.setTitle(`[#${texture.id}] ${texture.name}`)
 		.setURL(`https://webapp.faithfulpack.net/#/gallery/java/32x/latest/all/?show=${texture.id}`)
 		.addFields([
-			{ name: "Author", value: `<@!${param.authors.join(">\n<@!").toString()}>`, inline: true },
+			{ name: "Author", value: `<@!${params.authors.join(">\n<@!").toString()}>`, inline: true },
 			{ name: "Status", value: `<:pending:${settings.emojis.pending}> Pending...`, inline: true },
 			...addPathsToEmbed(texture),
 		]);
@@ -52,31 +52,30 @@ module.exports = async function makeEmbed(client, message, texture, attachment, 
 	// generate comparison image if possible
 	if (dimension.width * dimension.height <= 262144) {
 		if (DEBUG) console.log(`Generating comparison image for texture: ${texture.name}`);
-		const { comparisonImage, hasReference } = await generateComparison(packName, attachment, {
-			path: texture.paths[0].name,
-			version: texture.paths[0].versions.sort(minecraftSorter).reverse()[0],
-			edition: texture.uses[0].edition.toLowerCase(),
-		});
+
+		const isAnimated = texture.paths.filter((p) => p.mcmeta === true).length !== 0;
+
+		const { comparisonImage, hasReference, mcmeta } = await generateComparison(
+			packName,
+			attachment,
+			{
+				path: texture.paths[0].name,
+				version: texture.paths[0].versions.sort(minecraftSorter).reverse()[0],
+				edition: texture.uses[0].edition.toLowerCase(),
+				animation: isAnimated ? texture.paths.filter((p) => p.mcmeta === true)[0] : "",
+			},
+		);
+
 		// send to #submission-spam for permanent urls
 		const [thumbnailUrl, comparedUrl] = await getImages(client, rawImage, comparisonImage);
 
 		embed.setImage(comparedUrl);
 		embed.setThumbnail(thumbnailUrl);
+		embed.setFooter({ text: hasReference ? "Reference | New | Current" : "Reference | New" });
 
-		/**
-		 * hasReference has three states:
-		 * null if reference checking failed,
-		 * false if no current texture exists,
-		 * true if all three exist
-		 */
-		if (hasReference !== null)
-			embed.setFooter({
-				text: hasReference ? "Reference | New | Current" : "Reference | New",
-			});
-		else {
-			embed.setFooter({ text: "Something went wrong fetching the reference texture!" });
-			embed.setColor(settings.colors.red);
-		}
+		// if it's a blank mcmeta there's no point adding a whole field for it
+		if (mcmeta && Object.keys(mcmeta?.animation).length)
+			embed.addFields({ name: "MCMETA", value: `\`\`\`json\n${JSON.stringify(mcmeta)}\`\`\`` });
 
 		imgButtons = hasReference ? [submissionButtons] : [imageButtons];
 	} else {
@@ -95,8 +94,8 @@ module.exports = async function makeEmbed(client, message, texture, attachment, 
 		imgButtons = [imageButtons];
 	}
 
-	if (param.description) embed.setDescription(param.description);
-	if (param.authors.length > 1) embed.fields[0].name = "Authors";
+	if (params.description) embed.setDescription(params.description);
+	if (params.authors.length > 1) embed.fields[0].name = "Authors";
 
 	const msg = await message.channel.send({
 		embeds: [embed],
