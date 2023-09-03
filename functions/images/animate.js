@@ -6,7 +6,7 @@ const GIFEncoder = require("./GIFEncoder");
  * @author superboxer4, Evorp, Juknum
  * @param {import("@napi-rs/canvas").Canvas} baseCanvas what you want animated
  * @param {Object} mcmeta how you want it animated (too lazy to make types for it lol)
- * @param {{width: Number, height: Number, totalHeight: Number}} dimension texture information
+ * @param {{width: Number, height: Number}} dimension texture information
  * @returns
  */
 module.exports = async function animate(baseCanvas, mcmeta, dimension) {
@@ -41,7 +41,7 @@ module.exports = async function animate(baseCanvas, mcmeta, dimension) {
 		}
 	} else {
 		// just animate directly downwards if nothing specified
-		for (let i = 0; i < dimension.totalHeight / dimension.height; i++) {
+		for (let i = 0; i < baseCanvas.height / dimension.height; i++) {
 			frames.push({ index: i, duration: frametime });
 		}
 	}

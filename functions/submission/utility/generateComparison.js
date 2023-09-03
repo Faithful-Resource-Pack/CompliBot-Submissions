@@ -106,7 +106,6 @@ module.exports = async function generateComparison(pack, attachment, info) {
 		const animated = await animate(await loadImage(magnified), mcmeta, {
 			width,
 			height: (width - allGaps) / images.length,
-			totalHeight: height,
 		});
 
 		return {
