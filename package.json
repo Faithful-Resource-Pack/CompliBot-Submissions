@@ -1,7 +1,7 @@
 {
-  "name": "complibot",
+  "name": "complibot-submissions",
   "version": "1.0.0",
-  "description": "The official Discord bot of the Faithful Discord servers.",
+  "description": "Fully automated texture pushing and submission system for the Faithful Discord servers.",
   "main": "index.js",
   "scripts": {
     "start": "node --use_strict --trace-warnings index.js",
