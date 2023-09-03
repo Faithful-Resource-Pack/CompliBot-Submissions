@@ -149,7 +149,10 @@ module.exports = async function downloadResults(client, channelResultID, instapa
 		});
 		if (DEBUG) console.log(`Added contributions: ${allContribution}`);
 	} catch (err) {
-		devLogger(client, err?.response?.data ?? err, { title: "Contribution Error", codeBlocks: "json" });
+		devLogger(client, err?.response?.data ?? err, {
+			title: "Contribution Error",
+			codeBlocks: "json",
+		});
 		if (DEBUG) console.error(`Couldn't add contributions for pack: ${packName}`);
 	}
 

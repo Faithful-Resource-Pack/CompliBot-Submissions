@@ -1,5 +1,7 @@
 const devLogger = require("@helpers/devLogger");
 
+const DEV = process.env.DEV.toLowerCase() == "true";
+
 /**
  * @param {import("discord.js").Client} client Discord client treating the information
  * @param {Error | import("axios").AxiosError} error The object with which the promise was rejected

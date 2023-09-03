@@ -1,4 +1,4 @@
-const { loadImage, createCanvas } = require("@napi-rs/canvas");
+const { createCanvas } = require("@napi-rs/canvas");
 
 /**
  * stitches together an arbitrary number of images
@@ -38,5 +38,6 @@ module.exports = async function stitch(images, gap) {
 			biggestImage.width,
 			biggestImage.height,
 		);
+
 	return canvas.toBuffer("image/png");
 };
