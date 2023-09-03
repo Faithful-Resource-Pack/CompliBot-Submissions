@@ -74,7 +74,7 @@ module.exports = async function makeEmbed(client, message, texture, attachment, 
 		embed.setFooter({ text: hasReference ? "Reference | New | Current" : "Reference | New" });
 
 		// if it's a blank mcmeta there's no point adding a whole field for it
-		if (mcmeta && Object.keys(mcmeta?.animation).length)
+		if (Object.keys(mcmeta?.animation ?? {}).length)
 			embed.addFields({ name: "MCMETA", value: `\`\`\`json\n${JSON.stringify(mcmeta)}\`\`\`` });
 
 		imgButtons = hasReference ? [submissionButtons] : [imageButtons];

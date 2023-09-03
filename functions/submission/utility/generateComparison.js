@@ -12,7 +12,7 @@ const { MessageAttachment } = require("discord.js");
  * @param {String} pack pack to compare against (e.g. faithful_32x, classic_faithful_64x)
  * @param {import("discord.js").MessageAttachment} attachment raw texture being submitted
  * @param {{ path: String, version: String, edition: String, animation: String }} info used for searching for references/current
- * @returns {Promise<{comparisonImage: MessageAttachment, hasReference: Boolean | String}>} compared texture and info
+ * @returns {Promise<{comparisonImage: MessageAttachment, hasReference: Boolean | String, mcmeta?: Object}>} compared texture and info
  */
 module.exports = async function generateComparison(pack, attachment, info) {
 	let referenceRepo;
