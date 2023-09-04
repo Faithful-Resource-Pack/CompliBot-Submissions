@@ -1,5 +1,5 @@
 const settings = require("@resources/settings.json");
-const strings = require("@resource/strings.json");
+const strings = require("@resources/strings.json");
 
 const addDeleteButton = require("@helpers/addDeleteButton");
 
