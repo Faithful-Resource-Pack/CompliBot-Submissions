@@ -19,6 +19,7 @@ const { default: axios } = require("axios");
  */
 module.exports = async function downloadResults(client, channelResultID, instapass = false) {
 	let messages = await getMessages(client, channelResultID);
+	/** @type {import("discord.js").TextChannel} */
 	const channel = client.channels.cache.get(channelResultID);
 	const packName = await getPackByChannel(channelResultID, "results");
 

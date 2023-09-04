@@ -4,7 +4,7 @@ const { createCanvas } = require("@napi-rs/canvas");
  * stitches together an arbitrary number of images
  * @author EwanHowell, Evorp
  * @param {import("@napi-rs/canvas").Image[]} images
- * @param {Number?} gap
+ * @param {Number?} gap optionally force gap size
  * @returns {Promise<[Buffer, Number]>}
  */
 module.exports = async function stitch(images, gap) {

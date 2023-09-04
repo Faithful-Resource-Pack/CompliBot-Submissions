@@ -9,6 +9,8 @@ const settings = require("@resources/settings.json");
  */
 module.exports = async function getImages(client, ...fileArray) {
 	let imgArray = [];
+
+	/** @type {import("discord.js").Message} */
 	const imgMessage = await client.channels.cache
 		.get(settings.channels.images)
 		.send({ files: fileArray });

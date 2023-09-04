@@ -23,7 +23,7 @@ const DEBUG = process.env.DEBUG.toLowerCase() == "true";
  * @param {String} channelFromID channel from where submissions are retrieved
  * @param {String} channelOutID channel where submissions are sent
  * @param {Boolean} toCouncil true if from submissions to council, false if from council to results
- * @param {Integer} delay delay in days from today
+ * @param {Number} delay delay in days from today
  * @param {Boolean?} councilDisabled disable the use of council-related strings in embeds
  */
 module.exports = async function retrieveSubmission(

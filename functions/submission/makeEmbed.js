@@ -18,7 +18,7 @@ const { MessageEmbed, MessageAttachment } = require("discord.js");
  * @param {import("discord.js").Message} message used for channel and author information
  * @param {import("@helpers/jsdoc").Texture} texture texture information
  * @param {import("discord.js").MessageAttachment} attachment raw texture to embed
- * @param {{ description: String?, authors: String[] }} params additional info (e.g. description, coauthors)
+ * @param {{ description?: String, authors: String[] }} params additional info (e.g. description, coauthors)
  */
 module.exports = async function makeEmbed(client, message, texture, attachment, params = {}) {
 	const packName = await getPackByChannel(message.channel.id, "submit");
@@ -63,7 +63,7 @@ module.exports = async function makeEmbed(client, message, texture, attachment, 
 				path: texture.paths[0].name,
 				version: texture.paths[0].versions.sort(minecraftSorter).reverse()[0],
 				edition: texture.uses[0].edition.toLowerCase(),
-				animation: isAnimated ? texture.paths.filter((p) => p.mcmeta === true)[0] : "",
+				animation: isAnimated ? texture.paths.filter((p) => p.mcmeta === true)[0] : false,
 			},
 		);
 

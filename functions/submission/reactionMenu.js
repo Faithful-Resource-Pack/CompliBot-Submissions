@@ -145,7 +145,7 @@ module.exports = async function reactionMenu(client, menuReaction, user) {
  * remove a given set of reactions
  * @author Juknum
  * @param {import("discord.js").Message} message
- * @param {String} emojis
+ * @param {String[]} emojis
  */
 async function removeReact(message, emojis) {
 	for (let emoji of emojis) {

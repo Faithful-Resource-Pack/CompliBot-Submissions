@@ -6,7 +6,7 @@ const addDeleteButton = require("@helpers/addDeleteButton");
 
 /**
  * base logic, returns buffer
- * @param {String | Image} origin url to magnify
+ * @param {String | Image | Buffer} origin url to magnify
  * @param {Boolean} isAnimation whether to magnify the image as a tilesheet
  * @returns {Promise<{ magnified: Buffer, width: Number, height: Number, factor: Number }>} buffer for magnified image
  */
@@ -41,7 +41,7 @@ async function magnifyBuffer(origin, isAnimation = false) {
 
 /**
  * returns discord attachment
- * @param {String | Image} origin url to magnify
+ * @param {String | Image | Buffer} origin url to magnify
  * @param {String?} name name, defaults to "magnified.png"
  * @returns {Promise<MessageAttachment>} magnified file
  */

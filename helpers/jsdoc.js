@@ -8,7 +8,7 @@
  * @property {String} id
  * @property {String} use
  * @property {String} name
- * @property {Boolean} animated
+ * @property {Boolean} mcmeta
  * @property {String[]} versions
  *
  * @typedef Use

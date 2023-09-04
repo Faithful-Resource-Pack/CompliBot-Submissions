@@ -11,8 +11,8 @@ const { MessageAttachment } = require("discord.js");
  * @author Evorp
  * @param {String} pack pack to compare against (e.g. faithful_32x, classic_faithful_64x)
  * @param {import("discord.js").MessageAttachment} attachment raw texture being submitted
- * @param {{ path: String, version: String, edition: String, animation: String }} info used for searching for references/current
- * @returns {Promise<{comparisonImage: MessageAttachment, hasReference: Boolean | String, mcmeta?: Object}>} compared texture and info
+ * @param {{ path: String, version: String, edition: String, animation?: import("@helpers/jsdoc").Path }} info used for searching for references/current
+ * @returns {Promise<{comparisonImage: MessageAttachment, hasReference: Boolean, mcmeta?: Object | Boolean}>} compared texture and info
  */
 module.exports = async function generateComparison(pack, attachment, info) {
 	let referenceRepo;
@@ -100,7 +100,7 @@ module.exports = async function generateComparison(pack, attachment, info) {
 			// no mcmeta found so we just assume default settings
 		}
 
-		const { magnified, width, height, factor } = await magnifyBuffer(stitched, true);
+		const { magnified, width, factor } = await magnifyBuffer(stitched, true);
 		const allGaps = totalGaps * factor;
 
 		const animated = await animate(await loadImage(magnified), mcmeta, {
