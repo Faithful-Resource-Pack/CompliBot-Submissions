@@ -20,7 +20,7 @@ const GIFEncoder = require("./GIFEncoder");
 
 /**
  * Animate a given image with a given mcmeta
- * @author superboxer4, Evorp, Juknum
+ * @author Superboxer4, Evorp, Juknum
  * @param {import("@napi-rs/canvas").Canvas} baseCanvas tilesheet to animate
  * @param {MCMETA} mcmeta how you want it animated
  * @returns {Promise<Buffer>} animated GIF as buffer
@@ -72,9 +72,8 @@ module.exports = async function animate(baseCanvas, mcmeta) {
 	context.globalCompositeOperation = "copy";
 
 	if (mcmeta.animation.interpolate) {
-		let limit = frametime;
 		for (let i = 0; i < frames.length; ++i) {
-			for (let y = 1; y <= limit; ++y) {
+			for (let y = 1; y <= frametime; ++y) {
 				context.clearRect(0, 0, mcmeta.animation.width, mcmeta.animation.height);
 				context.globalAlpha = 1;
 				context.globalCompositeOperation = "copy";

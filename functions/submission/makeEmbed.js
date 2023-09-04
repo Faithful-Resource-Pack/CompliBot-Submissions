@@ -12,7 +12,7 @@ const { imageButtons, submissionButtons } = require("@helpers/buttons");
 const { MessageEmbed, MessageAttachment } = require("discord.js");
 
 /**
- * Make a submission embed using existing texture information
+ * Make a submission embed for a given texture and image
  * @author Juknum, Evorp
  * @param {import("discord.js").Client} client
  * @param {import("discord.js").Message} message used for channel and author information
@@ -63,7 +63,7 @@ module.exports = async function makeEmbed(client, message, texture, attachment, 
 				path: texture.paths[0].name,
 				version: texture.paths[0].versions.sort(minecraftSorter).reverse()[0],
 				edition: texture.uses[0].edition.toLowerCase(),
-				animation: isAnimated ? texture.paths.filter((p) => p.mcmeta === true)[0] : false,
+				animation: isAnimated ? texture.paths.filter((p) => p.mcmeta === true)[0] : null,
 			},
 		);
 

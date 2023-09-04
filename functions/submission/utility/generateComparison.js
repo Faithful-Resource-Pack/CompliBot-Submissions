@@ -8,11 +8,27 @@ const animate = require("@functions/images/animate");
 const { MessageAttachment } = require("discord.js");
 
 /**
+ * @typedef TextureInfo
+ * @property {String} path
+ * @property {String} version
+ * @property {String} edition
+ * @property {import("@helpers/jsdoc").Path?} animation
+ */
+
+/**
+ * @typedef ReturnParams
+ * @property {MessageAttachment} comparisonImage
+ * @property {Boolean} hasReference
+ * @property {import("@functions/images/animate").MCMETA?} mcmeta
+ */
+
+/**
+ * Generate a submission comparison for a given texture, pack, and image
  * @author Evorp
  * @param {String} pack pack to compare against (e.g. faithful_32x, classic_faithful_64x)
- * @param {import("discord.js").MessageAttachment} attachment raw texture being submitted
- * @param {{ path: String, version: String, edition: String, animation?: import("@helpers/jsdoc").Path }} info used for searching for references/current
- * @returns {Promise<{comparisonImage: MessageAttachment, hasReference: Boolean, mcmeta?: Object | Boolean}>} compared texture and info
+ * @param {MessageAttachment} attachment raw texture being submitted
+ * @param {TextureInfo} info used for searching for references/current
+ * @returns {Promise<ReturnParams>} compared texture and info
  */
 module.exports = async function generateComparison(pack, attachment, info) {
 	let referenceRepo;
@@ -89,33 +105,47 @@ module.exports = async function generateComparison(pack, attachment, info) {
 	if (info.animation) {
 		/** @type {import("@functions/images/animate").MCMETA} */
 		let mcmeta = { animation: {} };
+		const path = `${
+			info.animation.versions.sort(minecraftSorter).reverse()[0]
+		}/${info.animation.name}.mcmeta`
 		try {
+			// try to get mcmeta from repo (can be different for height/width properties)
 			mcmeta = (
 				await axios.get(
-					`${settings.repositories.raw.default.java}${
-						info.animation.versions.sort(minecraftSorter).reverse()[0]
-					}/${info.animation.name}.mcmeta`,
+					`${settings.repositories.raw[pack].java}${path}`
 				)
 			).data;
 		} catch {
-			// no mcmeta found so we just assume default settings
+			// try getting it from the default repo (not in pack yet)
+			try {
+				mcmeta = (
+					await axios.get(
+						`${settings.repositories.raw.default.java}${path}`
+					)
+				).data
+			} catch {
+				// mcmeta doesn't exist so we assume default settings
+			}
 		}
 
+		/** @type {import("@functions/images/animate").MCMETA} */
+		// otherwise ugly width and height properties are always shown
+		const displayedMcmeta = structuredClone(mcmeta);
+
 		const { magnified, width, factor } = await magnifyBuffer(stitched, true);
-		const allGaps = totalGaps * factor;
 
 		mcmeta.animation.width = mcmeta.animation.width
-			? (mcmeta.animation.width * images.length + allGaps) * factor
+			? (mcmeta.animation.width * images.length + totalGaps) * factor
 			: width;
 		mcmeta.animation.height = mcmeta.animation.height
 			? mcmeta.animation.height * factor
-			: (width - allGaps) / images.length; // get height of a single frame
+			: (width - totalGaps * factor) / images.length; // get height of a single frame
 		const animated = await animate(await loadImage(magnified), mcmeta);
 
 		return {
 			comparisonImage: new MessageAttachment(animated, "compared.gif"),
 			hasReference: images.length == 3,
-			mcmeta,
+			mcmeta: displayedMcmeta,
 		};
 	}
 

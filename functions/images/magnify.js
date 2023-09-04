@@ -5,8 +5,9 @@ const getDimensions = require("./getDimensions");
 const addDeleteButton = require("@helpers/addDeleteButton");
 
 /**
- * base logic, returns buffer
- * @param {String | Image | Buffer} origin url to magnify
+ * The actual magnification function
+ * @author Juknum, Evorp
+ * @param {String | Image | Buffer} origin url, image, or buffer to magnify
  * @param {Boolean} isAnimation whether to magnify the image as a tilesheet
  * @returns {Promise<{ magnified: Buffer, width: Number, height: Number, factor: Number }>} buffer for magnified image
  */
@@ -19,7 +20,7 @@ async function magnifyBuffer(origin, isAnimation = false) {
 			: { width: tmp.width, height: tmp.height };
 
 	// ignore height if tilesheet, otherwise it's not scaled as much
-	const surface = isAnimation ? dimension.width ** 2 : dimension.width * dimension.height;
+	const surface = isAnimation ? dimension.width * 16 : dimension.width * dimension.height;
 
 	let factor = 64;
 	if (surface == 256) factor = 32;
@@ -40,7 +41,8 @@ async function magnifyBuffer(origin, isAnimation = false) {
 }
 
 /**
- * returns discord attachment
+ * Returns discord attachment
+ * @author Juknum
  * @param {String | Image | Buffer} origin url to magnify
  * @param {String?} name name, defaults to "magnified.png"
  * @returns {Promise<MessageAttachment>} magnified file
