@@ -11,7 +11,7 @@
 			"@submission/*": ["./functions/submission/*"],
 			"@images/*": ["./functions/images/*"],
 			"@resources/*": ["./resources/*"],
-			"@index": ["./index.js"],
+			"@index": ["./index.js"]
 		}
 	}
 }

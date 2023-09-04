@@ -105,24 +105,16 @@ module.exports = async function generateComparison(pack, attachment, info) {
 	if (info.animation) {
 		/** @type {import("@images/animate").MCMETA} */
 		let mcmeta = { animation: {} };
-		const path = `${
-			info.animation.versions.sort(minecraftSorter).reverse()[0]
-		}/${info.animation.name}.mcmeta`
+		const path = `${info.animation.versions.sort(minecraftSorter).reverse()[0]}/${
+			info.animation.name
+		}.mcmeta`;
 		try {
 			// try to get mcmeta from repo (can be different for height/width properties)
-			mcmeta = (
-				await axios.get(
-					`${settings.repositories.raw[pack].java}${path}`
-				)
-			).data;
+			mcmeta = (await axios.get(`${settings.repositories.raw[pack].java}${path}`)).data;
 		} catch {
 			// try getting it from the default repo (not in pack yet)
 			try {
-				mcmeta = (
-					await axios.get(
-						`${settings.repositories.raw.default.java}${path}`
-					)
-				).data
+				mcmeta = (await axios.get(`${settings.repositories.raw.default.java}${path}`)).data;
 			} catch {
 				// mcmeta doesn't exist so we assume default settings
 			}

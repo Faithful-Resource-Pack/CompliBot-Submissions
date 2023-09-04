@@ -17,6 +17,8 @@ module.exports = {
 		if (args[0] == "all") packs = Object.values(settings.submission.packs);
 		if (!packs[0]) return warnUser(message, strings.command.args.invalid);
 
+		await message.react(settings.emojis.upvote);
+
 		for (let pack of packs) {
 			if (pack.council_disabled) {
 				await retrieveSubmission(
@@ -48,7 +50,5 @@ module.exports = {
 				);
 			}
 		}
-
-		return await message.react(settings.emojis.upvote);
 	},
 };
