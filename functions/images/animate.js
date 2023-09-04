@@ -26,6 +26,8 @@ const GIFEncoder = require("./GIFEncoder");
  * @returns {Promise<Buffer>} animated GIF as buffer
  */
 module.exports = async function animate(baseCanvas, mcmeta) {
+	if (!mcmeta.animation) mcmeta.animation = {};
+
 	if (!mcmeta.animation?.width) mcmeta.animation.width = baseCanvas.width;
 	// assume square image if not declared explicitly (baseCanvas.height is full spritesheet)
 	if (!mcmeta.animation?.height) mcmeta.animation.height = baseCanvas.width;

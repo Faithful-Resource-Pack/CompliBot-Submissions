@@ -105,7 +105,7 @@ module.exports = async function generateComparison(pack, attachment, info) {
 		const allGaps = totalGaps * factor;
 
 		mcmeta.animation.width = mcmeta.animation.width
-			? ((mcmeta.animation.width * images.length) + allGaps) * factor
+			? (mcmeta.animation.width * images.length + allGaps) * factor
 			: width;
 		mcmeta.animation.height = mcmeta.animation.height
 			? mcmeta.animation.height * factor
