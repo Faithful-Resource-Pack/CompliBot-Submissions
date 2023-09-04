@@ -15,7 +15,7 @@ const DEBUG = process.env.DEBUG.toLowerCase() == "true";
  */
 module.exports = async function reactionMenu(client, menuReaction, user) {
 	const message = await menuReaction.message.fetch();
-	const member = await message.guild.members.cache.get(user.id);
+	const member = message.guild.members.cache.get(user.id);
 	if (member.bot) return;
 
 	let trayReactions = [
@@ -73,9 +73,7 @@ module.exports = async function reactionMenu(client, menuReaction, user) {
 	for (let emoji of trayReactions) await message.react(emoji);
 
 	// make the filter
-	const filter = (REACT, USER) => {
-		return trayReactions.includes(REACT.emoji.id) && USER.id === user.id;
-	};
+	const filter = (REACT, USER) => trayReactions.includes(REACT.emoji.id) && USER.id === user.id;
 
 	// await reaction from the user
 	const collected = await message

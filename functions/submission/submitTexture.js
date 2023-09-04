@@ -90,7 +90,7 @@ module.exports = async function submitTexture(client, message) {
 			});
 		}
 
-		await choiceEmbed(message, mappedResults);
+		await choiceEmbed(client, message, mappedResults);
 	}
 	if (!ongoingMenu && message.deletable) await message.delete();
 };

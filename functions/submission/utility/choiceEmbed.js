@@ -1,8 +1,11 @@
 const settings = require("@resources/settings.json");
 const strings = require("@resources/strings.json");
 
+const getAuthors = require("@submission/utility/getAuthors");
+const makeEmbed = require("@submission/makeEmbed");
 const addDeleteButton = require("@helpers/addDeleteButton");
 
+const { default: axios } = require("axios");
 const { MessageEmbed, MessageActionRow, MessageSelectMenu } = require("discord.js");
 /**
  * Selection menu for dealing with multiple valid options
@@ -10,7 +13,7 @@ const { MessageEmbed, MessageActionRow, MessageSelectMenu } = require("discord.j
  * @param {import("discord.js").Message} message message to reply to
  * @param {import("discord.js").MessageSelectOptionData[]} choices pre-mapped choices
  */
-module.exports = async function choiceEmbed(message, choices) {
+module.exports = async function choiceEmbed(client, message, choices) {
 	const emojis = settings.emojis.default_select;
 	const components = [];
 	const choicesLength = choices.length; // we're modifying choices directly so it needs to be saved first
@@ -41,14 +44,33 @@ module.exports = async function choiceEmbed(message, choices) {
 		.setColor(settings.colors.blue);
 
 	const choiceMessage = await message.reply({ embeds: [embed], components: components });
-
-	/**
-	 * @see selectMenuUsed all extra code from here on out is there
-	 */
 	await addDeleteButton(choiceMessage);
 
-	return setTimeout(() => {
-		if (choiceMessage.deletable) choiceMessage.delete();
+	const filter = (interaction) =>
+		(interaction.customId = "choiceEmbed" && interaction.user.id == message.author.id);
+
+	const collector = message.channel.createMessageComponentCollector({ filter, time: 30000 });
+
+	collector.on("collect", async (interaction) => {
+		if (message.deletable) {
+			const [id, index] = interaction.values[0].split("__");
+			const attachments = Array.from(message.attachments.values());
+
+			const param = {
+				description: message.content,
+				authors: await getAuthors(message),
+			};
+
+			/** @type {import("../helpers/jsdoc").Texture} */
+			const texture = (await axios.get(`${process.env.API_URL}textures/${id}/all`)).data;
+			if (choiceMessage.deletable) await choiceMessage.delete();
+
+			return await makeEmbed(client, message, texture, attachments[index], param);
+		}
+	});
+
+	collector.on("end", async () => {
 		if (message.deletable) message.delete();
-	}, 30000);
+		if (choiceMessage.deletable) await choiceMessage.delete();
+	});
 };
