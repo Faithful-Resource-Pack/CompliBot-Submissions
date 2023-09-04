@@ -4,7 +4,7 @@ const DEBUG = process.env.DEBUG.toLowerCase() == "true";
 
 const minecraftSorter = require("@helpers/minecraftSorter");
 const getPackByChannel = require("./utility/getPackByChannel");
-const getDimensions = require("@functions/images/getDimensions");
+const getDimensions = require("@images/getDimensions");
 const getImages = require("@helpers/getImages");
 const generateComparison = require("./utility/generateComparison");
 const { imageButtons, submissionButtons } = require("@helpers/buttons");

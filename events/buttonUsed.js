@@ -1,7 +1,7 @@
-const { magnifyAttachment } = require("@functions/images/magnify");
-const tile = require("@functions/images/tile");
-const palette = require("@functions/images/palette");
-const difference = require("@functions/images/difference");
+const { magnifyAttachment } = require("@images/magnify");
+const tile = require("@images/tile");
+const palette = require("@images/palette");
+const difference = require("@images/difference");
 
 const minecraftSorter = require("@helpers/minecraftSorter");
 const { default: axios } = require("axios");

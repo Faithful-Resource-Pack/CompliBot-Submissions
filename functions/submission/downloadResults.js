@@ -18,7 +18,7 @@ const { default: axios } = require("axios");
  * @param {Boolean?} instapass whether to push the texture directly after downloading
  */
 module.exports = async function downloadResults(client, channelResultID, instapass = false) {
-	let messages = await getMessages(client, channelResultID).filter(
+	let messages = (await getMessages(client, channelResultID)).filter(
 		(message) => message.embeds?.[0]?.fields?.[1],
 	);
 	/** @type {import("discord.js").TextChannel} */

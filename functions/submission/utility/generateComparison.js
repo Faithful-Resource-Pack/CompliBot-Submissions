@@ -1,10 +1,10 @@
 const settings = require("@resources/settings.json");
-const stitch = require("@functions/images/stitch");
-const { magnifyAttachment, magnifyBuffer } = require("@functions/images/magnify");
+const stitch = require("@images/stitch");
+const { magnifyAttachment, magnifyBuffer } = require("@images/magnify");
 const { loadImage } = require("@napi-rs/canvas");
 const { default: axios } = require("axios");
 const minecraftSorter = require("@helpers/minecraftSorter");
-const animate = require("@functions/images/animate");
+const animate = require("@images/animate");
 const { MessageAttachment } = require("discord.js");
 
 /**
@@ -19,7 +19,7 @@ const { MessageAttachment } = require("discord.js");
  * @typedef ReturnParams
  * @property {MessageAttachment} comparisonImage
  * @property {Boolean} hasReference
- * @property {import("@functions/images/animate").MCMETA?} mcmeta
+ * @property {import("@images/animate").MCMETA?} mcmeta
  */
 
 /**
@@ -103,7 +103,7 @@ module.exports = async function generateComparison(pack, attachment, info) {
 	const [stitched, totalGaps] = await stitch(images);
 
 	if (info.animation) {
-		/** @type {import("@functions/images/animate").MCMETA} */
+		/** @type {import("@images/animate").MCMETA} */
 		let mcmeta = { animation: {} };
 		const path = `${
 			info.animation.versions.sort(minecraftSorter).reverse()[0]
@@ -128,7 +128,7 @@ module.exports = async function generateComparison(pack, attachment, info) {
 			}
 		}
 
-		/** @type {import("@functions/images/animate").MCMETA} */
+		/** @type {import("@images/animate").MCMETA} */
 		// otherwise ugly width and height properties are always shown
 		const displayedMcmeta = structuredClone(mcmeta);
 
