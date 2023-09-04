@@ -87,7 +87,8 @@ module.exports = async function generateComparison(pack, attachment, info) {
 	const [stitched, totalGaps] = await stitch(images);
 
 	if (info.animation) {
-		let mcmeta = {};
+		/** @type {import("@functions/images/animate").MCMETA} */
+		let mcmeta = { animation: {} };
 		try {
 			mcmeta = (
 				await axios.get(
@@ -103,10 +104,13 @@ module.exports = async function generateComparison(pack, attachment, info) {
 		const { magnified, width, factor } = await magnifyBuffer(stitched, true);
 		const allGaps = totalGaps * factor;
 
-		const animated = await animate(await loadImage(magnified), mcmeta, {
-			width,
-			height: (width - allGaps) / images.length,
-		});
+		mcmeta.animation.width = mcmeta.animation.width
+			? ((mcmeta.animation.width * images.length) + allGaps) * factor
+			: width;
+		mcmeta.animation.height = mcmeta.animation.height
+			? mcmeta.animation.height * factor
+			: (width - allGaps) / images.length; // get height of a single frame
+		const animated = await animate(await loadImage(magnified), mcmeta);
 
 		return {
 			comparisonImage: new MessageAttachment(animated, "compared.gif"),

@@ -31,5 +31,5 @@ module.exports = function unhandledRejection(client, error, promise, originMessa
 	console.error(error, promise);
 
 	// DO NOT DELETE THIS CATCH, IT AVOIDS INFINITE LOOP IF THIS PROMISE REJECTS
-	devLogger(client, description, { codeBlocks: isJSON ? "json" : "fix" }).catch(console.error);
+	devLogger(client, description, { codeBlocks: isJSON ? "json" : "" }).catch(console.error);
 };

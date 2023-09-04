@@ -2,29 +2,43 @@ const { createCanvas } = require("@napi-rs/canvas");
 const GIFEncoder = require("./GIFEncoder");
 
 /**
- * Animate a given image with a given mcmeta to a given size
- * @author superboxer4, Evorp, Juknum
- * @param {import("@napi-rs/canvas").Canvas} baseCanvas what you want animated
- * @param {Object} mcmeta how you want it animated (too lazy to make types for it lol)
- * @param {{width: Number, height: Number}} dimension texture information
- * @returns
+ * @typedef MCMETA
+ * @property {Animation} animation
+ * @typedef Animation
+ * @property {Number?} frametime
+ * @property {Boolean?} interpolate
+ * @property {(Number | { index?: Number, time?: Number })[]?} frames thank you mojang very cool
+ * @property {Number?} height
+ * @property {Number?} width
  */
-module.exports = async function animate(baseCanvas, mcmeta, dimension) {
-	const canvas = createCanvas(dimension.width, dimension.height);
-	const context = canvas.getContext("2d");
-	context.imageSmoothingEnabled = false;
 
-	mcmeta = typeof mcmeta === "object" ? mcmeta : { animation: {} };
-	if (!mcmeta.animation) mcmeta.animation = {};
+/**
+ * @typedef MappedFrame
+ * @property {Number} index
+ * @property {Number} duration
+ */
+
+/**
+ * Animate a given image with a given mcmeta
+ * @author superboxer4, Evorp, Juknum
+ * @param {import("@napi-rs/canvas").Canvas} baseCanvas tilesheet to animate
+ * @param {MCMETA} mcmeta how you want it animated
+ * @returns {Promise<Buffer>} animated GIF as buffer
+ */
+module.exports = async function animate(baseCanvas, mcmeta) {
+	if (!mcmeta.animation?.width) mcmeta.animation.width = baseCanvas.width;
+	// assume square image if not declared explicitly (baseCanvas.height is full spritesheet)
+	if (!mcmeta.animation?.height) mcmeta.animation.height = baseCanvas.width;
 
 	// cap frametime at 15 to not crash the bot from rendering 6000 frames of prismarine
-	let frametime = mcmeta.animation.frametime || 1;
+	let frametime = mcmeta.animation?.frametime || 1;
 	if (frametime > 15) frametime = 15;
 
+	/** @type {MappedFrame[]} */
 	const frames = [];
 	if (mcmeta.animation.frames?.length) {
 		// add frames in specified order if possible
-		for (let i = 0; i < mcmeta.animation.frames.length; i++) {
+		for (let i = 0; i < mcmeta.animation.frames.length; ++i) {
 			const frame = mcmeta.animation.frames[i];
 			switch (typeof frame) {
 				case "number":
@@ -41,23 +55,25 @@ module.exports = async function animate(baseCanvas, mcmeta, dimension) {
 		}
 	} else {
 		// just animate directly downwards if nothing specified
-		for (let i = 0; i < baseCanvas.height / dimension.height; i++) {
+		for (let i = 0; i < baseCanvas.height / mcmeta.animation.height; ++i) {
 			frames.push({ index: i, duration: frametime });
 		}
 	}
 
-	// Draw frames:
-	const encoder = new GIFEncoder(dimension.width, dimension.height);
+	// initialize gif encoder and final canvas
+	const canvas = createCanvas(mcmeta.animation.width, mcmeta.animation.height);
+	const context = canvas.getContext("2d");
+	context.imageSmoothingEnabled = false;
+	const encoder = new GIFEncoder(mcmeta.animation.width, mcmeta.animation.height);
 	encoder.start();
 	encoder.setTransparent(true);
-
 	context.globalCompositeOperation = "copy";
 
 	if (mcmeta.animation.interpolate) {
 		let limit = frametime;
-		for (let i = 0; i < frames.length; i++) {
-			for (let y = 1; y <= limit; y++) {
-				context.clearRect(0, 0, canvas.width, canvas.height);
+		for (let i = 0; i < frames.length; ++i) {
+			for (let y = 1; y <= limit; ++y) {
+				context.clearRect(0, 0, mcmeta.animation.width, mcmeta.animation.height);
 				context.globalAlpha = 1;
 				context.globalCompositeOperation = "copy";
 
@@ -65,13 +81,13 @@ module.exports = async function animate(baseCanvas, mcmeta, dimension) {
 				context.drawImage(
 					baseCanvas, // image
 					0,
-					dimension.height * frames[i].index, // sx, sy
-					dimension.width,
-					dimension.height, // sWidth, sHeight
+					mcmeta.animation.height * frames[i].index, // sx, sy
+					mcmeta.animation.width,
+					mcmeta.animation.height, // sWidth, sHeight
 					0,
 					0, // dx, dy
-					canvas.width,
-					canvas.height, // dWidth, dHeight
+					mcmeta.animation.width,
+					mcmeta.animation.height, // dWidth, dHeight
 				);
 
 				context.globalAlpha = ((100 / frametime) * y) / 100;
@@ -81,33 +97,33 @@ module.exports = async function animate(baseCanvas, mcmeta, dimension) {
 				context.drawImage(
 					baseCanvas, // image
 					0,
-					dimension.height * frames[(i + 1) % frames.length].index, // sx, sy
-					dimension.width,
-					dimension.height, // sWidth, sHeight
+					mcmeta.animation.height * frames[(i + 1) % frames.length].index, // sx, sy
+					mcmeta.animation.width,
+					mcmeta.animation.height, // sWidth, sHeight
 					0,
 					0, // dx, dy
-					canvas.width,
-					canvas.height, // dWidth, dHeight
+					mcmeta.animation.width,
+					mcmeta.animation.height, // dWidth, dHeight
 				);
 				encoder.addFrame(context);
 			}
 		}
 	} else {
-		for (let i = 0; i < frames.length; i++) {
-			context.clearRect(0, 0, dimension.width, dimension.height);
+		for (let i = 0; i < frames.length; ++i) {
+			context.clearRect(0, 0, mcmeta.animation.width, mcmeta.animation.height);
 			context.globalAlpha = 1;
 
 			// see: https://mdn.dev/archives/media/attachments/2012/07/09/225/46ffb06174df7c077c89ff3055e6e524/Canvas_drawimage.jpg
 			context.drawImage(
 				baseCanvas, // image
 				0,
-				dimension.height * frames[i].index, // sx, sy
-				dimension.width,
-				dimension.height, // sWidth, sHeight
+				mcmeta.animation.height * frames[i].index, // sx, sy
+				mcmeta.animation.width,
+				mcmeta.animation.height, // sWidth, sHeight
 				0,
 				0, // dx, dy
-				canvas.width,
-				canvas.height, // dWidth, dHeight
+				mcmeta.animation.width,
+				mcmeta.animation.height, // dWidth, dHeight
 			);
 
 			encoder.setDelay(50 * frames[i].duration);

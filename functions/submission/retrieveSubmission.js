@@ -52,8 +52,8 @@ module.exports = async function retrieveSubmission(
 		.filter((message) => message.embeds[0].fields[1]?.value?.includes(settings.emojis.pending))
 		.reverse(); // upload from oldest to newest
 
-	// map messages adding reacts count, embed and message (easier management like that)
-	messages = messages.map((message) => {
+	/** @type {MappedMessage[]} */
+	const mappedMessages = messages.map((message) => {
 		return {
 			upvote: message.reactions.cache.get(settings.emojis.upvote),
 			downvote: message.reactions.cache.get(settings.emojis.downvote),
@@ -64,13 +64,11 @@ module.exports = async function retrieveSubmission(
 	});
 
 	// split messages by their votes (upvote >= downvote)
-	/** @type {MappedMessage[]} */
-	const messagesUpvoted = messages.filter(
+	const messagesUpvoted = mappedMessages.filter(
 		(message) => (message.upvote?.count ?? 1) >= (message.downvote?.count ?? 1),
 	);
 
-	/** @type {MappedMessage[]} */
-	const messagesDownvoted = messages.filter(
+	const messagesDownvoted = mappedMessages.filter(
 		(message) => (message.upvote?.count ?? 1) < (message.downvote?.count ?? 1),
 	);
 

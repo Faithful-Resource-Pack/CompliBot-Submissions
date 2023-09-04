@@ -11,22 +11,21 @@ const { promises, writeFile } = require("fs");
 const { default: axios } = require("axios");
 
 /**
- * Push textures from a channel to all its paths locally and add contributions
+ * Push textures from a channel to all its paths locally and add contributions/roles
  * @author Juknum, Evorp
  * @param {import("discord.js").Client} client
  * @param {String} channelResultID result channel to download from
  * @param {Boolean?} instapass whether to push the texture directly after downloading
  */
 module.exports = async function downloadResults(client, channelResultID, instapass = false) {
-	let messages = await getMessages(client, channelResultID);
+	let messages = await getMessages(client, channelResultID).filter(
+		(message) => message.embeds?.[0]?.fields?.[1],
+	);
 	/** @type {import("discord.js").TextChannel} */
 	const channel = client.channels.cache.get(channelResultID);
 	const packName = await getPackByChannel(channelResultID, "results");
 
-	if (DEBUG) console.log(`Starting texture download for pack: ${packName}`);
-
-	// removes non-submission messages
-	messages = messages.filter((message) => message.embeds?.[0]?.fields?.[1]);
+	if (DEBUG) console.log(`Starting texture downloads for pack: ${packName}`);
 
 	if (!instapass) {
 		// get messages from the same day
@@ -57,7 +56,7 @@ module.exports = async function downloadResults(client, channelResultID, instapa
 		}
 	}
 
-	// mapped for easier usage later
+	/** @type {MappedMessage} */
 	const textures = messages.map((message) => {
 		return {
 			url: message.embeds[0].thumbnail.url,
@@ -69,7 +68,7 @@ module.exports = async function downloadResults(client, channelResultID, instapa
 		};
 	});
 
-	// holds all contributions from the day
+	/** @type {import("@helpers/jsdoc").Contribution[]} */
 	let allContribution = [];
 	// used in the instapass commit message if applicable
 	let instapassName;
@@ -116,7 +115,7 @@ module.exports = async function downloadResults(client, channelResultID, instapa
 			}
 		}
 
-		// prepare the authors for the texture
+		// saves on post requests to add all contributions at once in an array, more reliable
 		allContribution.push({
 			date: texture.date,
 			resolution: Number((packName.match(/\d+/) ?? [32])[0]), // stupid workaround but it works
