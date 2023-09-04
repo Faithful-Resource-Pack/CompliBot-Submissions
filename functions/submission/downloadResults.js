@@ -84,6 +84,8 @@ module.exports = async function downloadResults(client, channelResultID, instapa
 		/** @type {import("@helpers/jsdoc").Texture} */
 		const textureInfo = (await axios.get(`${process.env.API_URL}textures/${texture.id}/all`)).data;
 
+		if (instapass) instapassName = textureInfo.name;
+
 		// add the image to all its versions and paths
 		for (let use of textureInfo.uses) {
 			const paths = textureInfo.paths.filter((i) => i.use == use.id);
