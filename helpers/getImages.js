@@ -13,8 +13,8 @@ module.exports = async function getImages(client, ...fileArray) {
 		.get(settings.channels.images)
 		.send({ files: fileArray });
 
-	imgMessage.attachments.forEach((Attachment) => {
-		imgArray.push(Attachment.url);
+	imgMessage.attachments.forEach((attachment) => {
+		imgArray.push(attachment.url);
 	});
 
 	return imgArray;

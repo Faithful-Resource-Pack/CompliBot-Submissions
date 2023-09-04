@@ -21,24 +21,27 @@
 			"url": "The message URL needs to be from the same channel. Don't ask why, I don't know myself.",
 			"invalid_extension": "Image extension is not supported",
 			"no_reply_attachment": "This reply does not have any image attached.",
-			"too_big": "The input picture is too big!",
-			"too_wide": "The input picture is too wide!",
-			"cant_animate": "This texture can't be animated."
+			"input_too_big": "The input picture is too big!",
+			"output_too_big": "The output picture will be too big!"
 		},
 		"behave": "I'm so sorry! (⌯˃̶᷄ ﹏ ˂̶᷄⌯)"
 	},
 	"submission": {
-		"searching": "Searching for your texture, please wait...",
-		"search_description": "Choose one texture using emoji reactions.\nIf you don't see what you're looking for, try submitting by texture ID.\n",
 		"autoreact": {
 			"error_title": "Auto Reaction Failed",
 			"error_footer": "This message will self-destruct in 30 seconds, please re-submit!"
 		},
+		"choice_embed": {
+			"description": "If you can't what you're looking for, please be more specific!",
+			"placeholder": "Select a texture!"
+		},
+		"no_result_channel": "Could not fetch corresponding result channel! Make sure `settings.json` has been set up correctly.",
 		"no_file_attached": "Your submission has to have a file attached!",
 		"image_not_attached": "You didn't attach an image! ",
 		"invalid_format": "Please provide a valid `.png` file. Other file formats like `.zip` or `.tga` are not supported yet.",
 		"unknown_id": "Please choose a valid texture ID!\n",
 		"does_not_exist": "The specified texture or folder doesn't exist!",
-		"no_name_given": "You didn't provide a texture name!"
+		"no_name_given": "You didn't provide a texture name!",
+		"cant_compare": "This texture is too big to create a comparison image!"
 	}
 }

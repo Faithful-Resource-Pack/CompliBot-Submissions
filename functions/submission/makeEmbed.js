@@ -1,4 +1,5 @@
 const settings = require("@resources/settings.json");
+const strings = require("@resources/strings.json");
 const DEBUG = process.env.DEBUG.toLowerCase() == "true";
 
 const minecraftSorter = require("@helpers/minecraftSorter");
@@ -89,7 +90,7 @@ module.exports = async function makeEmbed(client, message, texture, attachment, 
 		embed
 			.setImage(imageUrl)
 			.setThumbnail(imageUrl)
-			.setFooter({ text: "This texture is too big to create a comparison image!" });
+			.setFooter({ text: strings.submission.cant_compare });
 
 		imgButtons = [imageButtons];
 	}

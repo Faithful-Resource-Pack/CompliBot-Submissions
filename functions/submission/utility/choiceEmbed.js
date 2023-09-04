@@ -1,8 +1,9 @@
-const { MessageEmbed, MessageActionRow, MessageSelectMenu } = require("discord.js");
+const settings = require("@resources/settings.json");
+const strings = require("@resource/strings.json");
+
 const addDeleteButton = require("@helpers/addDeleteButton");
 
-const settings = require("@resources/settings.json");
-
+const { MessageEmbed, MessageActionRow, MessageSelectMenu } = require("discord.js");
 /**
  * Selection menu for dealing with multiple valid options
  * @author Evorp
@@ -27,7 +28,7 @@ module.exports = async function choiceEmbed(message, choices) {
 		}
 		const menu = new MessageSelectMenu()
 			.setCustomId(`choiceEmbed_${currentRow}`)
-			.setPlaceholder("Select a texture!")
+			.setPlaceholder(strings.submission.choice_embed.placeholder)
 			.addOptions(options);
 
 		const row = new MessageActionRow().addComponents(menu);
@@ -36,7 +37,7 @@ module.exports = async function choiceEmbed(message, choices) {
 
 	const embed = new MessageEmbed()
 		.setTitle(`${choicesLength} results found`)
-		.setDescription(`If you can't what you're looking for, please be more specific!`)
+		.setDescription(strings.submission.choice_embed.description)
 		.setColor(settings.colors.blue);
 
 	const choiceMessage = await message.reply({ embeds: [embed], components: components });

@@ -1,4 +1,5 @@
 const settings = require("@resources/settings.json");
+const strings = require("@resources/strings.json");
 
 const downloadResults = require("@submission/downloadResults");
 const warnUser = require("@helpers/warnUser");
@@ -25,7 +26,7 @@ module.exports = async function instapass(client, message) {
 	// this is why we send the channel rather than the pack into downloadResults()
 	/** @type {import("discord.js").TextChannel} */
 	const channelOut = await client.channels.fetch(channelOutID);
-	if (!channelOut) return warnUser(message, "Result channel was not able to be fetched!");
+	if (!channelOut) return warnUser(message, strings.submission.no_result_channel);
 	await channelOut.send({
 		embeds: [
 			// the status in submissions is changed in reactionMenu()

@@ -28,7 +28,7 @@ module.exports = async function palette(interaction, url) {
 	const dimension = await getDimensions(url);
 
 	if (dimension.width * dimension.height > 262144)
-		return await interaction.reply({ content: strings.command.image.too_big, ephemeral: true });
+		return await interaction.reply({ content: strings.command.image.input_too_big, ephemeral: true });
 
 	let canvas = createCanvas(dimension.width, dimension.height).getContext("2d");
 	const allColors = {};
