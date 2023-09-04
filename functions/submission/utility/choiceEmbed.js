@@ -10,6 +10,7 @@ const { MessageEmbed, MessageActionRow, MessageSelectMenu } = require("discord.j
 /**
  * Selection menu for dealing with multiple valid options
  * @author Evorp
+ * @param {import("discord.js").Client} client
  * @param {import("discord.js").Message} message message to reply to
  * @param {import("discord.js").MessageSelectOptionData[]} choices pre-mapped choices
  */

@@ -6,7 +6,6 @@ const client = require("@index").Client;
  * so we split them into separate event files here
  * @author Evorp
  * @see buttonUsed
- * @see selectMenuUsed
  */
 module.exports = {
 	name: "interactionCreate",
