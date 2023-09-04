@@ -50,7 +50,7 @@ module.exports = async function submitTexture(client, message) {
 
 		// priority to ids -> faster
 		if (!isNaN(Number(id))) {
-			/** @type {import("../../helpers/jsdoc").Texture} */
+			/** @type {import("@helpers/jsdoc").Texture} */
 			const texture = (await axios.get(`${process.env.API_URL}textures/${id}/all`)).data;
 			if (!Object.keys(texture).length)
 				await invalidSubmission(message, strings.submission.unknown_id + err);
@@ -67,7 +67,7 @@ module.exports = async function submitTexture(client, message) {
 			continue;
 		}
 
-		/** @type {import("../../helpers/jsdoc").Texture[]} */
+		/** @type {import("@helpers/jsdoc").Texture[]} */
 		const results = (await axios.get(`${process.env.API_URL}textures/${search}/all`)).data;
 
 		if (!results.length) {

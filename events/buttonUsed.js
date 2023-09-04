@@ -50,7 +50,7 @@ module.exports = {
 				])[0];
 				if (!id) break;
 				await interaction.deferReply({ ephemeral: true });
-				/** @type {import("../helpers/jsdoc").Texture} */
+				/** @type {import("@helpers/jsdoc").Texture} */
 				const texture = (await axios.get(`${process.env.API_URL}textures/${id}/all`)).data;
 				const currentUrl = `${
 					settings.repositories.raw[packName][texture.uses[0].edition.toLowerCase()]

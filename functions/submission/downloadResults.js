@@ -81,7 +81,7 @@ module.exports = async function downloadResults(client, channelResultID, instapa
 
 		const imageFile = (await axios.get(texture.url, { responseType: "arraybuffer" })).data;
 
-		/** @type {import("../../helpers/jsdoc").Texture} */
+		/** @type {import("@helpers/jsdoc").Texture} */
 		const textureInfo = (await axios.get(`${process.env.API_URL}textures/${texture.id}/all`)).data;
 
 		// add the image to all its versions and paths

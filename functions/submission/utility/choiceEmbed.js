@@ -62,7 +62,7 @@ module.exports = async function choiceEmbed(client, message, choices) {
 				authors: await getAuthors(message),
 			};
 
-			/** @type {import("../helpers/jsdoc").Texture} */
+			/** @type {import("@helpers/jsdoc").Texture} */
 			const texture = (await axios.get(`${process.env.API_URL}textures/${id}/all`)).data;
 			if (choiceMessage.deletable) await choiceMessage.delete();
 

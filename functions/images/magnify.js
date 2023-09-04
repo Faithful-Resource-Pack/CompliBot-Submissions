@@ -10,7 +10,7 @@ const addDeleteButton = require("@helpers/addDeleteButton");
  * @param {Boolean} isAnimation whether to magnify the image as a tilesheet
  * @returns {Promise<{ magnified: Buffer, width: Number, height: Number, factor: Number }>} buffer for magnified image
  */
-async function magnifyBuffer(origin, isAnimation) {
+async function magnifyBuffer(origin, isAnimation = false) {
 	const tmp = await loadImage(origin).catch((err) => Promise.reject(err));
 
 	const dimension =

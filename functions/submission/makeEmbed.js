@@ -16,7 +16,7 @@ const { MessageEmbed, MessageAttachment } = require("discord.js");
  * @author Juknum, Evorp
  * @param {import("discord.js").Client} client
  * @param {import("discord.js").Message} message used for channel and author information
- * @param {import("../../helpers/jsdoc").Texture} texture texture information
+ * @param {import("@helpers/jsdoc").Texture} texture texture information
  * @param {import("discord.js").MessageAttachment} attachment raw texture to embed
  * @param {{ description: String?, authors: String[] }} params additional info (e.g. description, coauthors)
  */
@@ -115,7 +115,7 @@ module.exports = async function makeEmbed(client, message, texture, attachment, 
 
 /**
  * Return organized path data for a given texture
- * @param {import("../../helpers/jsdoc").Texture} texture
+ * @param {import("@helpers/jsdoc").Texture} texture
  * @returns {import("discord.js").EmbedFieldData[]}
  */
 function addPathsToEmbed(texture) {

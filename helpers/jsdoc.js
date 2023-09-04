@@ -32,3 +32,6 @@
  * @property {Path[]} paths
  * @property {Contribution[]?} contributions
  */
+
+// so js doesn't complain that this isn't a module
+module.exports = {};
