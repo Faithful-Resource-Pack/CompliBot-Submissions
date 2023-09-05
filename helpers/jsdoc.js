@@ -1,5 +1,5 @@
 /**
- * since I'm too lazy to figure out typescript I made a bunch of JSDOC interfaces
+ * since I'm too lazy to figure out typescript I made a bunch of JSDOC interfaces for API types
  * they're used all throughout the bot for intellisense and easier debugging
  *
  * @typedef {"faithful 32x" | "faithful_64x" | "classic_faithful_32x" | "classic_faithful_64x" | "classic_faithful_32x_progart"} Pack

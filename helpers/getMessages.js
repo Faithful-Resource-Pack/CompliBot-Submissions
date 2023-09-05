@@ -3,11 +3,11 @@
  * @author Juknum
  * @param {import("discord.js").Client} client
  * @param {String} channelID channel where messages are fetched from
- * @param {Number} limit max amount of message fetched (clamped to [0, 100])
+ * @param {Number} fetchAmount amount of messages to try fetching (batches of 100)
  * @returns {Promise<import("discord.js").Message[]>} Returns an Array of all fetched messages
  */
-module.exports = async function getMessages(client, channelID, limit = 100) {
-	if (typeof limit !== "number") return [];
+module.exports = async function getMessages(client, channelID, fetchAmount = 100) {
+	if (typeof fetchAmount !== "number") return [];
 
 	/** @type {import("discord.js").TextChannel} */
 	let channel;
@@ -17,31 +17,36 @@ module.exports = async function getMessages(client, channelID, limit = 100) {
 		return [];
 	}
 
-	// clamps limit
-	const fetchLimit = Math.min(100, Math.max(0, limit));
+	// fetch in batches of 100 max
+	const limit = Math.min(100, Math.max(0, fetchAmount));
 
-	const sum_messages = [];
+	/** @type {import("discord.js").Message[]} */
+	let fetchedMessages = [];
 
-	let last_id; // = undefined
-	let options;
-	let messages;
+	/** @type {Number} */
+	let lastID;
 
-	let done = false;
-	while (!done) {
-		options = { limit: fetchLimit };
-		if (last_id !== undefined) options.before = last_id;
+	while (true) {
+		/** @type {import("discord.js").ChannelLogsQueryOptions} */
+		let options = { limit };
 
+		// if there's over 100 messages fetched start again from the 100th message
+		if (lastID !== undefined) options.before = lastID;
+
+		/** @type {import("discord.js").Collection<import("discord.js").Snowflake, import("discord.js").Message>} */
+		let messages;
 		try {
 			messages = await channel.messages.fetch(options);
 		} catch (err) {
 			console.log(err);
 		}
 
-		sum_messages.push(...messages.values());
-		last_id = messages.last().id;
+		fetchedMessages.push(...messages.values());
 
-		if (messages.size != 100 || sum_messages.length >= limit) done = true;
+		// start fetching again from the last message if the desired amount couldn't be reached
+		lastID = messages.last().id;
+
+		// return if there aren't enough messages in the channel to fetch or desired length is reached
+		if (messages.size != limit || fetchedMessages.length >= fetchAmount) return fetchedMessages;
 	}
-
-	return sum_messages;
 };

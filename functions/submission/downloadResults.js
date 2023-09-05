@@ -56,7 +56,6 @@ module.exports = async function downloadResults(client, channelResultID, instapa
 		}
 	}
 
-	/** @type {MappedMessage} */
 	const textures = messages.map((message) => {
 		return {
 			url: message.embeds[0].thumbnail.url,
@@ -70,7 +69,7 @@ module.exports = async function downloadResults(client, channelResultID, instapa
 
 	/** @type {import("@helpers/jsdoc").Contribution[]} */
 	let allContribution = [];
-	// used in the instapass commit message if applicable
+	/** @type {String} used in the instapass commit message if applicable */
 	let instapassName;
 
 	for (let texture of textures) {
