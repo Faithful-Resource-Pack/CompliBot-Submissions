@@ -29,7 +29,7 @@ module.exports = async function makeEmbed(client, message, texture, attachment, 
 		const allContributions = texture.contributions.filter((i) => i.pack == packName);
 		if (allContributions.length) {
 			const lastContribution = allContributions.sort((a, b) => (a.date > b.date ? -1 : 1))[0];
-			for (let author of lastContribution.authors)
+			for (const author of lastContribution.authors)
 				if (!params.authors.includes(author)) params.authors.push(author);
 		}
 	}
@@ -122,7 +122,7 @@ module.exports = async function makeEmbed(client, message, texture, attachment, 
  * @returns {import("discord.js").EmbedFieldData[]}
  */
 function addPathsToEmbed(texture) {
-	let tmp = {};
+	const tmp = {};
 	texture.uses.forEach((use) => {
 		texture.paths
 			.filter((el) => el.use === use.id)
@@ -137,16 +137,12 @@ function addPathsToEmbed(texture) {
 			});
 	});
 
-	let final = [];
-
-	Object.keys(tmp).forEach((edition) => {
-		if (tmp[edition].length > 0) {
-			final.push({
+	return Object.keys(tmp).map((edition) => {
+		if (tmp[edition].length) {
+			return {
 				name: edition.charAt(0).toLocaleUpperCase() + edition.slice(1),
 				value: tmp[edition].join("\n"),
-			});
+			};
 		}
 	});
-
-	return final;
 }

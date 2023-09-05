@@ -27,7 +27,7 @@ module.exports = async function submitTexture(client, message) {
 	// needs to be set to -1 since we initialize it to zero directly after
 	let attachmentIndex = -1;
 	let ongoingMenu;
-	for (let attachment of message.attachments.values()) {
+	for (const attachment of message.attachments.values()) {
 		// need to update index here since it can skip loops early otherwise
 		++attachmentIndex;
 
@@ -79,16 +79,14 @@ module.exports = async function submitTexture(client, message) {
 		}
 
 		ongoingMenu = true;
-		let mappedResults = [];
-		for (let result of results) {
+		const mappedResults = results.map((result) => {
 			const version = result.paths[0].versions.sort(minecraftSorter).reverse()[0];
-
-			mappedResults.push({
+			return {
 				label: `[#${result.id}] (${version}) ${result.name}`,
 				description: result.paths[0].name,
 				value: `${result.id}__${attachmentIndex}`,
-			});
-		}
+			};
+		});
 
 		await choiceEmbed(client, message, mappedResults);
 	}

@@ -8,7 +8,7 @@ const settings = require("@resources/settings.json");
  * @returns {Promise<String?>} key of pack
  */
 module.exports = async function getPackByChannel(channelID, channelType = "all") {
-	for (let [packKey, packValue] of Object.entries(settings.submission.packs)) {
+	for (const [packKey, packValue] of Object.entries(settings.submission.packs)) {
 		if (packValue.channels?.[channelType] == channelID) {
 			return packKey;
 		} else if (Object.values(packValue.channels).includes(channelID) && channelType == "all") {

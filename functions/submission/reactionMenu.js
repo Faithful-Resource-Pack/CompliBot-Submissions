@@ -27,7 +27,7 @@ module.exports = async function reactionMenu(client, menuReaction, user) {
 
 	// if you don't check to close tray first, the bot won't listen for reactions upon restart
 	if (menuReaction.emoji.id == settings.emojis.see_less) {
-		removeReact(message, trayReactions);
+		removeReactions(message, trayReactions);
 		await message.react(client.emojis.cache.get(settings.emojis.see_more));
 	}
 
@@ -70,7 +70,7 @@ module.exports = async function reactionMenu(client, menuReaction, user) {
 		);
 
 	// actually react
-	for (let emoji of trayReactions) await message.react(emoji);
+	for (const emoji of trayReactions) await message.react(emoji);
 
 	// make the filter
 	const filter = (REACT, USER) => trayReactions.includes(REACT.emoji.id) && USER.id === user.id;
@@ -80,7 +80,7 @@ module.exports = async function reactionMenu(client, menuReaction, user) {
 		.awaitReactions({ filter, max: 1, time: 30000, errors: ["time"] })
 		.catch(async (err) => {
 			if (message.deletable) {
-				removeReact(message, trayReactions);
+				removeReactions(message, trayReactions);
 				await message.react(client.emojis.cache.get(settings.emojis.see_more));
 			}
 
@@ -92,7 +92,7 @@ module.exports = async function reactionMenu(client, menuReaction, user) {
 	// if there's no reaction collected just reset the message and return early
 	if (!actionReaction) {
 		if (message.deletable) {
-			removeReact(message, trayReactions);
+			removeReactions(message, trayReactions);
 			await message.react(client.emojis.cache.get(settings.emojis.see_more));
 		}
 		return;
@@ -118,7 +118,11 @@ module.exports = async function reactionMenu(client, menuReaction, user) {
 		switch (actionReaction.emoji.id) {
 			case settings.emojis.instapass:
 				// flush votes and reaction menu
-				removeReact(message, [settings.emojis.upvote, settings.emojis.downvote, ...trayReactions]);
+				removeReactions(message, [
+					settings.emojis.upvote,
+					settings.emojis.downvote,
+					...trayReactions,
+				]);
 				changeStatus(
 					message,
 					`<:instapass:${settings.emojis.instapass}> Instapassed by <@${member.id}>`,
@@ -127,7 +131,11 @@ module.exports = async function reactionMenu(client, menuReaction, user) {
 				);
 				return instapass(client, message);
 			case settings.emojis.invalid:
-				removeReact(message, [settings.emojis.upvote, settings.emojis.downvote, ...trayReactions]);
+				removeReactions(message, [
+					settings.emojis.upvote,
+					settings.emojis.downvote,
+					...trayReactions,
+				]);
 				return changeStatus(
 					message,
 					`<:invalid:${settings.emojis.invalid}> Invalidated by <@${member.id}>`,
@@ -137,7 +145,7 @@ module.exports = async function reactionMenu(client, menuReaction, user) {
 	}
 
 	// reset reactions if nothing happened
-	removeReact(message, trayReactions);
+	removeReactions(message, trayReactions);
 	await message.react(client.emojis.cache.get(settings.emojis.see_more));
 };
 
@@ -147,8 +155,8 @@ module.exports = async function reactionMenu(client, menuReaction, user) {
  * @param {import("discord.js").Message} message
  * @param {String[]} emojis
  */
-async function removeReact(message, emojis) {
-	for (let emoji of emojis) {
+async function removeReactions(message, emojis) {
+	for (const emoji of emojis) {
 		await message.reactions.cache
 			.get(emoji)
 			?.remove()

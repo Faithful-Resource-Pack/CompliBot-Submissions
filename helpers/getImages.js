@@ -8,16 +8,10 @@ const settings = require("@resources/settings.json");
  * @returns {Promise<String[]>} array of image urls from #submission-spam
  */
 module.exports = async function getImages(client, ...fileArray) {
-	let imgArray = [];
-
 	/** @type {import("discord.js").Message} */
 	const imgMessage = await client.channels.cache
 		.get(settings.channels.images)
 		.send({ files: fileArray });
 
-	imgMessage.attachments.forEach((attachment) => {
-		imgArray.push(attachment.url);
-	});
-
-	return imgArray;
+	return imgMessage.attachments.map((attachment) => attachment.url);
 };

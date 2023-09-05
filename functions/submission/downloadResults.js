@@ -46,7 +46,7 @@ module.exports = async function downloadResults(client, channelResultID, instapa
 
 		messages.reverse(); // upload them from the oldest to the newest
 	} else {
-		for (let msg of messages) {
+		for (const msg of messages) {
 			if (msg.embeds[0].fields[1]?.value?.includes(settings.emojis.instapass)) {
 				// converts to an array so map() can be used on it
 				messages = [msg];
@@ -68,11 +68,11 @@ module.exports = async function downloadResults(client, channelResultID, instapa
 	});
 
 	/** @type {import("@helpers/jsdoc").Contribution[]} */
-	let allContribution = [];
+	const allContribution = [];
 	/** @type {String} used in the instapass commit message if applicable */
 	let instapassName;
 
-	for (let texture of textures) {
+	for (const texture of textures) {
 		if (isNaN(Number(texture.id))) {
 			if (DEBUG) console.error(`Non-numerical texture ID found: ${texture.id}`);
 			continue;
@@ -86,7 +86,7 @@ module.exports = async function downloadResults(client, channelResultID, instapa
 		if (instapass) instapassName = textureInfo.name;
 
 		// add the image to all its versions and paths
-		for (let use of textureInfo.uses) {
+		for (const use of textureInfo.uses) {
 			const paths = textureInfo.paths.filter((i) => i.use == use.id);
 			const edition = use.edition.toLowerCase();
 			const folder = settings.repositories.repo_name[edition][packName]?.repo;
@@ -95,9 +95,9 @@ module.exports = async function downloadResults(client, channelResultID, instapa
 			const basePath = `./texturesPush/${folder}`;
 
 			// for all paths
-			for (let path of paths) {
+			for (const path of paths) {
 				// for each version of each path
-				for (let version of path.versions) {
+				for (const version of path.versions) {
 					const fullPath = `${basePath}/${version}/${path.name}`;
 
 					// make full folder chain
@@ -131,7 +131,7 @@ module.exports = async function downloadResults(client, channelResultID, instapa
 
 		// if the pack doesn't have a designated role
 		if (!role) continue;
-		for (let author of texture.authors) {
+		for (const author of texture.authors) {
 			try {
 				// fetch user with role info since you need it for adding roles
 				const user = guild.members.cache.get(author);

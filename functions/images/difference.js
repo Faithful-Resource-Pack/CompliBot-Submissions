@@ -17,9 +17,9 @@ const settings = require("@resources/settings.json");
  * @returns {Promise<import("discord.js").MessageAttachment>} compared image
  */
 module.exports = async function difference(firstUrl, secondUrl, tolerance = 0) {
-	let mappedUrls = [];
+	const mappedUrls = [];
 	let invalidUrl = false;
-	for (let url of [firstUrl, secondUrl]) {
+	for (const url of [firstUrl, secondUrl]) {
 		const temp = await magnifyBuffer(url).catch(() => {
 			invalidUrl = true;
 		});

@@ -19,7 +19,7 @@ module.exports = {
 
 		await message.react(settings.emojis.upvote);
 
-		for (let pack of packs) {
+		for (const pack of packs) {
 			if (pack.council_disabled) {
 				await retrieveSubmission(
 					// send directly to results

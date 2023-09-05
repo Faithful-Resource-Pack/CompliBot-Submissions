@@ -7,7 +7,7 @@ const { default: axios } = require("axios");
  * @returns {Promise<String[]>} array of author's discord IDs
  */
 module.exports = async function getAuthors(message) {
-	let authors = [message.author.id];
+	const authors = [message.author.id];
 
 	// regex to detect text between curly brackets
 	const names = (message.content.match(/(?<=\{)(.*?)(?=\})/g) ?? []).map((name) =>
@@ -17,7 +17,7 @@ module.exports = async function getAuthors(message) {
 	if (names.length) {
 		// fetch all contributors and check if their username matches the one in curly brackets
 		const contributions = (await axios.get(`${process.env.API_URL}users/names`)).data;
-		for (let user of contributions) {
+		for (const user of contributions) {
 			// if no username set it will throw an error otherwise
 			if (!user.username) continue;
 

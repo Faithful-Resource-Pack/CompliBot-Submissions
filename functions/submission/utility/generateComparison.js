@@ -55,7 +55,7 @@ module.exports = async function generateComparison(pack, attachment, info) {
 	 */
 
 	/** @type {import("@napi-rs/canvas").Image[]} */
-	let images = [];
+	const images = [];
 
 	try {
 		images.push(
@@ -120,7 +120,6 @@ module.exports = async function generateComparison(pack, attachment, info) {
 			}
 		}
 
-		/** @type {import("@images/animate").MCMETA} */
 		// otherwise ugly width and height properties are always shown
 		const displayedMcmeta = structuredClone(mcmeta);
 

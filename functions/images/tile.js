@@ -54,8 +54,8 @@ module.exports = async function tile(interaction, url, type = "grid") {
 		canvasContext = canvas.getContext("2d");
 
 		const temp = await loadImage(url);
-		for (i = 0; i < 3; i++) {
-			for (j = 0; j < 3; j++) {
+		for (i = 0; i < 3; ++i) {
+			for (j = 0; j < 3; ++j) {
 				canvasContext.drawImage(temp, i * dimension.width, j * dimension.height);
 			}
 		}
@@ -70,8 +70,8 @@ module.exports = async function tile(interaction, url, type = "grid") {
 		canvasContext = canvas.getContext("2d");
 
 		const temp = await loadImage(url);
-		for (i = 0; i < 3; i++) {
-			for (j = 0; j < 3; j++) {
+		for (i = 0; i < 3; ++i) {
+			for (j = 0; j < 3; ++j) {
 				canvasContext.drawImage(temp, i * dimension.width, j * dimension.height);
 			}
 		}
@@ -86,8 +86,8 @@ module.exports = async function tile(interaction, url, type = "grid") {
 		canvasContext = canvas.getContext("2d");
 
 		const temp = await loadImage(url);
-		for (i = 0; i < 3; i++) {
-			for (j = 0; j < 3; j++) {
+		for (i = 0; i < 3; ++i) {
+			for (j = 0; j < 3; ++j) {
 				canvasContext.drawImage(temp, i * dimension.width, j * dimension.height);
 			}
 		}
@@ -102,8 +102,8 @@ module.exports = async function tile(interaction, url, type = "grid") {
 		canvasContext = canvas.getContext("2d");
 
 		const temp = await loadImage(url);
-		for (i = 0; i < 3; i++) {
-			for (j = 0; j < 3; j++) {
+		for (i = 0; i < 3; ++i) {
+			for (j = 0; j < 3; ++j) {
 				canvasContext.drawImage(temp, i * dimension.width, j * dimension.height);
 			}
 		}
@@ -119,8 +119,8 @@ module.exports = async function tile(interaction, url, type = "grid") {
 		canvasContext = canvas.getContext("2d");
 
 		const temp = await loadImage(url);
-		for (i = 0; i < 3; i++) {
-			for (j = 0; j < 3; j++) {
+		for (i = 0; i < 3; ++i) {
+			for (j = 0; j < 3; ++j) {
 				canvasContext.drawImage(temp, i * dimension.width, j * dimension.height);
 			}
 		}

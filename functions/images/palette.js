@@ -33,18 +33,18 @@ module.exports = async function palette(interaction, url) {
 			ephemeral: true,
 		});
 
-	let canvas = createCanvas(dimension.width, dimension.height).getContext("2d");
+	const canvas = createCanvas(dimension.width, dimension.height).getContext("2d");
 	const allColors = {};
 
 	const temp = await loadImage(url);
 	canvas.drawImage(temp, 0, 0);
 
-	let imageData = canvas.getImageData(0, 0, dimension.width, dimension.height).data;
+	const imageData = canvas.getImageData(0, 0, dimension.width, dimension.height).data;
 
 	let x, y;
 
-	for (x = 0; x < dimension.width; x++)
-		for (y = 0; y < dimension.height; y++) {
+	for (x = 0; x < dimension.width; ++x) {
+		for (y = 0; y < dimension.height; ++y) {
 			let index = (y * dimension.width + x) * 4;
 			let r = imageData[index];
 			let g = imageData[index + 1];
@@ -52,15 +52,15 @@ module.exports = async function palette(interaction, url) {
 			let a = imageData[index + 3] / 255;
 
 			// avoid transparent colors
-			if (a) {
-				let hex = rgbToHex(r, g, b);
-				if (!(hex in allColors))
-					allColors[hex] = { hex: hex, opacity: [], rgb: [r, g, b], count: 0 };
+			if (!a) continue;
 
-				++allColors[hex].count;
-				allColors[hex].opacity.push(a);
-			}
+			let hex = rgbToHex(r, g, b);
+			if (!(hex in allColors)) allColors[hex] = { hex: hex, opacity: [], rgb: [r, g, b], count: 0 };
+
+			++allColors[hex].count;
+			allColors[hex].opacity.push(a);
 		}
+	}
 
 	// convert back to array
 	let colors = Object.values(allColors)
@@ -74,34 +74,33 @@ module.exports = async function palette(interaction, url) {
 		.setDescription(`List of colors:\n`)
 		.setFooter({ text: `Total: ${Object.values(allColors).length}` });
 
-	const field_groups = [];
-	let g;
-	for (let i = 0; i < colors.length; i++) {
+	const fieldGroups = [];
+	let group;
+	for (let i = 0; i < colors.length; ++i) {
 		// create 9 group
 		if (i % COLORS_PER_PALETTE === 0) {
-			field_groups.push([]);
-			g = 0;
+			fieldGroups.push([]);
+			group = 0;
 		}
 
 		// each groups has 3 lines
-		if (g % COLORS_PER_PALETTE_LINE === 0) field_groups[field_groups.length - 1].push([]);
+		if (group % COLORS_PER_PALETTE_LINE === 0) fieldGroups[fieldGroups.length - 1].push([]);
 
 		// add color to latest group latest line
-		field_groups[field_groups.length - 1][field_groups[field_groups.length - 1].length - 1].push(
+		fieldGroups[fieldGroups.length - 1][fieldGroups[fieldGroups.length - 1].length - 1].push(
 			colors[i],
 		);
-		++g;
+		++group;
 	}
 
-	let groupValue;
-	field_groups.forEach((group, index) => {
-		groupValue = group
+	fieldGroups.forEach((group, index) => {
+		const groupValue = group
 			.map((line) =>
 				line.map((color) => `[\`${color}\`](${COOLORS_URL}${color.replace("#", "")})`).join(" "),
 			)
 			.join(" ");
 		embed.addFields({
-			name: "Hex" + (field_groups.length > 1 ? ` part ${index + 1}` : "") + ": ",
+			name: "Hex" + (fieldGroups.length > 1 ? ` part ${index + 1}` : "") + ": ",
 			value: groupValue,
 			inline: true,
 		});
@@ -109,34 +108,30 @@ module.exports = async function palette(interaction, url) {
 
 	// create palette links, 9 max per link
 	// make arrays of hex arrays
-	const palette_groups = [];
+	const paletteGroups = [];
 	for (let i = 0; i < colors.length; ++i) {
-		if (i % COLORS_PER_PALETTE === 0) palette_groups.push([]);
-		palette_groups[palette_groups.length - 1].push(colors[i].replace("#", ""));
+		if (i % COLORS_PER_PALETTE === 0) paletteGroups.push([]);
+		paletteGroups[paletteGroups.length - 1].push(colors[i].replace("#", ""));
 	}
 
 	// create urls
-	const palette_urls = [];
+	const paletteUrls = [];
 	let descriptionLength = embed.description.length;
 
-	let i = 0;
-	let stayInLoop = true;
-	let link;
-	while (i < palette_groups.length && stayInLoop) {
-		link = `**[Palette${
-			palette_groups.length > 1 ? " part " + (i + 1) : ""
-		}](${COOLORS_URL}${palette_groups[i].join("-")})** `;
+	for (let i = 0; i < paletteGroups.length; ++i) {
+		const link = `**[Palette${
+			paletteGroups.length > 1 ? " part " + (i + 1) : ""
+		}](${COOLORS_URL}${paletteGroups[i].join("-")})** `;
 
-		if (descriptionLength + link.length + 3 > 1024) stayInLoop = false;
-		else {
-			palette_urls.push(link);
-			descriptionLength += link.length;
-		}
-		++i;
+		// too long
+		if (descriptionLength + link.length + 3 > 1024) break;
+
+		paletteUrls.push(link);
+		descriptionLength += link.length;
 	}
 
-	// add generate palette links && append palettes to description
-	embed.setDescription(embed.description + palette_urls.join(" - "));
+	// append palette links to existing description
+	embed.setDescription(embed.description + paletteUrls.join(" - "));
 
 	// create gradient canvas for top GRADIENT_TOP colors
 	const bandWidth =

@@ -21,7 +21,7 @@ module.exports = async function getMessages(client, channelID, fetchAmount = 100
 	const limit = Math.min(100, Math.max(0, fetchAmount));
 
 	/** @type {import("discord.js").Message[]} */
-	let fetchedMessages = [];
+	const fetchedMessages = [];
 
 	/** @type {Number} */
 	let lastID;

@@ -20,7 +20,7 @@ module.exports = {
 		if (!packs[0]) return warnUser(message, strings.command.args.invalid);
 
 		await message.react(settings.emojis.upvote);
-		for (let pack of packs) await downloadResults(client, pack.channels.results);
+		for (const pack of packs) await downloadResults(client, pack.channels.results);
 
 		await pushTextures(`Manual push executed by ${message.author.username} on ${formattedDate()}`); // Push them through GitHub
 	},

@@ -17,9 +17,9 @@ module.exports = async function pushTextures(
 ) {
 	// Object.keys(settings.versions) picks up other stuff so we fetch for dynamic editions here
 	const editions = (await axios.get(`${process.env.API_URL}textures/editions`)).data;
-	for (let edition of editions) {
-		for (let packGithub of Object.values(settings.repositories.repo_name[edition])) {
-			for (let branch of settings.versions[edition]) {
+	for (const edition of editions) {
+		for (const packGithub of Object.values(settings.repositories.repo_name[edition])) {
+			for (const branch of settings.versions[edition]) {
 				const path = `./texturesPush/${packGithub.repo}/${branch}/`;
 
 				// don't create empty commits

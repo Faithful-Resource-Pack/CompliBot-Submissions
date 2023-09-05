@@ -15,7 +15,7 @@ const { imageButtons } = require("@helpers/buttons");
 module.exports = async function instapass(client, message) {
 	let channelOutID;
 
-	for (let pack of Object.values(settings.submission.packs)) {
+	for (const pack of Object.values(settings.submission.packs)) {
 		// picks up instapassing in both community and council phases
 		const channelArray = Object.values(pack.channels);
 		if (channelArray.includes(message.channel.id)) {
@@ -23,6 +23,7 @@ module.exports = async function instapass(client, message) {
 			break;
 		}
 	}
+
 	// this is why we send the channel rather than the pack into downloadResults()
 	/** @type {import("discord.js").TextChannel} */
 	const channelOut = await client.channels.fetch(channelOutID);

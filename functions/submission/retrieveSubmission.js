@@ -97,7 +97,7 @@ module.exports = async function retrieveSubmission(
 async function sendToCouncil(client, messagesUpvoted, messagesDownvoted, channelOut) {
 	const EMOJIS = [settings.emojis.upvote, settings.emojis.downvote, settings.emojis.see_more];
 
-	for (let message of messagesUpvoted) {
+	for (const message of messagesUpvoted) {
 		const councilEmbed = new MessageEmbed(message.embed)
 			.setColor(settings.colors.council)
 			.setDescription(
@@ -118,7 +118,7 @@ async function sendToCouncil(client, messagesUpvoted, messagesDownvoted, channel
 		);
 	}
 
-	for (let message of messagesDownvoted) {
+	for (const message of messagesDownvoted) {
 		// not sent anywhere, returned early instead
 		changeStatus(
 			message.message,
@@ -144,7 +144,7 @@ async function sendToResults(
 	channelOut,
 	councilDisabled = false,
 ) {
-	for (let message of messagesUpvoted) {
+	for (const message of messagesUpvoted) {
 		const resultEmbed = new MessageEmbed(message.embed).setColor(settings.colors.green);
 		resultEmbed.fields[1].value = `<:upvote:${
 			settings.emojis.upvote
@@ -165,7 +165,7 @@ async function sendToResults(
 		);
 	}
 
-	for (let message of messagesDownvoted) {
+	for (const message of messagesDownvoted) {
 		// don't you love having to pass a value in down like three functions just to format some strings
 		if (!councilDisabled) {
 			message.embed.setColor(settings.colors.red);

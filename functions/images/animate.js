@@ -4,18 +4,12 @@ const GIFEncoder = require("./GIFEncoder");
 /**
  * @typedef MCMETA
  * @property {Animation} animation
- * @typedef Animation
+ * @typedef Animation literally all the properties here are optional
  * @property {Number?} frametime
  * @property {Boolean?} interpolate
  * @property {(Number | { index?: Number, time?: Number })[]?} frames thank you mojang very cool
  * @property {Number?} height
  * @property {Number?} width
- */
-
-/**
- * @typedef MappedFrame
- * @property {Number} index
- * @property {Number} duration
  */
 
 /**
@@ -36,7 +30,7 @@ module.exports = async function animate(baseCanvas, mcmeta) {
 	let frametime = mcmeta.animation?.frametime || 1;
 	if (frametime > 15) frametime = 15;
 
-	/** @type {MappedFrame[]} */
+	/** @type {({index?: Number, duration?: Number})[]} */
 	const frames = [];
 	if (mcmeta.animation.frames?.length) {
 		// add frames in specified order if possible
