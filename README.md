@@ -3,9 +3,9 @@
   <h1>CompliBot Submissions</h1>
   <h3>Fully automated texture pushing and submission system for the Faithful Discord servers.</h3>
 
-![RepoSize](https://img.shields.io/github/repo-size/Faithful-Resource-Pack/Discord-Bot)
-![Issues](https://img.shields.io/github/issues/Faithful-Resource-Pack/Discord-Bot)
-![PullRequests](https://img.shields.io/github/issues-pr/Faithful-Resource-Pack/Discord-Bot)
+![RepoSize](https://img.shields.io/github/repo-size/Faithful-Resource-Pack/CompliBot-Submissions)
+![Issues](https://img.shields.io/github/issues/Faithful-Resource-Pack/CompliBot-Submissions)
+![PullRequests](https://img.shields.io/github/issues-pr/Faithful-Resource-Pack/CompliBot-Submissions)
 
 </div>
 

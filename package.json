@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Faithful-Resource-Pack/Discord-Bot.git"
+    "url": "git+https://github.com/Faithful-Resource-Pack/CompliBot-Submissions.git"
   },
   "keywords": [],
   "author": "Faithful Resource Pack",
   "bugs": {
-    "url": "https://github.com/Faithful-Resource-Pack/Discord-Bot/issues"
+    "url": "https://github.com/Faithful-Resource-Pack/CompliBot-Submissions/issues"
   },
-  "homepage": "https://github.com/Faithful-Resource-Pack/Discord-Bot/tree/submissions#readme",
+  "homepage": "https://github.com/Faithful-Resource-Pack/CompliBot-Submissions#readme",
   "dependencies": {
     "@napi-rs/canvas": "^0.1.44",
     "@octokit/rest": "^19.0.13",
