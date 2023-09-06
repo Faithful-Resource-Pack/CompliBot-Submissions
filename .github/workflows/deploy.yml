@@ -2,7 +2,7 @@ name: Deploy
 
 on:
   push:
-    branches: [submissions]
+    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -18,7 +18,7 @@ jobs:
           KEY: ${{ secrets.SSH }}
           script: |
             cd ./CompliBot-Submissions
-            git checkout submissions
+            git checkout main
             git stash
             git pull
             pnpm install
