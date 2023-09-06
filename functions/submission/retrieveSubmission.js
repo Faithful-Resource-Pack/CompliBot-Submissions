@@ -217,5 +217,5 @@ function getPercentage(upvotes, downvotes) {
 	const upvotePercentage =
 		((upvotes?.count - 1) * 100) / (upvotes?.count - 1 + (downvotes.count - 1));
 	if (isNaN(upvotePercentage)) return "";
-	return `(${upvotePercentage.toFixed(2)}% upvoted)`;
+	return `(${Number(upvotePercentage.toFixed(2))}% upvoted)`;
 }
