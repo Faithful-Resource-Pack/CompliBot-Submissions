@@ -22,5 +22,5 @@ jobs:
             git stash
             git pull
             pnpm install
-            pm2 delete "BOT"
-            pm2 start "node --use_strict --trace-warnings index.js" --name "BOT" --time
+            pm2 delete "complibot-submissions"
+            pm2 start "node --use_strict --trace-warnings index.js" --name "complibot-submissions" --time
