@@ -1,6 +1,8 @@
 /**
- * since I'm too lazy to figure out typescript I made a bunch of JSDOC interfaces for API types
+ * since I'm too lazy to figure out typescript I made a bunch of JSDOC interfaces
  * they're used all throughout the bot for intellisense and easier debugging
+ *
+ * FIRESTORM:
  *
  * @typedef {"faithful 32x" | "faithful_64x" | "classic_faithful_32x" | "classic_faithful_64x" | "classic_faithful_32x_progart"} Pack
  *
@@ -31,6 +33,24 @@
  * @property {Use[]} uses
  * @property {Path[]} paths
  * @property {Contribution[]?} contributions
+ *
+ * BOT:
+ *
+ * @typedef Command
+ * @property {String} name
+ * @property {Boolean?} guildOnly
+ * @property {String?} aliases
+ * @property {CommandExecute} execute
+ *
+ * @callback CommandExecute
+ * @param {import("discord.js").Client} client
+ * @param {import("discord.js").Message} Message
+ * @param {String[]} args
+ *
+ * @typedef Event
+ * @property {String} name
+ * @property {Boolean?} once
+ * @property {Function} execute
  */
 
 // so js doesn't complain that this isn't a module

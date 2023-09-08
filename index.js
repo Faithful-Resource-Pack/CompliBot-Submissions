@@ -45,8 +45,9 @@ function startBot() {
 	const commandFiles = walkSync("./commands").filter((f) => f.endsWith(".js"));
 	client.commands = new Collection();
 	for (const file of commandFiles) {
+		/** @type {import("@helpers/jsdoc").Command} */
 		const command = require(file);
-		if (typeof command?.name === "string") client.commands.set(command.name, command);
+		if (command.name) client.commands.set(command.name, command);
 	}
 
 	/**
@@ -55,6 +56,7 @@ function startBot() {
 	 */
 	const eventsFiles = readdirSync("./events").filter((f) => f.endsWith(".js"));
 	for (const file of eventsFiles) {
+		/** @type {import("@helpers/jsdoc").Event} */
 		const event = require(`./events/${file}`);
 		if (event.once) client.once(event.name, (...args) => event.execute(...args));
 		else client.on(event.name, (...args) => event.execute(...args));

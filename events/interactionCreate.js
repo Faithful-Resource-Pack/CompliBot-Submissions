@@ -9,6 +9,7 @@ const client = require("@index").Client;
  */
 module.exports = {
 	name: "interactionCreate",
+	/** @param {import("discord.js").Interaction} interaction */
 	async execute(interaction) {
 		if (interaction.isButton()) return client.emit("buttonUsed", interaction);
 	},

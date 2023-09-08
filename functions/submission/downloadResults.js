@@ -87,7 +87,7 @@ module.exports = async function downloadResults(client, channelResultID, instapa
 
 		// add the image to all its versions and paths
 		for (const use of textureInfo.uses) {
-			const paths = textureInfo.paths.filter((i) => i.use == use.id);
+			const paths = textureInfo.paths.filter((path) => path.use == use.id);
 			const edition = use.edition.toLowerCase();
 			const folder = settings.repositories.repo_name[edition][packName]?.repo;
 			if (!folder && DEBUG)

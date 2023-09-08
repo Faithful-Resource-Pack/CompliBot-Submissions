@@ -18,6 +18,7 @@ const getPackByChannel = require("@submission/utility/getPackByChannel");
  */
 module.exports = {
 	name: "buttonUsed",
+	/** @param {import("discord.js").ButtonInteraction} interaction */
 	async execute(interaction) {
 		const message = interaction.message;
 		const image =

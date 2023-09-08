@@ -5,6 +5,10 @@ const reactionMenu = require("@submission/reactionMenu");
 
 module.exports = {
 	name: "messageReactionAdd",
+	/**
+	 * @param {import("discord.js").MessageReaction} reaction
+	 * @param {import("discord.js").User} user
+	 */
 	async execute(reaction, user) {
 		if (user.bot) return;
 
@@ -13,7 +17,7 @@ module.exports = {
 
 		// TEXTURE SUBMISSIONS
 		const channelArray = Object.values(settings.submission.packs)
-			.map((i) => Object.values(i.channels))
+			.map((pack) => Object.values(pack.channels))
 			.flat();
 
 		if (channelArray.includes(reaction.message.channel.id)) {

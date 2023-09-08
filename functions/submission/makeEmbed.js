@@ -26,7 +26,9 @@ module.exports = async function makeEmbed(client, message, texture, attachment, 
 
 	// load previous contributions if applicable
 	if (params.description.startsWith("+")) {
-		const allContributions = texture.contributions.filter((i) => i.pack == packName);
+		const allContributions = texture.contributions.filter(
+			(contribution) => contribution.pack == packName,
+		);
 		if (allContributions.length) {
 			const lastContribution = allContributions.sort((a, b) => (a.date > b.date ? -1 : 1))[0];
 			for (const author of lastContribution.authors)

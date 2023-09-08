@@ -55,7 +55,9 @@ module.exports = async function reactionMenu(client, menuReaction, user) {
 	});
 
 	// if the submission is in council remove delete reaction (avoid misclick)
-	const councilChannels = Object.values(settings.submission.packs).map((i) => i.channels.council);
+	const councilChannels = Object.values(settings.submission.packs).map(
+		(pack) => pack.channels.council,
+	);
 	if (councilChannels.includes(message.channel.id)) {
 		trayReactions = trayReactions.filter((emoji) => emoji !== settings.emojis.delete);
 	}

@@ -15,6 +15,7 @@ const warnUser = require("@helpers/warnUser");
 
 module.exports = {
 	name: "messageCreate",
+	/** @param {import("discord.js").Message} message */
 	async execute(message) {
 		// Ignore bot messages
 		if (message.author.bot) return;
@@ -31,6 +32,7 @@ module.exports = {
 
 			const args = message.content.toLowerCase().slice(PREFIX.length).trim().split(/ +/);
 			const commandName = args.shift().toLowerCase();
+			/** @type {import("@helpers/jsdoc").Command} */
 			const command =
 				client.commands.get(commandName) ||
 				client.commands.find((cmd) => cmd.aliases?.includes(commandName));
@@ -61,38 +63,9 @@ module.exports = {
 			 * TEXTURE SUBMISSION
 			 */
 			const submissionChannels = Object.values(settings.submission.packs).map(
-				(i) => i.channels.submit,
+				(pack) => pack.channels.submit,
 			);
 			if (submissionChannels.includes(message.channel.id)) return submitTexture(client, message);
-
-			/**
-			 * CLASSIC FAITHFUL ADD-ON CHANNEL REACTIONS
-			 */
-			if (
-				message.channel.id === "814631514523435020" ||
-				message.channel.id === "995033923304308836"
-			) {
-				if (!message.attachments.size) {
-					if (message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)) return;
-					const embed = new MessageEmbed()
-						.setThumbnail(settings.images.warning)
-						.setColor(settings.colors.red)
-						.setTitle(strings.submission.autoreact.error_title)
-						.setDescription(strings.submission.no_file_attached)
-						.setFooter({
-							text: strings.submission.autoreact.error_footer,
-							iconURL: client.user.displayAvatarURL(),
-						});
-
-					const msg = await message.reply({ embeds: [embed] });
-					await addDeleteButton(msg);
-					if (msg.deletable) setTimeout(() => msg.delete(), 30000);
-					if (message.deletable) setTimeout(() => message.delete(), 10);
-				} else {
-					await message.react(settings.emojis.upvote);
-					await message.react(settings.emojis.downvote);
-				}
-			}
 		}
 	},
 };
