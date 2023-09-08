@@ -11,12 +11,12 @@ module.exports = {
 			let ids;
 			const link = args[0];
 			const url = new URL(link).pathname;
-			if (link.startsWith("https://canary.discord.com/channels/"))
-				ids = url.replace("/channels/", "").split("/");
-			else if (link.startsWith("https://discord.com/channels/"))
+			if (
+				link.startsWith("https://canary.discord.com/channels/") ||
+				link.startsWith("https://discordapp.com/channels/") ||
+				link.startsWith("https://discord.com/channels/")
+			)
 				ids = url.replace("/channels/", "").replace("message", "").split("/");
-			else if (link.startsWith("https://discordapp.com/channels/"))
-				ids = url.replace("/channels/", "").split("/");
 			else return await message.reply({ content: strings.command.behave });
 
 			/** @type {import("discord.js").TextChannel} */

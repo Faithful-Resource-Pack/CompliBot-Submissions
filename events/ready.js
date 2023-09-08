@@ -38,7 +38,6 @@ const submissionProcess = new CronJob("0 0 * * *", async () => {
 				true,
 				pack.vote_time,
 			);
-
 		} else {
 			await retrieveSubmission(
 				// send directly to results
@@ -59,7 +58,7 @@ const submissionProcess = new CronJob("0 0 * * *", async () => {
  * @see downloadResults
  */
 const downloadToBot = new CronJob("15 0 * * *", async () => {
-	for (let pack of Object.values(settings.submission.packs)) {
+	for (const pack of Object.values(settings.submission.packs)) {
 		await downloadResults(client, pack.channels.results);
 	}
 });
