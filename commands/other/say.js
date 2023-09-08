@@ -8,15 +8,17 @@ module.exports = {
 	async execute(client, message, args) {
 		if (!process.env.DEVELOPERS.includes(message.author.id)) return;
 		if (!args.length) return warnUser(message, strings.command.args.none_given);
-		else {
-			if (message.attachments.size > 0)
-				await message.channel.send({
-					content: args.join(" "),
-					files: [message.attachments.first().url],
-				});
-			else await message.channel.send({ content: args.join(" ") });
 
-			await message.delete().catch();
-		}
+		// remove first "word" which is the command
+		const content = message.content.substring(message.content.indexOf(" ") + 1);
+
+		if (message.attachments.size)
+			await message.channel.send({
+				content,
+				files: [message.attachments.values().map((attachment) => attachment.url)],
+			});
+		else await message.channel.send({ content });
+
+		await message.delete().catch();
 	},
 };
