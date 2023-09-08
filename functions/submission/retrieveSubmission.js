@@ -24,7 +24,7 @@ const DEBUG = process.env.DEBUG.toLowerCase() == "true";
  * @param {String} channelOutID channel where submissions are sent
  * @param {Boolean} toCouncil true if from submissions to council, false if from council to results
  * @param {Number} delay delay in days from today
- * @param {Boolean?} councilDisabled disable the use of council-related strings in embeds
+ * @param {Boolean?} councilEnabled disable the use of council-related strings in embeds
  */
 module.exports = async function retrieveSubmission(
 	client,
@@ -32,7 +32,7 @@ module.exports = async function retrieveSubmission(
 	channelOutID,
 	toCouncil,
 	delay,
-	councilDisabled = false,
+	councilEnabled = true,
 ) {
 	let messages = await getMessages(client, channelFromID);
 
@@ -82,7 +82,7 @@ module.exports = async function retrieveSubmission(
 		messagesUpvoted,
 		messagesDownvoted,
 		channelOut,
-		councilDisabled,
+		councilEnabled,
 	);
 };
 
@@ -135,14 +135,14 @@ async function sendToCouncil(client, messagesUpvoted, messagesDownvoted, channel
  * @param {MappedMessage[]} messagesUpvoted
  * @param {MappedMessage[]} messagesDownvoted
  * @param {import("discord.js").TextChannel} channelOut
- * @param {Boolean} councilDisabled whether to disable council or not (off by default)
+ * @param {Boolean} councilEnabled used for swapping council-related strings out
  */
 async function sendToResults(
 	client,
 	messagesUpvoted,
 	messagesDownvoted,
 	channelOut,
-	councilDisabled = false,
+	councilEnabled = true,
 ) {
 	for (const message of messagesUpvoted) {
 		const resultEmbed = new MessageEmbed(message.embed).setColor(settings.colors.green);
@@ -167,7 +167,7 @@ async function sendToResults(
 
 	for (const message of messagesDownvoted) {
 		// don't you love having to pass a value in down like three functions just to format some strings
-		if (!councilDisabled) {
+		if (councilEnabled) {
 			message.embed.setColor(settings.colors.red);
 			const resultEmbed = new MessageEmbed(message.embed);
 			resultEmbed.fields[1].value = `<:downvote:${

@@ -8,7 +8,7 @@ const { default: axios } = require("axios");
 const DEBUG = process.env.DEBUG.toLowerCase() == "true";
 
 /**
- * Push textures from ./texturesPush/ to their corresponding repo on GitHub
+ * Push textures from ./downloadedTextures/ to their corresponding repo on GitHub
  * @author Juknum, Evorp
  * @param {String} commitMessage default is the generic autopush message
  */
@@ -20,7 +20,7 @@ module.exports = async function pushTextures(
 	for (const edition of editions) {
 		for (const packGithub of Object.values(settings.repositories.repo_name[edition])) {
 			for (const branch of settings.versions[edition]) {
-				const path = `./texturesPush/${packGithub.repo}/${branch}/`;
+				const path = `./downloadedTextures/${packGithub.repo}/${branch}/`;
 
 				// don't create empty commits
 				if (!existsSync(path)) continue;

@@ -1,4 +1,3 @@
-const settings = require("@resources/settings.json");
 const { MessageEmbed } = require("discord.js");
 
 /**
@@ -9,6 +8,9 @@ const { MessageEmbed } = require("discord.js");
  * @param {{ color?: String, title?: String, codeBlocks?: String }} params optional config
  */
 module.exports = async function devLogger(client, description, params = {}) {
+	// declared inside module body to stop init errors from unhandledRejection
+	const settings = require("@resources/settings.json");
+
 	/** @type {import("discord.js").TextChannel} */
 	const channel = client.channels.cache.get(process.env.LOG_CHANNEL);
 	if (!channel) return;

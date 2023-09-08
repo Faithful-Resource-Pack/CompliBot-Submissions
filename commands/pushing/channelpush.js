@@ -20,17 +20,7 @@ module.exports = {
 		await message.react(settings.emojis.upvote);
 
 		for (const pack of packs) {
-			if (pack.council_disabled) {
-				await retrieveSubmission(
-					// send directly to results
-					client,
-					pack.channels.submit,
-					pack.channels.results,
-					false,
-					pack.vote_time,
-					true,
-				);
-			} else {
+			if (pack.council_enabled) {
 				await retrieveSubmission(
 					// send to results
 					client,
@@ -47,6 +37,16 @@ module.exports = {
 					pack.channels.council,
 					true,
 					pack.vote_time,
+				);
+			} else {
+				await retrieveSubmission(
+					// send directly to results
+					client,
+					pack.channels.submit,
+					pack.channels.results,
+					false,
+					pack.vote_time,
+					true,
 				);
 			}
 		}

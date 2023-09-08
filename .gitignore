@@ -1,13 +1,8 @@
 node_modules
 json/
-texturesPush/
+downloadedTextures/
 desktop.ini
 .DS_Store
-.idea
 .env
 .vscode/
-firestore.json
-bot.service
-tokens.json
 resources/settings.json
-commands/Developer/test.js

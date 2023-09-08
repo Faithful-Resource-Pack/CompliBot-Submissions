@@ -19,18 +19,8 @@ const saveDB = require("@functions/saveDB");
  * @see retrieveSubmission
  */
 const submissionProcess = new CronJob("0 0 * * *", async () => {
-	for (let pack of Object.values(settings.submission.packs)) {
-		if (pack.council_disabled) {
-			await retrieveSubmission(
-				// send directly to results
-				client,
-				pack.channels.submit,
-				pack.channels.results,
-				false,
-				pack.vote_time,
-				true,
-			);
-		} else {
+	for (const pack of Object.values(settings.submission.packs)) {
+		if (pack.council_enabled) {
 			await retrieveSubmission(
 				// send to results
 				client,
@@ -47,6 +37,17 @@ const submissionProcess = new CronJob("0 0 * * *", async () => {
 				pack.channels.council,
 				true,
 				pack.vote_time,
+			);
+
+		} else {
+			await retrieveSubmission(
+				// send directly to results
+				client,
+				pack.channels.submit,
+				pack.channels.results,
+				false,
+				pack.vote_time,
+				true,
 			);
 		}
 	}

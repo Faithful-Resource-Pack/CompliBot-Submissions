@@ -92,7 +92,7 @@ module.exports = async function downloadResults(client, channelResultID, instapa
 			const folder = settings.repositories.repo_name[edition][packName]?.repo;
 			if (!folder && DEBUG)
 				console.log(`GitHub repository not found for pack and edition: ${packName} ${edition}`);
-			const basePath = `./texturesPush/${folder}`;
+			const basePath = `./downloadedTextures/${folder}`;
 
 			// for all paths
 			for (const path of paths) {
