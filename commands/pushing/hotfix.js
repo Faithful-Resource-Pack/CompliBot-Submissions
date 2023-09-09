@@ -3,7 +3,7 @@ const PREFIX = process.env.PREFIX;
 const fs = require("fs");
 
 const settings = require("@resources/settings.json");
-const retrieveSubmission = require("@submission/retrieveSubmission");
+const { sendToCouncil, sendToResults } = require("@submission/sendToChannel");
 const downloadResults = require("@submission/downloadResults");
 const pushTextures = require("@submission/pushTextures");
 const saveDB = require("@functions/saveDB");

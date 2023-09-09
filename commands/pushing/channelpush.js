@@ -2,7 +2,7 @@ const { Permissions } = require("discord.js");
 const settings = require("@resources/settings.json");
 const strings = require("@resources/strings.json");
 
-const retrieveSubmission = require("@submission/retrieveSubmission");
+const { sendToCouncil, sendToResults } = require("@submission/sendToChannel");
 const warnUser = require("@helpers/warnUser");
 
 module.exports = {
@@ -13,42 +13,13 @@ module.exports = {
 			return warnUser(message, strings.command.no_permission);
 		if (!args.length) return warnUser(message, strings.command.args.none_given);
 
-		let packs = [settings.submission.packs[args[0]]];
-		if (args[0] == "all") packs = Object.values(settings.submission.packs);
+		let packs = Object.entries(settings.submission.packs).filter((obj) => obj[0] == args[0]);
+		if (args[0] == "all") packs = Object.entries(settings.submission.packs);
 		if (!packs[0]) return warnUser(message, strings.command.args.invalid);
 
-		await message.react(settings.emojis.upvote);
-
-		for (const pack of packs) {
-			if (pack.council_enabled) {
-				await retrieveSubmission(
-					// send to results
-					client,
-					pack.channels.council,
-					pack.channels.results,
-					false,
-					pack.council_time,
-				);
-
-				await retrieveSubmission(
-					// send to council
-					client,
-					pack.channels.submit,
-					pack.channels.council,
-					true,
-					pack.vote_time,
-				);
-			} else {
-				await retrieveSubmission(
-					// send directly to results
-					client,
-					pack.channels.submit,
-					pack.channels.results,
-					false,
-					pack.vote_time,
-					true,
-				);
-			}
+		for (const [pack, info] of packs) {
+			await sendToResults(client, pack, info.time_to_results, info.council_enabled);
+			if (info.council_enabled) await sendToCouncil(client, pack, info.time_to_council);
 		}
 	},
 };

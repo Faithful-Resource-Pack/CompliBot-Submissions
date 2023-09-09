@@ -76,7 +76,7 @@ function startBot() {
 fetchSettings()
 	.then(() => startBot())
 	.catch((err) => {
-		console.error("An error occured while fetching settings.json!");
+		console.error("An error occurred starting the bot!");
 		console.error(err.response?.data ?? err);
 	});
 

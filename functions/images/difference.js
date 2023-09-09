@@ -1,7 +1,7 @@
 const { createCanvas, loadImage, ImageData } = require("@napi-rs/canvas");
 const { MessageAttachment } = require("discord.js");
 
-const { magnifyBuffer } = require("./magnify");
+const { magnifyBuffer } = require("@images/magnify");
 
 const settings = require("@resources/settings.json");
 

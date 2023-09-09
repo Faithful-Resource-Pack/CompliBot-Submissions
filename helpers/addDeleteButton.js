@@ -1,5 +1,5 @@
 const { MessageActionRow } = require("discord.js");
-const { deleteButton } = require("./buttons");
+const { deleteButton } = require("@helpers/interactions");
 
 /**
  * Add delete button to bot message

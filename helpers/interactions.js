@@ -2,7 +2,7 @@ const { MessageButton, MessageActionRow } = require("discord.js");
 const settings = require("@resources/settings.json");
 
 /**
- * Helper file to store image-related buttons and their data
+ * Helper file to store button data and some reactions
  * @author Evorp
  * @see interactionCreate
  */
@@ -43,12 +43,19 @@ const submissionButtons = new MessageActionRow().addComponents([
 	diffButton,
 ]);
 
+const submissionReactions = [
+	settings.emojis.upvote,
+	settings.emojis.downvote,
+	settings.emojis.see_more,
+];
+
 module.exports = {
 	magnifyButton,
 	tileButton,
 	paletteButton,
 	diffButton,
+	deleteButton,
 	imageButtons,
 	submissionButtons,
-	deleteButton,
+	submissionReactions,
 };

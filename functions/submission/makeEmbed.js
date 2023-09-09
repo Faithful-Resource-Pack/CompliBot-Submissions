@@ -3,13 +3,14 @@ const strings = require("@resources/strings.json");
 const DEBUG = process.env.DEBUG.toLowerCase() == "true";
 
 const minecraftSorter = require("@helpers/minecraftSorter");
-const getPackByChannel = require("./utility/getPackByChannel");
+const getPackByChannel = require("@submission/utility/getPackByChannel");
 const getDimensions = require("@images/getDimensions");
 const getImages = require("@helpers/getImages");
-const generateComparison = require("./utility/generateComparison");
-const { imageButtons, submissionButtons } = require("@helpers/buttons");
+const generateComparison = require("@submission/utility/generateComparison");
+const { imageButtons, submissionButtons } = require("@helpers/interactions");
 
 const { MessageEmbed, MessageAttachment } = require("discord.js");
+const { submissionReactions } = require("@helpers/interactions");
 
 /**
  * Make a submission embed for a given texture and image
@@ -108,12 +109,7 @@ module.exports = async function makeEmbed(client, message, texture, attachment, 
 		components: imgButtons,
 	});
 
-	for (const emojiID of [
-		settings.emojis.upvote,
-		settings.emojis.downvote,
-		settings.emojis.see_more,
-	])
-		await msg.react(client.emojis.cache.get(emojiID));
+	for (const emoji of submissionReactions) await msg.react(emoji);
 
 	if (DEBUG) console.log(`Finished submission embed for texture: ${texture.name}`);
 };

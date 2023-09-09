@@ -2,10 +2,10 @@ const settings = require("@resources/settings.json");
 const DEBUG = process.env.DEBUG.toLowerCase() == "true";
 
 const getMessages = require("@helpers/getMessages");
-const pushTextures = require("./pushTextures");
+const pushTextures = require("@submission/pushTextures");
 const formattedDate = require("@helpers/formattedDate");
 const devLogger = require("@helpers/devLogger");
-const getPackByChannel = require("./utility/getPackByChannel");
+const getPackByChannel = require("@submission/utility/getPackByChannel");
 
 const { promises, writeFile } = require("fs");
 const { default: axios } = require("axios");

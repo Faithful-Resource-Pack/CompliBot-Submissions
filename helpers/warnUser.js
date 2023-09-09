@@ -2,7 +2,7 @@ const settings = require("@resources/settings.json");
 const strings = require("@resources/strings.json");
 
 const { MessageEmbed } = require("discord.js");
-const addDeleteButton = require("./addDeleteButton");
+const addDeleteButton = require("@helpers/addDeleteButton");
 
 /**
  * Sends pre-formatted red embed with warning sign

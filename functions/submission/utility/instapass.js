@@ -4,7 +4,7 @@ const strings = require("@resources/strings.json");
 const downloadResults = require("@submission/downloadResults");
 const warnUser = require("@helpers/warnUser");
 const DEBUG = process.env.DEBUG.toLowerCase() == "true";
-const { imageButtons } = require("@helpers/buttons");
+const { imageButtons } = require("@helpers/interactions");
 
 /**
  * Instapass a given texture embed

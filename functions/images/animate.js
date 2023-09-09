@@ -1,5 +1,5 @@
 const { createCanvas } = require("@napi-rs/canvas");
-const GIFEncoder = require("./GIFEncoder");
+const GIFEncoder = require("@images/GIFEncoder");
 
 /**
  * @typedef MCMETA

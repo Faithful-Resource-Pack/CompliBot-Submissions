@@ -7,7 +7,7 @@ const fetchSettings = require("@functions/fetchSettings");
 
 const settings = require("@resources/settings.json");
 
-const retrieveSubmission = require("@submission/retrieveSubmission");
+const { sendToCouncil, sendToResults } = require("@submission/sendToChannel");
 const downloadResults = require("@submission/downloadResults");
 const pushTextures = require("@submission/pushTextures");
 const saveDB = require("@functions/saveDB");
@@ -19,36 +19,9 @@ const saveDB = require("@functions/saveDB");
  * @see retrieveSubmission
  */
 const submissionProcess = new CronJob("0 0 * * *", async () => {
-	for (const pack of Object.values(settings.submission.packs)) {
-		if (pack.council_enabled) {
-			await retrieveSubmission(
-				// send to results
-				client,
-				pack.channels.council,
-				pack.channels.results,
-				false,
-				pack.council_time,
-			);
-
-			await retrieveSubmission(
-				// send to council
-				client,
-				pack.channels.submit,
-				pack.channels.council,
-				true,
-				pack.vote_time,
-			);
-		} else {
-			await retrieveSubmission(
-				// send directly to results
-				client,
-				pack.channels.submit,
-				pack.channels.results,
-				false,
-				pack.vote_time,
-				true,
-			);
-		}
+	for (const [pack, info] of Object.entries(settings.submission.packs)) {
+		await sendToResults(client, pack, info.time_to_results, info.council_enabled);
+		if (info.council_enabled) await sendToCouncil(client, pack, info.time_to_council);
 	}
 });
 /**

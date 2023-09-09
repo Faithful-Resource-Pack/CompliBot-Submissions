@@ -3,7 +3,7 @@ const settings = require("@resources/settings.json");
 const strings = require("@resources/strings.json");
 
 const { MessageEmbed, MessageAttachment } = require("discord.js");
-const getDimensions = require("./getDimensions");
+const getDimensions = require("@images/getDimensions");
 
 const COOLORS_URL = "https://coolors.co/";
 

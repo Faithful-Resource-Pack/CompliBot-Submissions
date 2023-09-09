@@ -1,7 +1,7 @@
 const { createCanvas, loadImage, Image } = require("@napi-rs/canvas");
 
 const { MessageAttachment } = require("discord.js");
-const getDimensions = require("./getDimensions");
+const getDimensions = require("@images/getDimensions");
 const addDeleteButton = require("@helpers/addDeleteButton");
 
 /**
