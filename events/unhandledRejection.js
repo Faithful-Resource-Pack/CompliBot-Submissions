@@ -13,14 +13,14 @@ module.exports = function unhandledRejection(client, error, promise, originMessa
 
 	let eproto_error = false;
 	let description = error.stack; // stack else AxiosError else random error
-	let isJSON = false;
+	let codeBlocks = "";
 	if (error.isAxiosError) {
 		description = JSON.stringify(error.toJSON());
 		eproto_error = error.code === "EPROTO";
-		isJSON = true;
+		codeBlocks = "json";
 	} else if (!description) {
 		description = JSON.stringify(error);
-		isJSON = true;
+		codeBlocks = "json";
 	}
 
 	if (eproto_error) return console.error(error, promise, description);
@@ -31,5 +31,5 @@ module.exports = function unhandledRejection(client, error, promise, originMessa
 	console.error(error, promise);
 
 	// DO NOT DELETE THIS CATCH, IT AVOIDS INFINITE LOOP IF THIS PROMISE REJECTS
-	devLogger(client, description, { codeBlocks: isJSON ? "json" : "" }).catch(console.error);
+	devLogger(client, description, { codeBlocks }).catch(console.error);
 };
