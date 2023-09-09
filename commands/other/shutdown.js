@@ -2,6 +2,7 @@ const settings = require("@resources/settings.json");
 
 const { MessageEmbed } = require("discord.js");
 
+/** @type {import("@helpers/jsdoc").Command} */
 module.exports = {
 	name: "shutdown",
 	aliases: ["logout", "die"],

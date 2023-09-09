@@ -5,6 +5,7 @@ const strings = require("@resources/strings.json");
 const { sendToCouncil, sendToResults } = require("@submission/sendToChannel");
 const warnUser = require("@helpers/warnUser");
 
+/** @type {import("@helpers/jsdoc").Command} */
 module.exports = {
 	name: "channelpush",
 	guildOnly: false,

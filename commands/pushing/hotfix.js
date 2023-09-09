@@ -1,15 +1,14 @@
-const PREFIX = process.env.PREFIX;
+const settings = require("@resources/settings.json");
+const strings = require("@resources/strings.json");
 
 const fs = require("fs");
-
-const settings = require("@resources/settings.json");
 const { sendToCouncil, sendToResults } = require("@submission/sendToChannel");
 const downloadResults = require("@submission/downloadResults");
 const pushTextures = require("@submission/pushTextures");
 const saveDB = require("@functions/saveDB");
 
-const strings = require("@resources/strings.json");
 
+/** @type {import("@helpers/jsdoc").Command} */
 module.exports = {
 	name: "hotfix",
 	aliases: ["fix"],

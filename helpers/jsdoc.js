@@ -39,7 +39,7 @@
  * @typedef Command
  * @property {String} name
  * @property {Boolean?} guildOnly
- * @property {String?} aliases
+ * @property {String[]?} aliases
  * @property {CommandExecute} execute
  *
  * @callback CommandExecute

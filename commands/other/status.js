@@ -6,6 +6,7 @@ const warnUser = require("@helpers/warnUser");
 const activity = ["PLAYING", "STREAMING", "LISTENING", "WATCHING", "COMPETING", "NONE"];
 const presence = ["online", "idle", "dnd"];
 
+/** @type {import("@helpers/jsdoc").Command} */
 module.exports = {
 	name: "status",
 	aliases: ["presence", "activity"],

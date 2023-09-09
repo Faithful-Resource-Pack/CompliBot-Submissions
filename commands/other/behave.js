@@ -1,5 +1,6 @@
 const strings = require("@resources/strings.json");
 
+/** @type {import("@helpers/jsdoc").Command} */
 module.exports = {
 	name: "behave",
 	guildOnly: false,

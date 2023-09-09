@@ -4,6 +4,7 @@ const fetchSettings = require("@functions/fetchSettings");
 
 const { MessageEmbed } = require("discord.js");
 
+/** @type {import("@helpers/jsdoc").Command} */
 module.exports = {
 	name: "restart",
 	guildOnly: false,

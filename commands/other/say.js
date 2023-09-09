@@ -2,6 +2,7 @@ const strings = require("@resources/strings.json");
 
 const warnUser = require("@helpers/warnUser");
 
+/** @type {import("@helpers/jsdoc").Command} */
 module.exports = {
 	name: "say",
 	guildOnly: true,

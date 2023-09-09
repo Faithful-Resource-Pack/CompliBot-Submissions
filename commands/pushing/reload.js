@@ -4,6 +4,7 @@ const settings = require("@resources/settings.json");
 const warnUser = require("@helpers/warnUser");
 const walkSync = require("@helpers/walkSync");
 
+/** @type {import("@helpers/jsdoc").Command} */
 module.exports = {
 	name: "reload",
 	aliases: ["r"],

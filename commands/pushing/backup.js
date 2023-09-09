@@ -1,6 +1,7 @@
 const settings = require("@resources/settings.json");
 const saveDB = require("@functions/saveDB");
 
+/** @type {import("@helpers/jsdoc").Command} */
 module.exports = {
 	name: "backup",
 	aliases: ["bdb"],

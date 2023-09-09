@@ -3,6 +3,7 @@ const strings = require("@resources/strings.json");
 const warnUser = require("@helpers/warnUser");
 const { magnify } = require("@images/magnify");
 
+/** @type {import("@helpers/jsdoc").Command} */
 module.exports = {
 	name: "magnify",
 	aliases: ["m", "z"],

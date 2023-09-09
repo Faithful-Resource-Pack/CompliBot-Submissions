@@ -7,6 +7,7 @@ const pushTextures = require("@submission/pushTextures");
 const downloadResults = require("@submission/downloadResults");
 const warnUser = require("@helpers/warnUser");
 
+/** @type {import("@helpers/jsdoc").Command} */
 module.exports = {
 	name: "autopush",
 	guildOnly: false,
