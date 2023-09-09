@@ -48,7 +48,9 @@ module.exports = async function choiceEmbed(client, message, choices) {
 	await addDeleteButton(choiceMessage);
 
 	const filter = (interaction) =>
-		(interaction.customId = "choiceEmbed" && interaction.user.id == message.author.id);
+		interaction.isSelectMenu() &&
+		interaction.customId == "choiceEmbed" &&
+		interaction.user.id == message.author.id;
 
 	const collector = message.channel.createMessageComponentCollector({ filter, time: 30000 });
 
