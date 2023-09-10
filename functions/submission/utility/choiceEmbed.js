@@ -7,6 +7,7 @@ const addDeleteButton = require("@helpers/addDeleteButton");
 
 const { default: axios } = require("axios");
 const { MessageEmbed, MessageActionRow, MessageSelectMenu } = require("discord.js");
+const { SelectMenuInteraction } = require("discord.js");
 /**
  * Selection menu for dealing with multiple valid options
  * @author Evorp
@@ -47,10 +48,10 @@ module.exports = async function choiceEmbed(client, message, choices) {
 	const choiceMessage = await message.reply({ embeds: [embed], components: components });
 	await addDeleteButton(choiceMessage);
 
+	/** @param {SelectMenuInteraction} interaction */
 	const filter = (interaction) =>
-		interaction.isSelectMenu() &&
-		interaction.customId == "choiceEmbed" &&
-		interaction.user.id == message.author.id;
+		interaction.customId.startsWith("choiceEmbed") && // format is choiceEmbed_<ROWNUMBER>
+		interaction.user.id == message.author.id; // correct permissions
 
 	const collector = message.channel.createMessageComponentCollector({ filter, time: 30000 });
 
