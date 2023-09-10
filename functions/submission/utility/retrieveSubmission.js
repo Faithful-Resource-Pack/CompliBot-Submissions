@@ -59,8 +59,8 @@ module.exports = async function retrieveSubmission(client, channelFromID, channe
 		if (!message.downvote) message.downvote.count = 1;
 
 		if (
-			message.upvote.count > message.downvote.count ||
-			message.upvote.count <= 1 // if nobody voted assume they don't care
+			message.upvote.count > message.downvote.count &&
+			message.upvote.count >= 1 // if nobody voted assume they don't care
 		)
 			return true;
 		return false;

@@ -7,7 +7,6 @@ const downloadResults = require("@submission/downloadResults");
 const pushTextures = require("@submission/pushTextures");
 const saveDB = require("@functions/saveDB");
 
-
 /** @type {import("@helpers/jsdoc").Command} */
 module.exports = {
 	name: "hotfix",
