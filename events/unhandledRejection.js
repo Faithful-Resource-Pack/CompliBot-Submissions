@@ -1,10 +1,11 @@
 const devLogger = require("@helpers/devLogger");
+const { DiscordAPIError } = require("discord.js");
 
 const DEV = process.env.DEV.toLowerCase() == "true";
 
 /**
  * @param {import("discord.js").Client} client Discord client treating the information
- * @param {Error | import("axios").AxiosError} error The object with which the promise was rejected
+ * @param {Error} error The object with which the promise was rejected
  * @param {Promise} promise The rejected promise
  * @param {import("discord.js").Message?} originMessage Origin user message
  */
@@ -21,7 +22,9 @@ module.exports = function unhandledRejection(client, error, promise, originMessa
 	} else if (!description) {
 		description = JSON.stringify(error);
 		codeBlocks = "json";
-	}
+	} else if (error instanceof DiscordAPIError)
+		// not on our end, just clutters logs
+		return console.error(error, promise, description);
 
 	if (eproto_error) return console.error(error, promise, description);
 
