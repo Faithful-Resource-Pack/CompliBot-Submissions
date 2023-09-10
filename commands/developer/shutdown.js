@@ -12,13 +12,17 @@ module.exports = {
 			await message.reply({
 				embeds: [new MessageEmbed().setTitle("Shutting down...").setColor(settings.colors.blue)],
 			});
-			process.exit();
-		} else {
-			const embed = new MessageEmbed()
-				.setDescription(`<@${message.author.id}> has been banned`)
-				.addFields({ name: "Reason", value: "trying to stop me lmao" })
-				.setColor(settings.colors.blue);
-			await message.reply({ embeds: [embed] });
+
+			return process.exit();
 		}
+
+		await message.reply({
+			embeds: [
+				new MessageEmbed()
+					.setDescription(`<@${message.author.id}> has been banned`)
+					.addFields({ name: "Reason", value: "trying to stop me lmao" })
+					.setColor(settings.colors.red),
+			],
+		});
 	},
 };
