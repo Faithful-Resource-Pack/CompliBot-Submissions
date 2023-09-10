@@ -66,7 +66,7 @@ async function sendToCouncil(client, pack, delay) {
  */
 async function sendToResults(client, pack, delay, councilEnabled = true) {
 	const { submit, council, results } = settings.submission.packs[pack].channels;
-	const fromID = council;
+	let fromID = council;
 
 	// council disabled so we fetch from submissions instead
 	if (!councilEnabled) fromID = submit;
