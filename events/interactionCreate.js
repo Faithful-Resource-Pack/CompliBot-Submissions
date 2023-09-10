@@ -1,11 +1,8 @@
 const client = require("@index").Client;
 
 /**
- * this is the actual event being called for button/menu interactions
- * but it lumps all interactions together
- * so we split them into separate event files here
- * @author Evorp
- * @see buttonUsed
+ * "real" event file that gets split into each component's specified usage
+ * @type {import("@helpers/jsdoc").Event}
  */
 module.exports = {
 	name: "interactionCreate",

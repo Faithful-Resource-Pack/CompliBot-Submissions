@@ -3,6 +3,7 @@ const settings = require("@resources/settings.json");
 
 const reactionMenu = require("@submission/reactionMenu");
 
+/** @type {import("@helpers/jsdoc").Event} */
 module.exports = {
 	name: "messageReactionAdd",
 	/**

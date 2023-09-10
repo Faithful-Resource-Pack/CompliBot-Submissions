@@ -13,6 +13,7 @@ const submitTexture = require("@submission/submitTexture");
 const addDeleteButton = require("@helpers/addDeleteButton");
 const warnUser = require("@helpers/warnUser");
 
+/** @type {import("@helpers/jsdoc").Event} */
 module.exports = {
 	name: "messageCreate",
 	/** @param {import("discord.js").Message} message */

@@ -12,9 +12,8 @@ const settings = require("@resources/settings.json");
 const getPackByChannel = require("@submission/utility/getPackByChannel");
 
 /**
- * "fake" event created to split up the generic interaction event
- * @author Evorp
- * @see interactionCreate
+ * "fake" emitted event to split up interactionCreate
+ * @type {import("@helpers/jsdoc").Event}
  */
 module.exports = {
 	name: "buttonUsed",

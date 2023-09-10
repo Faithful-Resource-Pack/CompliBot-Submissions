@@ -1,3 +1,4 @@
+/** @type {import("@helpers/jsdoc").Event} */
 module.exports = {
 	name: "threadCreate",
 	/** @param {import("discord.js").ThreadChannel} thread */

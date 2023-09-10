@@ -48,6 +48,7 @@ const pushToGithub = new CronJob("30 0 * * *", async () => {
 	await saveDB(client);
 });
 
+/** @type {import("@helpers/jsdoc").Event} */
 module.exports = {
 	name: "ready",
 	once: true,
