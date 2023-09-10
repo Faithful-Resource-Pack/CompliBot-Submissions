@@ -14,7 +14,8 @@ const devLogger = require("@helpers/devLogger");
  * @author Evorp, Juknum
  * @param {import("discord.js").Client} client
  * @param {String} commitMessage
- * @param {{org?: String, repo?: String, branch?: String}} params
+ * @param {{org?: String, repo?: String, branch?: String}} params configure where to backup to
+ * @returns {Boolean} if every collection could be backed up
  */
 module.exports = async function saveDB(client, commitMessage = "Daily Backup", params = {}) {
 	if (!params.org) params.org = settings.backup.git.org;
@@ -47,10 +48,13 @@ module.exports = async function saveDB(client, commitMessage = "Daily Backup", p
 				codeBlocks: "json",
 				title: `Failed to backup collection "${filename}"`,
 			});
+
 			if (DEBUG) console.error(err?.response?.data ?? err);
 		}
 	}
 
 	if (DEBUG) console.log(`Downloaded database files: ${successfulPushes}`);
 	await pushToGitHub(params.org, params.repo, params.branch, commitMessage, "./json/");
+
+	return successfulPushes.length >= Object.keys(settings.backup.urls).length;
 };
