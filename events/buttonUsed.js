@@ -91,7 +91,7 @@ module.exports = {
 					try {
 						original = await message.channel.messages.fetch(message.reference.messageId);
 					} catch {
-						/* message deleted */
+						// message deleted
 					}
 				}
 

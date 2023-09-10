@@ -137,7 +137,7 @@ module.exports = async function downloadResults(client, channelResultID, instapa
 				const user = guild.members.cache.get(author);
 				if (!user.roles.cache.has(role)) await user.roles.add(role);
 			} catch {
-				/* contributor can't be found or role can't be added */
+				// contributor can't be found or role can't be added
 			}
 		}
 	}

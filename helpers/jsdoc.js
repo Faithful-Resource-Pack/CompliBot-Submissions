@@ -7,19 +7,20 @@
  * @typedef {"faithful 32x" | "faithful_64x" | "classic_faithful_32x" | "classic_faithful_64x" | "classic_faithful_32x_progart"} Pack
  *
  * @typedef Path
- * @property {String} id
- * @property {String} use
- * @property {String} name
- * @property {Boolean} mcmeta
+ * @property {String} id internal id
+ * @property {String} use use it's attached to
+ * @property {String} name the actual path
+ * @property {Boolean} mcmeta whether it can be animated
  * @property {String[]} versions
  *
  * @typedef Use
- * @property {String} id
- * @property {String} name
+ * @property {String} id texture id + letter
+ * @property {String} name use name (usually blank)
+ * @property {Number} texture texture id without letter
  * @property {"java" | "bedrock"} edition
  *
  * @typedef Contribution
- * @property {String} id
+ * @property {String} id internal id
  * @property {Number} date unix timestamp
  * @property {String} texture texture id
  * @property {8 | 16 | 32 | 64 | 128 | 256 | 512} resolution
@@ -27,29 +28,29 @@
  * @property {String[]} authors
  *
  * @typedef Texture
- * @property {String} id
- * @property {String} name
+ * @property {String} id regular texture id
+ * @property {String} name display name
  * @property {String[]} tags
  * @property {Use[]} uses
- * @property {Path[]} paths
+ * @property {Path[]} paths paths and their attached uses
  * @property {Contribution[]?} contributions
  *
  * BOT:
  *
  * @typedef Command
- * @property {String} name
- * @property {Boolean?} guildOnly
- * @property {String[]?} aliases
+ * @property {String} name main command name
+ * @property {Boolean?} guildOnly server-reliant commands
+ * @property {String[]?} aliases additional command names
  * @property {CommandExecute} execute
  *
  * @callback CommandExecute
  * @param {import("discord.js").Client} client
- * @param {import("discord.js").Message} Message
- * @param {String[]} args
+ * @param {import("discord.js").Message} message message itself
+ * @param {String[]} args each argument as an array
  *
  * @typedef Event
- * @property {String} name
- * @property {Boolean?} once
+ * @property {String} name valid discord.js or client-emitted event name
+ * @property {Boolean?} once only happens once (e.g. on ready)
  * @property {Function} execute
  */
 
