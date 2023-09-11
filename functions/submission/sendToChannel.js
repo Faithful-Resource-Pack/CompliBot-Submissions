@@ -6,24 +6,26 @@ const { imageButtons, submissionReactions } = require("@helpers/interactions");
 
 const { MessageEmbed } = require("discord.js");
 
+const DEBUG = process.env.DEBUG.toLowerCase() == "true";
+
 /**
  * Send textures to a new channel following council rules
  * @author Evorp
  * @param {import("discord.js").Client} client
- * @param {import("@helpers/jsdoc").Pack} pack which pack to fetch
- * @param {Number} delay delay to fetch textures from
+ * @param {import("@helpers/jsdoc").SubmissionPack} params pack information
  */
-async function sendToCouncil(client, pack, delay) {
-	const { submit, council } = settings.submission.packs[pack].channels;
-	const { messagesUpvoted, messagesDownvoted, channelOut } = await retrieveSubmission(
-		client,
-		submit,
-		council,
-		delay,
-	);
+async function sendToCouncil(client, params) {
+	// pack improperly set up, send to results instead
+	if (!params.channels.council) return sendToResults(client, params);
+	const channelOut = client.channels.cache.get(params.channels.council);
 
-	// council channel doesn't exist for given pack, improperly set up
-	if (!channelOut) return;
+	if (DEBUG) console.log(`Sending textures to channel: #${channelOut.name}`);
+
+	const { messagesUpvoted, messagesDownvoted } = await retrieveSubmission(
+		client,
+		params.channels.submit, // always fetching from submission channel
+		params.time_to_council,
+	);
 
 	for (const message of messagesUpvoted) {
 		const councilEmbed = new MessageEmbed(message.embed)
@@ -60,22 +62,19 @@ async function sendToCouncil(client, pack, delay) {
  * Send textures to a new channel following result-like rules
  * @author Evorp
  * @param {import("discord.js").Client} client
- * @param {import("@helpers/jsdoc").Pack} pack which pack to fetch
- * @param {Number} delay delay to fetch textures from
- * @param {Boolean} councilEnabled whether to fetch straight from submissions or from council
+ * @param {import("@helpers/jsdoc").SubmissionPack} params pack information
  */
-async function sendToResults(client, pack, delay, councilEnabled = true) {
-	const { submit, council, results } = settings.submission.packs[pack].channels;
-	let fromID = council;
+async function sendToResults(client, params) {
+	const channelOut = client.channels.cache.get(params.channels.results);
 
-	// council disabled so we fetch from submissions instead
-	if (!councilEnabled) fromID = submit;
+	if (DEBUG) console.log(`Sending textures to channel: #${channelOut.name}`);
 
-	const { messagesUpvoted, messagesDownvoted, channelOut } = await retrieveSubmission(
+	const { messagesUpvoted, messagesDownvoted } = await retrieveSubmission(
 		client,
-		fromID,
-		results,
-		delay,
+		// if there's no council we pull directly from submissions
+		params.council_enabled ? params.channels.council : params.channels.submit,
+		// with this delay format we can reuse it for both council enabled and disabled packs
+		params.time_to_results,
 	);
 
 	for (const message of messagesUpvoted) {
@@ -100,7 +99,7 @@ async function sendToResults(client, pack, delay, councilEnabled = true) {
 	}
 
 	for (const message of messagesDownvoted) {
-		if (councilEnabled) {
+		if (params.council_enabled) {
 			message.embed.setColor(settings.colors.red);
 			const resultEmbed = new MessageEmbed(message.embed);
 			resultEmbed.fields[1].value = `<:downvote:${

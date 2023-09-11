@@ -45,9 +45,7 @@ module.exports = {
 			case "diffButton":
 				const packName = await getPackByChannel(message.channel.id);
 
-				const id = (message.embeds?.[0]?.title?.match(/(?<=\[\#)(.*?)(?=\])/) ?? [
-					"NO ID FOUND",
-				])[0];
+				const id = (message.embeds?.[0]?.title?.match(/(?<=\[#)(.*?)(?=\])/) ?? ["NO ID FOUND"])[0];
 				if (!id) break;
 				await interaction.deferReply({ ephemeral: true });
 				/** @type {import("@helpers/jsdoc").Texture} */

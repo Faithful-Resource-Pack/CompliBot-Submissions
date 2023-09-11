@@ -15,7 +15,7 @@ const devLogger = require("@helpers/devLogger");
  * @param {import("discord.js").Client} client
  * @param {String} commitMessage
  * @param {{org?: String, repo?: String, branch?: String}} params configure where to backup to
- * @returns {Boolean} if every collection could be backed up
+ * @returns {Promise<Boolean>} if every collection could be backed up
  */
 module.exports = async function saveDB(client, commitMessage = "Daily Backup", params = {}) {
 	if (!params.org) params.org = settings.backup.git.org;

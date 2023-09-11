@@ -19,14 +19,15 @@ const saveDB = require("@functions/saveDB");
  * @see retrieveSubmission
  */
 const submissionProcess = new CronJob("0 0 * * *", async () => {
-	for (const [pack, info] of Object.entries(settings.submission.packs)) {
-		await sendToResults(client, pack, info.time_to_results, info.council_enabled);
-		if (info.council_enabled) await sendToCouncil(client, pack, info.time_to_council);
+	for (const pack of Object.values(settings.submission.packs)) {
+		await sendToResults(client, pack);
+		if (pack.council_enabled) await sendToCouncil(client, pack);
 	}
 });
+
 /**
  * Download passed textures
- * Runs each day at 00:15 CE(S)T
+ * Runs each day at 12:15 AM CE(S)T
  * @author Evorp
  * @see downloadResults
  */
@@ -37,8 +38,8 @@ const downloadToBot = new CronJob("15 0 * * *", async () => {
 });
 
 /**
- * Push downloaded textures to GitHub, and back up DB
- * Runs each day at 00:30 CE(S)T
+ * Push downloaded textures to GitHub, and back up database files
+ * Runs each day at 12:30 AM CE(S)T
  * @author Evorp, Juknum
  * @see pushTextures
  * @see saveDB

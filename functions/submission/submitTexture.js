@@ -79,6 +79,7 @@ module.exports = async function submitTexture(client, message) {
 			continue;
 		}
 
+		if (DEBUG) console.log(`Generating choice embed for partial texture: ${search}`);
 		ongoingMenu = true;
 		const mappedResults = results.map((result) => {
 			const version = result.paths[0].versions.sort(minecraftSorter).reverse()[0];

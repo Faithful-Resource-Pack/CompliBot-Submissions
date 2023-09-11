@@ -1,9 +1,6 @@
 const settings = require("@resources/settings.json");
 
 const getMessages = require("@helpers/getMessages");
-const { MessageEmbed } = require("discord.js");
-
-const DEBUG = process.env.DEBUG.toLowerCase() == "true";
 
 /**
  * @typedef MappedMessage
@@ -18,13 +15,12 @@ const DEBUG = process.env.DEBUG.toLowerCase() == "true";
  * Filter submissions from a given date and split by vote counts
  * @author Juknum
  * @param {import("discord.js").Client} client
- * @param {String} channelFromID channel from where submissions are retrieved
- * @param {String} channelOutID channel where submissions are sent
- * @param {Number} delay delay in days from today
- * @returns {Promise<{messagesUpvoted: MappedMessage[], messagesDownvoted: MappedMessage[], channel: import("discord.js").TextChannel}>}
+ * @param {String} channelID where to retrieve from
+ * @param {Number} delay delay in days from day of retrieval
+ * @returns {Promise<{messagesUpvoted: MappedMessage[], messagesDownvoted: MappedMessage[]}>}
  */
-module.exports = async function retrieveSubmission(client, channelFromID, channelOutID, delay) {
-	let messages = await getMessages(client, channelFromID);
+module.exports = async function retrieveSubmission(client, channelID, delay) {
+	let messages = await getMessages(client, channelID);
 
 	let delayedDate = new Date();
 	delayedDate.setDate(delayedDate.getDate() - delay);
@@ -59,14 +55,15 @@ module.exports = async function retrieveSubmission(client, channelFromID, channe
 		if (!message.downvote) message.downvote.count = 1;
 
 		return (
-			message.upvote.count > message.downvote.count && message.upvote.count >= 1 // if nobody voted assume they don't care
+			message.upvote.count > message.downvote.count ||
+			// if nobody voted assume nobody cares
+			(message.upvote.count == 1 && message.downvote.count == 1)
 		);
 	});
 
 	return {
 		messagesUpvoted,
-		// whatever isn't in messagesUpvoted is denied
+		// whatever isn't in messagesUpvoted is denied (reduces redundancy this way)
 		messagesDownvoted: mappedMessages.filter((msg) => !messagesUpvoted.includes(msg)),
-		channelOut: client.channels.cache.get(channelOutID),
 	};
 };

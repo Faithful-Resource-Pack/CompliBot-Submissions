@@ -8,6 +8,9 @@ const addDeleteButton = require("@helpers/addDeleteButton");
 const { default: axios } = require("axios");
 const { MessageEmbed, MessageActionRow, MessageSelectMenu } = require("discord.js");
 const { SelectMenuInteraction } = require("discord.js");
+
+const DEBUG = process.env.DEBUG.toLowerCase() == "true";
+
 /**
  * Selection menu for dealing with multiple valid options
  * @author Evorp
@@ -58,6 +61,7 @@ module.exports = async function choiceEmbed(client, message, choices) {
 	collector.on("collect", async (interaction) => {
 		if (message.deletable) {
 			const [id, index] = interaction.values[0].split("__");
+			if (DEBUG) console.log(`Texture selected: ${id}`);
 			const attachments = Array.from(message.attachments.values());
 
 			const param = {
