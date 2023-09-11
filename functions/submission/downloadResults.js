@@ -151,10 +151,11 @@ module.exports = async function downloadResults(client, channelResultID, instapa
 		if (DEBUG) console.log(`Added contributions: ${allContribution}`);
 	} catch (err) {
 		if (DEBUG) console.error(`Couldn't add contributions for pack: ${packName}`);
-		else devLogger(client, JSON.stringify(err?.response?.data ?? err), {
-			title: "Contribution Error",
-			codeBlocks: "json",
-		});
+		else
+			devLogger(client, JSON.stringify(err?.response?.data ?? err), {
+				title: "Contribution Error",
+				codeBlocks: "json",
+			});
 	}
 
 	if (instapass) await pushTextures(`Instapassed ${instapassName} from ${formattedDate()}`);

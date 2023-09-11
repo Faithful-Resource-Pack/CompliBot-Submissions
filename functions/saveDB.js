@@ -45,10 +45,11 @@ module.exports = async function saveDB(client, commitMessage = "Daily Backup", p
 			successfulPushes.push(filename);
 		} catch (err) {
 			if (DEBUG) console.error(err?.response?.data ?? err);
-			else devLogger(client, JSON.stringify(err?.response?.data ?? err), {
-				codeBlocks: "json",
-				title: `Failed to backup collection "${filename}"`,
-			});
+			else
+				devLogger(client, JSON.stringify(err?.response?.data ?? err), {
+					codeBlocks: "json",
+					title: `Failed to backup collection "${filename}"`,
+				});
 		}
 	}
 

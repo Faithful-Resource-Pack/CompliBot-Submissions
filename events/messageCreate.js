@@ -12,6 +12,7 @@ const submitTexture = require("@submission/submitTexture");
 
 const addDeleteButton = require("@helpers/addDeleteButton");
 const warnUser = require("@helpers/warnUser");
+const invalidSubmission = require("@functions/submission/utility/invalidSubmission");
 
 /** @type {import("@helpers/jsdoc").Event} */
 module.exports = {
@@ -67,6 +68,17 @@ module.exports = {
 				(pack) => pack.channels.submit,
 			);
 			if (submissionChannels.includes(message.channel.id)) return submitTexture(client, message);
+
+			/**
+			 * BASIC AUTOREACT
+			 */
+			if (settings.submission.autoreact.includes(message.channel.id)) {
+				if (!message.attachments.size)
+					return await invalidSubmission(message, strings.submission.image_not_attached);
+
+				await message.react(settings.emojis.upvote);
+				await message.react(settings.emojis.downvote);
+			}
 		}
 	},
 };

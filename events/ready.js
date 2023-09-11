@@ -16,7 +16,6 @@ const saveDB = require("@functions/saveDB");
  * Send submission messages to their respective channels
  * Runs each day at midnight CE(S)T
  * @author Evorp
- * @see retrieveSubmission
  */
 const submissionProcess = new CronJob("0 0 * * *", async () => {
 	for (const pack of Object.values(settings.submission.packs)) {
@@ -29,7 +28,6 @@ const submissionProcess = new CronJob("0 0 * * *", async () => {
  * Download passed textures
  * Runs each day at 12:15 AM CE(S)T
  * @author Evorp
- * @see downloadResults
  */
 const downloadToBot = new CronJob("15 0 * * *", async () => {
 	for (const pack of Object.values(settings.submission.packs)) {
@@ -41,8 +39,6 @@ const downloadToBot = new CronJob("15 0 * * *", async () => {
  * Push downloaded textures to GitHub, and back up database files
  * Runs each day at 12:30 AM CE(S)T
  * @author Evorp, Juknum
- * @see pushTextures
- * @see saveDB
  */
 const pushToGithub = new CronJob("30 0 * * *", async () => {
 	await pushTextures();
@@ -80,12 +76,5 @@ module.exports = {
 		submissionProcess.start();
 		downloadToBot.start();
 		pushToGithub.start();
-
-		/**
-		 * LOOP EVENTS
-		 */
-		setInterval(() => {
-			fetchSettings();
-		}, 60000); // each minute
 	},
 };
