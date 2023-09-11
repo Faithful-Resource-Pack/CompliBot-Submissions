@@ -41,18 +41,15 @@ module.exports = {
 			case "paletteButton":
 				// since there's multiple components in palette it's easier to reply there
 				return palette(interaction, image);
-			case "viewRawButton":
+			case "viewRawButton": // compatibility with old submissions
 			case "diffButton":
 				const packName = await getPackByChannel(message.channel.id);
 
 				const id = message.embeds?.[0]?.title?.match(/(?<=\[#)(.*?)(?=\])/)?.[0];
 				if (!id) break;
 				await interaction.deferReply({ ephemeral: true });
-				/** @type {import("@helpers/jsdoc").Texture} */
-				const texture = (await axios.get(`${process.env.API_URL}textures/${id}/all`)).data;
-				const currentUrl = `${
-					settings.repositories.raw[packName][texture.uses[0].edition.toLowerCase()]
-				}${texture.paths[0].versions.sort(minecraftSorter)[0]}/${texture.paths[0].name}`;
+
+				const currentUrl = `${process.env.API_URL}textures/${id}/url/${packName}/latest`;
 				const proposedUrl = message.embeds[0].thumbnail?.url;
 
 				const diff = await difference(currentUrl, proposedUrl);
