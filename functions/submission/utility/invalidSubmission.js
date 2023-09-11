@@ -1,4 +1,6 @@
 const settings = require("@resources/settings.json");
+const strings = require("@resources/strings.json");
+
 const addDeleteButton = require("@helpers/addDeleteButton");
 const { MessageEmbed, Permissions } = require("discord.js");
 
