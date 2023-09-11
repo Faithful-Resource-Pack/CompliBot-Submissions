@@ -2,6 +2,8 @@ const settings = require("@resources/settings.json");
 const addDeleteButton = require("@helpers/addDeleteButton");
 const { MessageEmbed, Permissions } = require("discord.js");
 
+const DEBUG = process.env.DEBUG.toLowerCase() == "true";
+
 /**
  * Logic for handling an invalid submission
  * @author Juknum
