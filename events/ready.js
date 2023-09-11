@@ -66,9 +66,8 @@ module.exports = {
 				// format the settings for easier viewing
 				fetchSettings(true);
 			}, 20000); // 20 seconds
+			return;
 		}
-
-		if (DEV) return;
 
 		/**
 		 * START TEXTURE SUBMISSION PROCESS
@@ -76,5 +75,12 @@ module.exports = {
 		submissionProcess.start();
 		downloadToBot.start();
 		pushToGithub.start();
+
+		/**
+		 * LOOP EVENTS
+		 */
+		setInterval(() => {
+			fetchSettings();
+		}, 900000); // 15 minutes
 	},
 };
