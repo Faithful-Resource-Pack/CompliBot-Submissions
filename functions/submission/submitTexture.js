@@ -41,7 +41,7 @@ module.exports = async function submitTexture(client, message) {
 		}
 
 		// try and get the texture id from the message contents
-		const id = (message.content.match(/(?<=\[\#)(.*?)(?=\])/) ?? ["NO ID FOUND"])[0];
+		const id = message.content.match(/(?<=\[\#)(.*?)(?=\])/)?.[0];
 
 		// get authors and description for embed
 		const param = {
@@ -50,7 +50,7 @@ module.exports = async function submitTexture(client, message) {
 		};
 
 		// priority to ids -> faster
-		if (!isNaN(Number(id))) {
+		if (id) {
 			/** @type {import("@helpers/jsdoc").Texture} */
 			const texture = (await axios.get(`${process.env.API_URL}textures/${id}/all`)).data;
 			if (!Object.keys(texture).length)
@@ -79,7 +79,7 @@ module.exports = async function submitTexture(client, message) {
 			continue;
 		}
 
-		if (DEBUG) console.log(`Generating choice embed for partial texture: ${search}`);
+		if (DEBUG) console.log(`Generating choice embed for texture search: ${search}`);
 		ongoingMenu = true;
 		const mappedResults = results.map((result) => {
 			const version = result.paths[0].versions.sort(minecraftSorter).reverse()[0];

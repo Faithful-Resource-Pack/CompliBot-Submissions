@@ -63,7 +63,7 @@ module.exports = async function downloadResults(client, channelResultID, instapa
 				.split("\n")
 				.map((auth) => auth.replace("<@!", "").replace(">", "")),
 			date: message.createdTimestamp,
-			id: (message.embeds[0].title.match(/(?<=\[\#)(.*?)(?=\])/) ?? ["NO ID FOUND"])[0],
+			id: message.embeds[0].title.match(/(?<=\[\#)(.*?)(?=\])/)?.[0],
 		};
 	});
 
@@ -73,7 +73,7 @@ module.exports = async function downloadResults(client, channelResultID, instapa
 	let instapassName;
 
 	for (const texture of textures) {
-		if (isNaN(Number(texture.id))) {
+		if (!texture.id || isNaN(Number(texture.id))) {
 			if (DEBUG) console.error(`Non-numerical texture ID found: ${texture.id}`);
 			continue;
 		}
@@ -119,7 +119,7 @@ module.exports = async function downloadResults(client, channelResultID, instapa
 		// saves on post requests to add all contributions at once in an array, more reliable
 		allContribution.push({
 			date: texture.date,
-			resolution: Number((packName.match(/\d+/) ?? [32])[0]), // stupid workaround but it works
+			resolution: Number(packName.match(/\d+/)?.[0] ?? 32), // stupid workaround but it works
 			pack: packName,
 			texture: texture.id,
 			authors: texture.authors,
