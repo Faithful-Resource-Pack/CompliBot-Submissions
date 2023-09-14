@@ -22,7 +22,7 @@ const { submissionReactions } = require("@helpers/interactions");
  * @param {{ description?: String, authors: String[] }} params additional info (e.g. description, coauthors)
  */
 module.exports = async function makeEmbed(client, message, texture, attachment, params = {}) {
-	const packName = await getPackByChannel(message.channel.id, "submit");
+	const packName = getPackByChannel(message.channel.id, "submit");
 	let imgButtons;
 
 	// load previous contributions if applicable

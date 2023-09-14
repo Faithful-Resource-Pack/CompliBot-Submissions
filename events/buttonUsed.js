@@ -43,7 +43,7 @@ module.exports = {
 				return palette(interaction, image);
 			case "viewRawButton": // compatibility with old submissions
 			case "diffButton":
-				const packName = await getPackByChannel(message.channel.id);
+				const packName = getPackByChannel(message.channel.id);
 
 				const id = message.embeds?.[0]?.title?.match(/(?<=\[#)(.*?)(?=\])/)?.[0];
 				if (!id) break;

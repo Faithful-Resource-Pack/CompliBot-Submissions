@@ -22,20 +22,22 @@ const getMessages = require("@helpers/getMessages");
 module.exports = async function retrieveSubmission(client, channelID, delay) {
 	let messages = await getMessages(client, channelID);
 
-	let delayedDate = new Date();
+	const delayedDate = new Date();
 	delayedDate.setDate(delayedDate.getDate() - delay);
 
 	// filter message in the right timezone
 	messages = messages
 		.filter((message) => {
-			let messageDate = new Date(message.createdTimestamp);
+			const messageDate = new Date(message.createdTimestamp);
 			return (
+				// correct date
 				messageDate.getDate() == delayedDate.getDate() &&
-				messageDate.getMonth() == delayedDate.getMonth()
+				messageDate.getMonth() == delayedDate.getMonth() &&
+				messageDate.getFullYear() == delayedDate.getFullYear() &&
+				// only get pending submissions
+				message.embeds?.[0]?.fields[1]?.value?.includes(settings.emojis.pending)
 			);
-		}) // only get pending submissions
-		.filter((message) => message.embeds.length > 0)
-		.filter((message) => message.embeds[0].fields[1]?.value?.includes(settings.emojis.pending))
+		})
 		.reverse(); // upload from oldest to newest
 
 	/** @type {MappedMessage[]} */

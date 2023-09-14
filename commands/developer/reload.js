@@ -22,7 +22,7 @@ module.exports = {
 			return warnUser(message, `There is no command with name or alias \`${commandName}\`!`);
 
 		const commandPath = walkSync("./commands")
-			.filter((file) => file.includes(command.name))[0]
+			.find((file) => file.includes(command.name))
 			.replace("./commands/", "../");
 
 		delete require.cache[require.resolve(commandPath)];

@@ -18,43 +18,37 @@ const { default: axios } = require("axios");
  * @param {Boolean?} instapass whether to push the texture directly after downloading
  */
 module.exports = async function downloadResults(client, channelResultID, instapass = false) {
-	let messages = (await getMessages(client, channelResultID)).filter(
-		(message) => message.embeds?.[0]?.fields?.[1],
-	);
-	/** @type {import("discord.js").TextChannel} */
+	const packName = getPackByChannel(channelResultID, "results");
+
+	/** @type {import("discord.js").TextChannel} for adding roles */
 	const channel = client.channels.cache.get(channelResultID);
-	const packName = await getPackByChannel(channelResultID, "results");
+
+	// get messages from the same day
+	const delayedDate = new Date();
+	let messages = (await getMessages(client, channelResultID)).filter((message) => {
+		const messageDate = new Date(message.createdTimestamp);
+		return (
+			// correct date
+			messageDate.getDate() == delayedDate.getDate() &&
+			messageDate.getMonth() == delayedDate.getMonth() &&
+			messageDate.getFullYear() == delayedDate.getFullYear() &&
+			// is a submission
+			message.embeds?.[0]?.fields?.[1]?.value
+		);
+	});
 
 	if (DEBUG) console.log(`Starting texture downloads for pack: ${packName}`);
 
-	if (!instapass) {
-		// get messages from the same day
-		const delayedDate = new Date();
-		messages = messages.filter((message) => {
-			let messageDate = new Date(message.createdTimestamp);
-			return (
-				messageDate.getDate() == delayedDate.getDate() &&
-				messageDate.getMonth() == delayedDate.getMonth() &&
-				messageDate.getFullYear() == delayedDate.getFullYear()
-			);
-		});
-
-		// filter out rejected textures
+	if (instapass)
+		// get most recent message being instapassed
+		messages = [
+			messages.find((msg) => msg.embeds[0].fields[1].value.includes(settings.emojis.instapass)),
+		];
+	// just filter out rejected textures
+	else
 		messages = messages.filter((message) =>
-			message.embeds[0].fields[1]?.value?.includes(settings.emojis.upvote),
+			message.embeds[0].fields[1].value.includes(settings.emojis.upvote),
 		);
-
-		messages.reverse(); // upload them from the oldest to the newest
-	} else {
-		for (const msg of messages) {
-			if (msg.embeds[0].fields[1]?.value?.includes(settings.emojis.instapass)) {
-				// converts to an array so map() can be used on it
-				messages = [msg];
-				// only one texture instapassed at a time, so this is the most recent texture
-				break;
-			}
-		}
-	}
 
 	const textures = messages.map((message) => {
 		return {
