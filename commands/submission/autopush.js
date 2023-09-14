@@ -1,7 +1,7 @@
-const { Permissions } = require("discord.js");
 const settings = require("@resources/settings.json");
 const strings = require("@resources/strings.json");
 
+const hasPermission = require("@helpers/hasPermission");
 const formattedDate = require("@helpers/formattedDate");
 const pushTextures = require("@submission/pushTextures");
 const downloadResults = require("@submission/downloadResults");
@@ -12,7 +12,7 @@ module.exports = {
 	name: "autopush",
 	guildOnly: false,
 	async execute(client, message, args) {
-		if (!message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR))
+		if (!hasPermission(message.member, "administrator"))
 			return warnUser(message, strings.command.no_permission);
 		if (!args.length) return warnUser(message, strings.command.args.none_given);
 

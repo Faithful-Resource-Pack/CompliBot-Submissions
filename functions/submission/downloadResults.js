@@ -104,9 +104,7 @@ module.exports = async function downloadResults(client, channelResultID, instapa
 					await promises
 						// removes the texture name from the full path
 						.mkdir(fullPath.substring(0, fullPath.lastIndexOf("/")), { recursive: true })
-						.catch((err) => {
-							if (DEBUG) console.error(err);
-						});
+						.catch(console.error);
 
 					// write texture to previously generated path
 					writeFile(fullPath, Buffer.from(imageFile), (err) => {

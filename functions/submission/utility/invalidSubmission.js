@@ -2,7 +2,8 @@ const settings = require("@resources/settings.json");
 const strings = require("@resources/strings.json");
 
 const addDeleteButton = require("@helpers/addDeleteButton");
-const { MessageEmbed, Permissions } = require("discord.js");
+const { MessageEmbed } = require("discord.js");
+const hasPermission = require("@helpers/hasPermission");
 
 const DEBUG = process.env.DEBUG.toLowerCase() == "true";
 
@@ -15,8 +16,8 @@ const DEBUG = process.env.DEBUG.toLowerCase() == "true";
 module.exports = async function invalidSubmission(message, error = "No error given!") {
 	// allow managers and council to talk in submit channels
 	if (
-		(message.member.permissions.has(Permissions.FLAGS.ADMINISTRATOR) ||
-			message.member.roles.cache.some((role) => role.name.toLowerCase().includes("council"))) &&
+		hasPermission(message.member, "any") &&
+		// fix no error messages showing for council+
 		error == strings.submission.image_not_attached
 	)
 		return;
