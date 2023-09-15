@@ -9,7 +9,7 @@ const getImages = require("@helpers/getImages");
 const generateComparison = require("@submission/utility/generateComparison");
 const { imageButtons, submissionButtons } = require("@helpers/interactions");
 
-const { MessageEmbed, AttachmentBuilder } = require("discord.js");
+const { EmbedBuilder, AttachmentBuilder } = require("discord.js");
 const { submissionReactions } = require("@helpers/interactions");
 
 /**
@@ -38,7 +38,7 @@ module.exports = async function makeEmbed(client, message, texture, attachment, 
 	}
 
 	// create base embed
-	const embed = new MessageEmbed()
+	const embed = new EmbedBuilder()
 		.setAuthor({ name: message.author.username, iconURL: message.author.displayAvatarURL() })
 		.setColor(settings.colors.blue)
 		.setTitle(`[#${texture.id}] ${texture.name}`)

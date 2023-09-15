@@ -4,7 +4,7 @@ const retrieveSubmission = require("@submission/utility/retrieveSubmission");
 const changeStatus = require("@submission/utility/changeStatus");
 const { imageButtons, submissionReactions } = require("@helpers/interactions");
 
-const { MessageEmbed } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 
 const DEBUG = process.env.DEBUG.toLowerCase() == "true";
 
@@ -28,7 +28,7 @@ async function sendToCouncil(client, params) {
 	);
 
 	for (const message of messagesUpvoted) {
-		const councilEmbed = new MessageEmbed(message.embed)
+		const councilEmbed = new EmbedBuilder(message.embed)
 			.setColor(settings.colors.council)
 			.setDescription(
 				`[Original Post](${message.message.url})\n${message.embed.description ?? ""}`,
@@ -78,7 +78,7 @@ async function sendToResults(client, params) {
 	);
 
 	for (const message of messagesUpvoted) {
-		const resultEmbed = new MessageEmbed(message.embed).setColor(settings.colors.green);
+		const resultEmbed = new EmbedBuilder(message.embed).setColor(settings.colors.green);
 		resultEmbed.fields[1].value = `<:upvote:${
 			settings.emojis.upvote
 		}> Will be added in a future version! ${getPercentage(message.upvote, message.downvote)}`;
@@ -101,7 +101,7 @@ async function sendToResults(client, params) {
 	for (const message of messagesDownvoted) {
 		if (params.council_enabled) {
 			message.embed.setColor(settings.colors.red);
-			const resultEmbed = new MessageEmbed(message.embed);
+			const resultEmbed = new EmbedBuilder(message.embed);
 			resultEmbed.fields[1].value = `<:downvote:${
 				settings.emojis.downvote
 			}> This texture did not pass council voting and therefore will not be added. ${getPercentage(

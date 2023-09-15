@@ -36,6 +36,7 @@ function startBot() {
 			GatewayIntentBits.GuildIntegrations,
 			GatewayIntentBits.GuildPresences,
 			GatewayIntentBits.GuildMessages,
+			GatewayIntentBits.MessageContent,
 			GatewayIntentBits.GuildMessageReactions,
 			GatewayIntentBits.GuildMessageTyping,
 			GatewayIntentBits.DirectMessages,

@@ -2,7 +2,7 @@ const settings = require("@resources/settings.json");
 const strings = require("@resources/strings.json");
 
 const addDeleteButton = require("@helpers/addDeleteButton");
-const { MessageEmbed } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 const hasPermission = require("@helpers/hasPermission");
 
 const DEBUG = process.env.DEBUG.toLowerCase() == "true";
@@ -24,7 +24,7 @@ module.exports = async function invalidSubmission(message, error = "No error giv
 
 	if (DEBUG) console.log(`Submission cancelled with reason: ${error}`);
 
-	const embed = new MessageEmbed()
+	const embed = new EmbedBuilder()
 		.setColor(settings.colors.red)
 		.setTitle(strings.submission.autoreact.error_title)
 		.setThumbnail(settings.images.warning)

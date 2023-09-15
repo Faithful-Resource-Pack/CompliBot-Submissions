@@ -2,7 +2,7 @@ const { createCanvas, loadImage } = require("@napi-rs/canvas");
 const settings = require("@resources/settings.json");
 const strings = require("@resources/strings.json");
 
-const { MessageEmbed, AttachmentBuilder } = require("discord.js");
+const { EmbedBuilder, AttachmentBuilder } = require("discord.js");
 const getDimensions = require("@images/getDimensions");
 
 const COOLORS_URL = "https://coolors.co/";
@@ -68,7 +68,7 @@ module.exports = async function palette(interaction, url) {
 		.slice(0, COLORS_TOP)
 		.map((el) => el.hex);
 
-	const embed = new MessageEmbed()
+	const embed = new EmbedBuilder()
 		.setTitle("Palette results")
 		.setColor(settings.colors.blue)
 		.setDescription(`List of colors:\n`)

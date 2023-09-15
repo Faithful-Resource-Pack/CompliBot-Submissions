@@ -2,7 +2,7 @@ const addDeleteButton = require("@helpers/addDeleteButton");
 const settings = require("@resources/settings.json");
 const { default: axios } = require("axios");
 
-const { MessageEmbed } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 
 /** @type {import("@helpers/jsdoc").Command} */
 module.exports = {
@@ -25,7 +25,7 @@ module.exports = {
 				const apiPing = client.ws.ping;
 				const botPing = msg.createdTimestamp - message.createdTimestamp;
 
-				const embed = new MessageEmbed().setTitle("Pong!").setColor(settings.colors.blue)
+				const embed = new EmbedBuilder().setTitle("Pong!").setColor(settings.colors.blue)
 					.setDescription(`_${quote.replace("%YEAR%", new Date().getFullYear() + 2)}_
 ### Bot Latency:
 ${botPing}ms
