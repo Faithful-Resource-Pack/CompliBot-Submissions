@@ -22,8 +22,6 @@ module.exports = {
 
 		const content = message.content.split(" ").slice(3).join(" ");
 
-		console.log(content);
-
 		// since args is converted to lowercase in the handler we need to undo that
 		args[0] = args[0].replace(/\b(\w)/gu, (letter) => letter.toUpperCase());
 		if (ActivityType[args[0]] !== undefined && presence.includes(args[1])) {
@@ -39,6 +37,6 @@ module.exports = {
 			return await message.react(settings.emojis.upvote);
 		}
 
-		return await message.react(settings.emojis.downvote);
+		return warnUser(message, strings.command.args.invalid);
 	},
 };
