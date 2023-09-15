@@ -6,7 +6,7 @@ const makeEmbed = require("@submission/makeEmbed");
 const addDeleteButton = require("@helpers/addDeleteButton");
 
 const { default: axios } = require("axios");
-const { MessageEmbed, MessageActionRow, MessageSelectMenu } = require("discord.js");
+const { MessageEmbed, ActionRowBuilder, StringSelectMenuBuilder } = require("discord.js");
 const { SelectMenuInteraction } = require("discord.js");
 
 const DEBUG = process.env.DEBUG.toLowerCase() == "true";
@@ -34,12 +34,12 @@ module.exports = async function choiceEmbed(client, message, choices) {
 				options.push(choice);
 			}
 		}
-		const menu = new MessageSelectMenu()
+		const menu = new StringSelectMenuBuilder()
 			.setCustomId(`choiceEmbed_${currentRow}`)
 			.setPlaceholder(strings.submission.choice_embed.placeholder)
 			.addOptions(options);
 
-		const row = new MessageActionRow().addComponents(menu);
+		const row = new ActionRowBuilder().addComponents(menu);
 		components.push(row);
 	}
 

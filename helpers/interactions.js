@@ -1,4 +1,4 @@
-const { MessageButton, MessageActionRow } = require("discord.js");
+const { ButtonBuilder, ActionRowBuilder, ButtonStyle } = require("discord.js");
 const settings = require("@resources/settings.json");
 
 /**
@@ -7,38 +7,38 @@ const settings = require("@resources/settings.json");
  * @see interactionCreate
  */
 
-const magnifyButton = new MessageButton()
-	.setStyle("PRIMARY")
+const magnifyButton = new ButtonBuilder()
+	.setStyle(ButtonStyle.Primary)
 	.setEmoji(settings.emojis.magnify)
 	.setCustomId("magnifyButton");
 
-const tileButton = new MessageButton()
-	.setStyle("PRIMARY")
+const tileButton = new ButtonBuilder()
+	.setStyle(ButtonStyle.Primary)
 	.setEmoji(settings.emojis.tile)
 	.setCustomId("tileButton");
 
-const paletteButton = new MessageButton()
-	.setStyle("PRIMARY")
+const paletteButton = new ButtonBuilder()
+	.setStyle(ButtonStyle.Primary)
 	.setEmoji(settings.emojis.palette)
 	.setCustomId("paletteButton");
 
-const diffButton = new MessageButton()
-	.setStyle("PRIMARY")
+const diffButton = new ButtonBuilder()
+	.setStyle(ButtonStyle.Primary)
 	.setEmoji(settings.emojis.diff)
 	.setCustomId("diffButton");
 
-const deleteButton = new MessageButton()
-	.setStyle("DANGER")
+const deleteButton = new ButtonBuilder()
+	.setStyle(ButtonStyle.Danger)
 	.setEmoji(settings.emojis.delete)
 	.setCustomId("deleteButton");
 
-const imageButtons = new MessageActionRow().addComponents([
+const imageButtons = new ActionRowBuilder().addComponents([
 	magnifyButton,
 	tileButton,
 	paletteButton,
 ]);
 
-const submissionButtons = new MessageActionRow().addComponents([
+const submissionButtons = new ActionRowBuilder().addComponents([
 	...imageButtons.components,
 	diffButton,
 ]);

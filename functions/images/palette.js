@@ -2,7 +2,7 @@ const { createCanvas, loadImage } = require("@napi-rs/canvas");
 const settings = require("@resources/settings.json");
 const strings = require("@resources/strings.json");
 
-const { MessageEmbed, MessageAttachment } = require("discord.js");
+const { MessageEmbed, AttachmentBuilder } = require("discord.js");
 const getDimensions = require("@images/getDimensions");
 
 const COOLORS_URL = "https://coolors.co/";
@@ -166,7 +166,7 @@ module.exports = async function palette(interaction, url) {
 	});
 
 	// create the attachement
-	const colorImageAttachment = new MessageAttachment(
+	const colorImageAttachment = new AttachmentBuilder(
 		colorCanvas.toBuffer("image/png"),
 		"colors.png",
 	);

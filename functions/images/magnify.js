@@ -1,6 +1,6 @@
 const { createCanvas, loadImage, Image } = require("@napi-rs/canvas");
 
-const { MessageAttachment } = require("discord.js");
+const { AttachmentBuilder } = require("discord.js");
 const getDimensions = require("@images/getDimensions");
 const addDeleteButton = require("@helpers/addDeleteButton");
 
@@ -45,11 +45,11 @@ async function magnifyBuffer(origin, isAnimation = false) {
  * @author Juknum
  * @param {String | Image | Buffer} origin url to magnify
  * @param {String?} name name, defaults to "magnified.png"
- * @returns {Promise<MessageAttachment>} magnified file
+ * @returns {Promise<AttachmentBuilder>} magnified file
  */
 async function magnifyAttachment(origin, name = "magnified.png") {
 	const { magnified } = await magnifyBuffer(origin);
-	return new MessageAttachment(magnified, name);
+	return new AttachmentBuilder(magnified, name);
 }
 
 /**
@@ -57,7 +57,7 @@ async function magnifyAttachment(origin, name = "magnified.png") {
  * @author Juknum
  * @param {import("discord.js").Message} message message to reply to
  * @param {String} url
- * @returns {Promise<MessageAttachment>} the attachment that was sent
+ * @returns {Promise<AttachmentBuilder>} the attachment that was sent
  */
 async function magnify(message, url) {
 	const attachment = await magnifyAttachment(url);

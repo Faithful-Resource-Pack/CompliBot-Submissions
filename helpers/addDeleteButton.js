@@ -1,4 +1,4 @@
-const { MessageActionRow } = require("discord.js");
+const { ActionRowBuilder } = require("discord.js");
 const { deleteButton } = require("@helpers/interactions");
 
 /**
@@ -20,6 +20,6 @@ module.exports = async function addDeleteButton(message) {
 		});
 	}
 	return message.edit({
-		components: [...message.components, new MessageActionRow().addComponents(deleteButton)],
+		components: [...message.components, new ActionRowBuilder().addComponents(deleteButton)],
 	});
 };

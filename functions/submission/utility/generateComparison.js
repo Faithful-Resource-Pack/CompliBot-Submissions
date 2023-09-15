@@ -5,7 +5,7 @@ const { loadImage } = require("@napi-rs/canvas");
 const { default: axios } = require("axios");
 const minecraftSorter = require("@helpers/minecraftSorter");
 const animate = require("@images/animate");
-const { MessageAttachment } = require("discord.js");
+const { AttachmentBuilder } = require("discord.js");
 
 /**
  * @typedef TextureInfo
@@ -17,7 +17,7 @@ const { MessageAttachment } = require("discord.js");
 
 /**
  * @typedef ReturnParams
- * @property {MessageAttachment} comparisonImage
+ * @property {AttachmentBuilder} comparisonImage
  * @property {Boolean} hasReference
  * @property {import("@images/animate").MCMETA?} mcmeta
  */
@@ -26,7 +26,7 @@ const { MessageAttachment } = require("discord.js");
  * Generate a submission comparison for a given texture, pack, and image
  * @author Evorp
  * @param {String} pack pack to compare against (e.g. faithful_32x, classic_faithful_64x)
- * @param {MessageAttachment} attachment raw texture being submitted
+ * @param {AttachmentBuilder} attachment raw texture being submitted
  * @param {TextureInfo} info used for searching for references/current
  * @returns {Promise<ReturnParams>} compared texture and info
  */
@@ -134,7 +134,7 @@ module.exports = async function generateComparison(pack, attachment, info) {
 		const animated = await animate(await loadImage(magnified), mcmeta);
 
 		return {
-			comparisonImage: new MessageAttachment(animated, "compared.gif"),
+			comparisonImage: new AttachmentBuilder(animated, "compared.gif"),
 			hasReference: images.length == 3,
 			mcmeta: displayedMcmeta,
 		};
