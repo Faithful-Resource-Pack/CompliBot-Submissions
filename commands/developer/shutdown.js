@@ -1,6 +1,6 @@
 const settings = require("@resources/settings.json");
 
-const { MessageEmbed } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 
 /** @type {import("@helpers/jsdoc").Command} */
 module.exports = {
@@ -10,7 +10,7 @@ module.exports = {
 	async execute(client, message, args) {
 		if (process.env.DEVELOPERS.includes(message.author.id)) {
 			await message.reply({
-				embeds: [new MessageEmbed().setTitle("Shutting down...").setColor(settings.colors.blue)],
+				embeds: [new EmbedBuilder().setTitle("Shutting down...").setColor(settings.colors.blue)],
 			});
 
 			return process.exit();
@@ -18,7 +18,7 @@ module.exports = {
 
 		await message.reply({
 			embeds: [
-				new MessageEmbed()
+				new EmbedBuilder()
 					.setDescription(`<@${message.author.id}> has been banned`)
 					.addFields({ name: "Reason", value: "trying to stop me lmao" })
 					.setColor(settings.colors.red),

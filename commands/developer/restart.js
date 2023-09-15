@@ -2,7 +2,7 @@ const settings = require("@resources/settings.json");
 const { startBot } = require("@index");
 const fetchSettings = require("@functions/fetchSettings");
 
-const { MessageEmbed } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 
 /** @type {import("@helpers/jsdoc").Command} */
 module.exports = {
@@ -13,7 +13,7 @@ module.exports = {
 			await message.react(settings.emojis.downvote);
 
 		await message.reply({
-			embeds: [new MessageEmbed().setTitle("Restarting...").setColor(settings.colors.blue)],
+			embeds: [new EmbedBuilder().setTitle("Restarting...").setColor(settings.colors.blue)],
 		});
 
 		client.destroy();
@@ -23,7 +23,7 @@ module.exports = {
 			.catch(() =>
 				message.channel.send({
 					embeds: [
-						new MessageEmbed()
+						new EmbedBuilder()
 							.setTitle("Something went wrong when restarting the bot!")
 							.setDescription("This error is likely related to fetching `settings.json`")
 							.setColor(settings.colors.red)

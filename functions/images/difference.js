@@ -1,5 +1,5 @@
 const { createCanvas, loadImage, ImageData } = require("@napi-rs/canvas");
-const { MessageAttachment } = require("discord.js");
+const { AttachmentBuilder } = require("discord.js");
 
 const { magnifyBuffer } = require("@images/magnify");
 
@@ -14,7 +14,7 @@ const settings = require("@resources/settings.json");
  * @param {String} firstUrl first url to compare
  * @param {String} secondUrl second url to compare
  * @param {Number?} tolerance difference between colors considered acceptable
- * @returns {Promise<import("discord.js").MessageAttachment>} compared image
+ * @returns {Promise<import("discord.js").AttachmentBuilder>} compared image
  */
 module.exports = async function difference(firstUrl, secondUrl, tolerance = 0) {
 	const mappedUrls = [];
@@ -99,8 +99,8 @@ module.exports = async function difference(firstUrl, secondUrl, tolerance = 0) {
 	const out = createCanvas(finalWidth, finalHeight);
 	out.getContext("2d").putImageData(new ImageData(buff, finalWidth, finalHeight), 0, 0);
 	const finalBuffer = out.toBuffer("image/png");
-	// convert the canvas to a MessageAttachment
-	return new MessageAttachment(finalBuffer, "diff.png");
+	// convert the canvas to a AttachmentBuilder
+	return new AttachmentBuilder(finalBuffer, { name: "diff.png" });
 };
 
 /**

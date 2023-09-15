@@ -7,6 +7,8 @@ const changeStatus = require("@submission/utility/changeStatus");
 const DEBUG = process.env.DEBUG.toLowerCase() == "true";
 const { imageButtons } = require("@helpers/interactions");
 
+const { EmbedBuilder } = require("discord.js");
+
 /**
  * Instapass a given texture embed
  * @author Evorp
@@ -39,7 +41,7 @@ module.exports = async function instapass(client, message, member) {
 	if (!channelOut) return warnUser(message, strings.submission.no_result_channel);
 	await channelOut.send({
 		embeds: [
-			message.embeds[0].setDescription(
+			EmbedBuilder.from(message.embeds[0]).setDescription(
 				`[Original Post](${message.url})\n${message.embeds[0].description ?? ""}`,
 			),
 		],

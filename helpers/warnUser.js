@@ -1,7 +1,7 @@
 const settings = require("@resources/settings.json");
 const strings = require("@resources/strings.json");
 
-const { MessageEmbed } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 const addDeleteButton = require("@helpers/addDeleteButton");
 
 /**
@@ -11,7 +11,7 @@ const addDeleteButton = require("@helpers/addDeleteButton");
  * @param {String} text
  */
 module.exports = async function warnUser(message, text) {
-	const embed = new MessageEmbed()
+	const embed = new EmbedBuilder()
 		.setColor(settings.colors.red)
 		.setThumbnail(settings.images.warning)
 		.setTitle(strings.bot.error)

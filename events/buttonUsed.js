@@ -5,7 +5,7 @@ const difference = require("@images/difference");
 
 const minecraftSorter = require("@helpers/minecraftSorter");
 const { default: axios } = require("axios");
-const { MessageEmbed } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 
 const strings = require("@resources/strings.json");
 const settings = require("@resources/settings.json");
@@ -56,7 +56,7 @@ module.exports = {
 				if (!diff || !proposedUrl) {
 					return await interaction.editReply({
 						embeds: [
-							new MessageEmbed()
+							new EmbedBuilder()
 								.setTitle(strings.bot.error)
 								.setDescription("There is no existing texture to find the difference of!")
 								.setColor(settings.colors.red)
@@ -67,7 +67,7 @@ module.exports = {
 				}
 				return await interaction.editReply({
 					embeds: [
-						new MessageEmbed()
+						new EmbedBuilder()
 							.setTitle("Image Difference")
 							.setDescription(
 								"- Blue: Changed pixels\n- Green: Added pixels\n- Red: Removed pixels",
@@ -99,7 +99,7 @@ module.exports = {
 			default:
 				return await interaction.reply({
 					embeds: [
-						new MessageEmbed()
+						new EmbedBuilder()
 							.setTitle(strings.bot.error)
 							.setThumbnail(settings.images.error)
 							.setDescription(strings.bot.missing_interaction.replace("%INTERACTION%", "button"))

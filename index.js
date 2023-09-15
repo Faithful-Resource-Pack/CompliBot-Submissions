@@ -14,25 +14,34 @@ const walkSync = require("@helpers/walkSync");
 
 const fetchSettings = require("@functions/fetchSettings");
 const unhandledRejection = require("@events/unhandledRejection");
-const { Client, Intents, Constants, Collection } = require("discord.js");
+const { Client, Collection, GatewayIntentBits, Partials } = require("discord.js");
 
 function startBot() {
 	const client = new Client({
 		allowedMentions: { parse: ["users", "roles"], repliedUser: false }, // remove this line to die instantly ~JackDotJS 2021
 		restTimeOffset: 0,
-		partials: Object.values(Constants.PartialTypes),
+		partials: [
+			Partials.Channel,
+			Partials.GuildMember,
+			Partials.GuildScheduledEvent,
+			Partials.Message,
+			Partials.Reaction,
+			Partials.ThreadMember,
+			Partials.User,
+		],
 		intents: [
-			Intents.FLAGS.GUILDS,
-			Intents.FLAGS.GUILD_MEMBERS,
-			Intents.FLAGS.GUILD_BANS,
-			Intents.FLAGS.GUILD_INTEGRATIONS,
-			Intents.FLAGS.GUILD_PRESENCES,
-			Intents.FLAGS.GUILD_MESSAGES,
-			Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-			Intents.FLAGS.GUILD_MESSAGE_TYPING,
-			Intents.FLAGS.DIRECT_MESSAGES,
-			Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
-			Intents.FLAGS.DIRECT_MESSAGE_TYPING,
+			GatewayIntentBits.Guilds,
+			GatewayIntentBits.GuildMembers,
+			GatewayIntentBits.GuildModeration,
+			GatewayIntentBits.GuildIntegrations,
+			GatewayIntentBits.GuildPresences,
+			GatewayIntentBits.GuildMessages,
+			GatewayIntentBits.MessageContent,
+			GatewayIntentBits.GuildMessageReactions,
+			GatewayIntentBits.GuildMessageTyping,
+			GatewayIntentBits.DirectMessages,
+			GatewayIntentBits.DirectMessageReactions,
+			GatewayIntentBits.DirectMessageTyping,
 		],
 	});
 

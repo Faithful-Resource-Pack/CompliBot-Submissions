@@ -9,7 +9,7 @@ const getImages = require("@helpers/getImages");
 const generateComparison = require("@submission/utility/generateComparison");
 const { imageButtons, submissionButtons } = require("@helpers/interactions");
 
-const { MessageEmbed, MessageAttachment } = require("discord.js");
+const { EmbedBuilder, AttachmentBuilder } = require("discord.js");
 const { submissionReactions } = require("@helpers/interactions");
 
 /**
@@ -18,7 +18,7 @@ const { submissionReactions } = require("@helpers/interactions");
  * @param {import("discord.js").Client} client
  * @param {import("discord.js").Message} message used for channel and author information
  * @param {import("@helpers/jsdoc").Texture} texture texture information
- * @param {import("discord.js").MessageAttachment} attachment raw texture to embed
+ * @param {import("discord.js").AttachmentBuilder} attachment raw texture to embed
  * @param {{ description?: String, authors: String[] }} params additional info (e.g. description, coauthors)
  */
 module.exports = async function makeEmbed(client, message, texture, attachment, params = {}) {
@@ -37,20 +37,27 @@ module.exports = async function makeEmbed(client, message, texture, attachment, 
 		}
 	}
 
+	// needed to edit later on when necessary (djs v14 workaround)
+	const authorField = {
+		name: "Author",
+		value: `<@!${params.authors.join(">\n<@!").toString()}>`,
+		inline: true,
+	};
+
 	// create base embed
-	const embed = new MessageEmbed()
+	const embed = new EmbedBuilder()
 		.setAuthor({ name: message.author.username, iconURL: message.author.displayAvatarURL() })
 		.setColor(settings.colors.blue)
 		.setTitle(`[#${texture.id}] ${texture.name}`)
 		.setURL(`https://webapp.faithfulpack.net/#/gallery/java/32x/latest/all/?show=${texture.id}`)
 		.addFields([
-			{ name: "Author", value: `<@!${params.authors.join(">\n<@!").toString()}>`, inline: true },
+			authorField,
 			{ name: "Status", value: `<:pending:${settings.emojis.pending}> Pending...`, inline: true },
 			...addPathsToEmbed(texture),
 		]);
 
 	// load raw image to pull from
-	const rawImage = new MessageAttachment(attachment.url, `${texture.name}.png`);
+	const rawImage = new AttachmentBuilder(attachment.url, { name: `${texture.name}.png` });
 	const dimension = await getDimensions(attachment.url);
 
 	// generate comparison image if possible
@@ -102,7 +109,11 @@ module.exports = async function makeEmbed(client, message, texture, attachment, 
 	}
 
 	if (params.description) embed.setDescription(params.description);
-	if (params.authors.length > 1) embed.fields[0].name = "Authors";
+	if (params.authors.length > 1) {
+		// plural authors
+		authorField.name += "s";
+		embed.spliceFields(0, 1, authorField);
+	}
 
 	const msg = await message.channel.send({
 		embeds: [embed],

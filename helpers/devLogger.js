@@ -1,4 +1,4 @@
-const { MessageEmbed } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 
 /**
  * Log dev errors and information to a dedicated channel
@@ -18,7 +18,7 @@ module.exports = async function devLogger(client, description, params = {}) {
 	if (params.codeBlocks !== null && params.codeBlocks !== undefined)
 		description = `\`\`\`${params.codeBlocks}\n${description}\`\`\``;
 
-	const embed = new MessageEmbed()
+	const embed = new EmbedBuilder()
 		.setTitle(params.title ?? "Unhandled Rejection")
 		.setDescription(description)
 		.setColor(params.color ?? settings.colors.red)

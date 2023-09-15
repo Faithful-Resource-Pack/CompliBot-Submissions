@@ -1,6 +1,6 @@
 const client = require("@index").Client;
 
-const { MessageEmbed } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 
 const MAINTENANCE = process.env.MAINTENANCE.toLowerCase() == "true";
 const PREFIX = process.env.PREFIX;
@@ -48,7 +48,7 @@ module.exports = {
 			} catch (error) {
 				console.trace(error);
 
-				const embed = new MessageEmbed()
+				const embed = new EmbedBuilder()
 					.setColor(settings.colors.red)
 					.setTitle(strings.bot.error)
 					.setThumbnail(settings.images.error)
