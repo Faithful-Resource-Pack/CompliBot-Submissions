@@ -12,6 +12,8 @@ const { downloadResults } = require("@submission/downloadResults");
 const pushTextures = require("@submission/pushTextures");
 const saveDB = require("@functions/saveDB");
 
+const { ActivityType } = require("discord.js");
+
 /**
  * Send submission messages to their respective channels
  * Runs each day at midnight CE(S)T
@@ -59,7 +61,7 @@ module.exports = {
 
 		if (MAINTENANCE)
 			client.user.setPresence({ activities: [{ name: "maintenance" }], status: "dnd" });
-		else client.user.setActivity("for submissions", { type: "WATCHING" });
+		else client.user.setActivity({ name: "for submissions", type: ActivityType.Watching });
 
 		if (DEV) {
 			setInterval(() => {
