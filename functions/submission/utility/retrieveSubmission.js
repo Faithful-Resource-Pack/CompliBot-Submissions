@@ -6,7 +6,7 @@ const getMessages = require("@helpers/getMessages");
  * @typedef MappedMessage
  * @property {import("discord.js").MessageReaction} upvote
  * @property {import("discord.js").MessageReaction} downvote
- * @property {import("discord.js").EmbedBuilder} embed
+ * @property {import("discord.js").Embed} embed
  * @property {import("discord.js").MessageComponent[]} components
  * @property {import("discord.js").Message} message
  */

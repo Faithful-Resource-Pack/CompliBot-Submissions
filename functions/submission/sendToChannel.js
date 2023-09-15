@@ -28,7 +28,7 @@ async function sendToCouncil(client, params) {
 	);
 
 	for (const message of messagesUpvoted) {
-		const councilEmbed = new EmbedBuilder(message.embed)
+		const councilEmbed = EmbedBuilder.from(message.embed)
 			.setColor(settings.colors.council)
 			.setDescription(
 				`[Original Post](${message.message.url})\n${message.embed.description ?? ""}`,
@@ -78,13 +78,18 @@ async function sendToResults(client, params) {
 	);
 
 	for (const message of messagesUpvoted) {
-		const resultEmbed = new EmbedBuilder(message.embed).setColor(settings.colors.green);
-		resultEmbed.fields[1].value = `<:upvote:${
-			settings.emojis.upvote
-		}> Will be added in a future version! ${getPercentage(message.upvote, message.downvote)}`;
+		const resultEmbed = EmbedBuilder.from(message.embed)
+			.spliceFields(1, 1, {
+				name: "Status",
+				value: `<:upvote:${
+					settings.emojis.upvote
+				}> Will be added in a future version! ${getPercentage(message.upvote, message.downvote)}`,
+				inline: true,
+			})
+			.setColor(settings.colors.green);
 
 		// if we're coming straight from submissions
-		if (!resultEmbed.description?.startsWith("[Original Post]("))
+		if (!message.embed.description?.startsWith("[Original Post]("))
 			resultEmbed.setDescription(
 				`[Original Post](${message.message.url})\n${message.embed.description ?? ""}`,
 			);
@@ -100,19 +105,24 @@ async function sendToResults(client, params) {
 
 	for (const message of messagesDownvoted) {
 		if (params.council_enabled) {
-			message.embed.setColor(settings.colors.red);
-			const resultEmbed = new EmbedBuilder(message.embed);
-			resultEmbed.fields[1].value = `<:downvote:${
-				settings.emojis.downvote
-			}> This texture did not pass council voting and therefore will not be added. ${getPercentage(
-				message.upvote,
-				message.downvote,
-			)}`;
+			// everyone thank discord.js v14 for this monstrosity
+			const resultEmbed = EmbedBuilder.from(message.embed)
+				.spliceFields(1, 1, {
+					name: "Status",
+					value: `<:downvote:${
+						settings.emojis.downvote
+					}> This texture did not pass council voting and therefore will not be added. ${getPercentage(
+						message.upvote,
+						message.downvote,
+					)}`,
+					inline: true,
+				})
+				.setColor(settings.colors.red);
 
 			const users = await message.downvote.users.fetch();
 
 			// add council downvotes field between the status and path fields
-			resultEmbed.fields.splice(2, 0, {
+			resultEmbed.spliceFields(2, 0, {
 				name: "Council Downvotes",
 				value: `<@!${users
 					.filter((user) => !user.bot)

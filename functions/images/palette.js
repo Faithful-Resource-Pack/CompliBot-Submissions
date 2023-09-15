@@ -68,10 +68,13 @@ module.exports = async function palette(interaction, url) {
 		.slice(0, COLORS_TOP)
 		.map((el) => el.hex);
 
+	// stupid workaround for djs v14 not letting you query embed property lengths?
+	let description = `List of colors:\n`;
+
 	const embed = new EmbedBuilder()
 		.setTitle("Palette results")
 		.setColor(settings.colors.blue)
-		.setDescription(`List of colors:\n`)
+		.setDescription(description)
 		.setFooter({ text: `Total: ${Object.values(allColors).length}` });
 
 	const fieldGroups = [];
@@ -116,7 +119,7 @@ module.exports = async function palette(interaction, url) {
 
 	// create urls
 	const paletteUrls = [];
-	let descriptionLength = embed.description.length;
+	let descriptionLength = description.length;
 
 	for (let i = 0; i < paletteGroups.length; ++i) {
 		const link = `**[Palette${
@@ -131,7 +134,8 @@ module.exports = async function palette(interaction, url) {
 	}
 
 	// append palette links to existing description
-	embed.setDescription(embed.description + paletteUrls.join(" - "));
+	description += paletteUrls.join(" - ");
+	embed.setDescription(description);
 
 	// create gradient canvas for top GRADIENT_TOP colors
 	const bandWidth =
@@ -166,10 +170,9 @@ module.exports = async function palette(interaction, url) {
 	});
 
 	// create the attachement
-	const colorImageAttachment = new AttachmentBuilder(
-		colorCanvas.toBuffer("image/png"),
-		"colors.png",
-	);
+	const colorImageAttachment = new AttachmentBuilder(colorCanvas.toBuffer("image/png"), {
+		name: "colors.png",
+	});
 
 	return await interaction.reply({
 		embeds: [embed],

@@ -134,7 +134,7 @@ module.exports = async function generateComparison(pack, attachment, info) {
 		const animated = await animate(await loadImage(magnified), mcmeta);
 
 		return {
-			comparisonImage: new AttachmentBuilder(animated, "compared.gif"),
+			comparisonImage: new AttachmentBuilder(animated, { name: "compared.gif" }),
 			hasReference: images.length == 3,
 			mcmeta: displayedMcmeta,
 		};

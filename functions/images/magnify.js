@@ -49,7 +49,7 @@ async function magnifyBuffer(origin, isAnimation = false) {
  */
 async function magnifyAttachment(origin, name = "magnified.png") {
 	const { magnified } = await magnifyBuffer(origin);
-	return new AttachmentBuilder(magnified, name);
+	return new AttachmentBuilder(magnified, { name });
 }
 
 /**

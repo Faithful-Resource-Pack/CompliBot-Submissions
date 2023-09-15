@@ -27,7 +27,7 @@ function startBot() {
 			Partials.Message,
 			Partials.Reaction,
 			Partials.ThreadMember,
-			Partials.User
+			Partials.User,
 		],
 		intents: [
 			GatewayIntentBits.Guilds,

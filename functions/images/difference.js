@@ -100,7 +100,7 @@ module.exports = async function difference(firstUrl, secondUrl, tolerance = 0) {
 	out.getContext("2d").putImageData(new ImageData(buff, finalWidth, finalHeight), 0, 0);
 	const finalBuffer = out.toBuffer("image/png");
 	// convert the canvas to a AttachmentBuilder
-	return new AttachmentBuilder(finalBuffer, "diff.png");
+	return new AttachmentBuilder(finalBuffer, { name: "diff.png" });
 };
 
 /**

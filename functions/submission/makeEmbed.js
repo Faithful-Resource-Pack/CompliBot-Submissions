@@ -37,6 +37,13 @@ module.exports = async function makeEmbed(client, message, texture, attachment, 
 		}
 	}
 
+	// needed to edit later on when necessary (djs v14 workaround)
+	const authorField = {
+		name: "Author",
+		value: `<@!${params.authors.join(">\n<@!").toString()}>`,
+		inline: true,
+	};
+
 	// create base embed
 	const embed = new EmbedBuilder()
 		.setAuthor({ name: message.author.username, iconURL: message.author.displayAvatarURL() })
@@ -44,13 +51,13 @@ module.exports = async function makeEmbed(client, message, texture, attachment, 
 		.setTitle(`[#${texture.id}] ${texture.name}`)
 		.setURL(`https://webapp.faithfulpack.net/#/gallery/java/32x/latest/all/?show=${texture.id}`)
 		.addFields([
-			{ name: "Author", value: `<@!${params.authors.join(">\n<@!").toString()}>`, inline: true },
+			authorField,
 			{ name: "Status", value: `<:pending:${settings.emojis.pending}> Pending...`, inline: true },
 			...addPathsToEmbed(texture),
 		]);
 
 	// load raw image to pull from
-	const rawImage = new AttachmentBuilder(attachment.url, `${texture.name}.png`);
+	const rawImage = new AttachmentBuilder(attachment.url, { name: `${texture.name}.png` });
 	const dimension = await getDimensions(attachment.url);
 
 	// generate comparison image if possible
@@ -102,7 +109,11 @@ module.exports = async function makeEmbed(client, message, texture, attachment, 
 	}
 
 	if (params.description) embed.setDescription(params.description);
-	if (params.authors.length > 1) embed.fields[0].name = "Authors";
+	if (params.authors.length > 1) {
+		// plural authors
+		authorField.name += "s";
+		embed.spliceFields(0, 1, authorField);
+	}
 
 	const msg = await message.channel.send({
 		embeds: [embed],
