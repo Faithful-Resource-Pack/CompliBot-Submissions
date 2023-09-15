@@ -8,7 +8,7 @@ const glob = require("globby");
 const { normalize, relative } = require("path");
 
 const { Octokit } = require("@octokit/rest");
-const { readFile } = require("fs");
+const { readFileSync } = require("fs");
 
 /**
  * Premade function for pushing directly to GitHub
@@ -98,14 +98,14 @@ const getCurrentCommit = async (octo, org, repo, branch) => {
  * @param {String} filePath
  * @returns an utf8 file
  */
-const getFileAsUTF8 = (filePath) => readFile(filePath, { encoding: "utf-8" });
+const getFileAsUTF8 = (filePath) => readFileSync(filePath, { encoding: "utf-8" });
 
 /**
  * Get file as binary file (used for .png files)
  * @param {String} filePath
  * @returns a base64 file
  */
-const getFileAsBinary = (filePath) => readFile(filePath, { encoding: "base64" });
+const getFileAsBinary = (filePath) => readFileSync(filePath, { encoding: "base64" });
 
 /**
  * Create blob for a file
