@@ -1,7 +1,7 @@
 const settings = require("@resources/settings.json");
 const strings = require("@resources/strings.json");
 
-const downloadResults = require("@submission/downloadResults");
+const { downloadResults } = require("@submission/downloadResults");
 const warnUser = require("@helpers/warnUser");
 const changeStatus = require("@submission/utility/changeStatus");
 const DEBUG = process.env.DEBUG.toLowerCase() == "true";

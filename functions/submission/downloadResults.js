@@ -9,7 +9,6 @@ const getPackByChannel = require("@submission/utility/getPackByChannel");
 
 const { promises, writeFile } = require("fs");
 const { default: axios } = require("axios");
-const { Client } = require("discord.js");
 
 /**
  * @typedef MappedTexture
@@ -26,7 +25,7 @@ const { Client } = require("discord.js");
  * @param {String} channelResultID result channel to download from
  * @param {Boolean?} instapass whether to push the texture directly after downloading
  */
-module.exports = async function downloadResults(client, channelResultID, instapass = false) {
+async function downloadResults(client, channelResultID, instapass = false) {
 	const packName = getPackByChannel(channelResultID, "results");
 
 	// get messages from the same day
@@ -74,7 +73,7 @@ module.exports = async function downloadResults(client, channelResultID, instapa
 	let instapassName;
 
 	for (const texture of mappedTextures) {
-		const textureName = await downloadTexture(texture, packName);
+		const textureName = await downloadTexture(texture, packName, "./downloadedTextures");
 		if (instapass) instapassName = textureName;
 		// saves on post requests to add all contributions at once in an array, more reliable
 		allContribution.push({
@@ -106,16 +105,17 @@ module.exports = async function downloadResults(client, channelResultID, instapa
 	}
 
 	if (instapass) await pushTextures(`Instapassed ${instapassName} from ${formattedDate()}`);
-};
+}
 
 /**
  * Download a single texture to all its paths locally
  * @author Juknum, Evorp
  * @param {MappedTexture} texture message and texture info
  * @param {import("@helpers/jsdoc").Pack} packName which pack to download it to
+ * @param {String} baseFolder where to download the texture to
  * @returns {Promise<String>} texture name
  */
-async function downloadTexture(texture, packName) {
+async function downloadTexture(texture, packName, baseFolder) {
 	if (!texture.id || isNaN(Number(texture.id))) {
 		if (DEBUG) console.error(`Non-numerical texture ID found: ${texture.id}`);
 		return;
@@ -130,15 +130,14 @@ async function downloadTexture(texture, packName) {
 	for (const use of textureInfo.uses) {
 		const paths = textureInfo.paths.filter((path) => path.use == use.id);
 		const edition = use.edition.toLowerCase();
-		const folder = settings.repositories.repo_name[edition][packName]?.repo;
-		if (!folder && DEBUG)
+		const packFolder = settings.repositories.repo_name[edition][packName]?.repo;
+		if (!packFolder && DEBUG)
 			console.log(`GitHub repository not found for pack and edition: ${packName} ${edition}`);
-		const basePath = `./downloadedTextures/${folder}`;
 
 		for (const path of paths) {
 			// for each version of each path
 			for (const version of path.versions) {
-				const fullPath = `${basePath}/${version}/${path.name}`;
+				const fullPath = `${baseFolder}/${packFolder}/${version}/${path.name}`;
 
 				// make full folder chain
 				await promises
@@ -159,7 +158,7 @@ async function downloadTexture(texture, packName) {
 
 /**
  * @author Evorp
- * @param {Client} client
+ * @param {import("discord.js").Client} client
  * @param {import("@helpers/jsdoc").Pack} packName which pack to check role
  * @param {String} guildID guild id to add roles to
  * @param {String[]} authors which authors to add roles to
@@ -180,3 +179,9 @@ async function addContributorRole(client, packName, guildID, authors) {
 		}
 	}
 }
+
+module.exports = {
+	downloadResults,
+	downloadTexture,
+	addContributorRole,
+};

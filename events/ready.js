@@ -8,7 +8,7 @@ const fetchSettings = require("@functions/fetchSettings");
 const settings = require("@resources/settings.json");
 
 const { sendToCouncil, sendToResults } = require("@submission/sendToChannel");
-const downloadResults = require("@submission/downloadResults");
+const { downloadResults } = require("@submission/downloadResults");
 const pushTextures = require("@submission/pushTextures");
 const saveDB = require("@functions/saveDB");
 
