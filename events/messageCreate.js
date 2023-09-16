@@ -1,5 +1,3 @@
-const client = require("@index").Client;
-
 const { EmbedBuilder } = require("discord.js");
 
 const MAINTENANCE = process.env.MAINTENANCE.toLowerCase() == "true";
@@ -17,8 +15,11 @@ const invalidSubmission = require("@functions/submission/utility/invalidSubmissi
 /** @type {import("@helpers/jsdoc").Event} */
 module.exports = {
 	name: "messageCreate",
-	/** @param {import("discord.js").Message} message */
-	async execute(message) {
+	/**
+	 * @param {import("discord.js").Client} client
+	 * @param {import("discord.js").Message} message
+	 */
+	async execute(client, message) {
 		// Ignore bot messages
 		if (message.author.bot) return;
 

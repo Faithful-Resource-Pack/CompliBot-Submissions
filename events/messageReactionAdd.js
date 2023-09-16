@@ -1,4 +1,3 @@
-const client = require("@index").Client;
 const settings = require("@resources/settings.json");
 
 const reactionMenu = require("@submission/reactionMenu");
@@ -10,7 +9,7 @@ module.exports = {
 	 * @param {import("discord.js").MessageReaction} reaction
 	 * @param {import("discord.js").User} user
 	 */
-	async execute(reaction, user) {
+	async execute(client, reaction, user) {
 		if (user.bot) return;
 
 		// dark magic to fetch messages sent before the start of the bot

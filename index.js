@@ -44,8 +44,6 @@ function startBot() {
 		],
 	});
 
-	exports.Client = client;
-
 	/**
 	 * EVENT HANDLER
 	 * - see the ./events folder
@@ -54,8 +52,8 @@ function startBot() {
 	for (const file of eventsFiles) {
 		/** @type {import("@helpers/jsdoc").Event} */
 		const event = require(`./events/${file}`);
-		if (event.once) client.once(event.name, (...args) => event.execute(...args));
-		else client.on(event.name, (...args) => event.execute(...args));
+		if (event.once) client.once(event.name, (...args) => event.execute(client, ...args));
+		else client.on(event.name, (...args) => event.execute(client, ...args));
 	}
 
 	/**

@@ -3,8 +3,6 @@ const tile = require("@images/tile");
 const palette = require("@images/palette");
 const difference = require("@images/difference");
 
-const minecraftSorter = require("@helpers/minecraftSorter");
-const { default: axios } = require("axios");
 const { EmbedBuilder } = require("discord.js");
 
 const strings = require("@resources/strings.json");
@@ -17,8 +15,11 @@ const getPackByChannel = require("@submission/utility/getPackByChannel");
  */
 module.exports = {
 	name: "buttonUsed",
-	/** @param {import("discord.js").ButtonInteraction} interaction */
-	async execute(interaction) {
+	/**
+	 * @param {import("discord.js").Client} client
+	 * @param {import("discord.js").ButtonInteraction} interaction
+	 */
+	async execute(client, interaction) {
 		const message = interaction.message;
 		const image =
 			interaction.message?.embeds[0]?.thumbnail?.url ??
