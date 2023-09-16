@@ -10,7 +10,7 @@ const { Collection } = require("discord.js");
  * @author RobertR11, Evorp
  * @param {import("discord.js").Client} client
  */
-module.exports = async function loadCommands(client) {
+async function loadCommands(client) {
 	client.commands = new Collection();
 	const commandPaths = walkSync(join(__dirname, "..", "commands")).filter((f) => f.endsWith(".js"));
 
@@ -32,4 +32,27 @@ module.exports = async function loadCommands(client) {
 		devLogger(client, err, { title: "Slash Command Error" });
 		console.error(err);
 	}
+}
+
+/**
+ * Delete all slash commands from either a guild or globally
+ * @author Evorp
+ * @param {REST} rest
+ * @param {String | "global"} guildID
+ */
+async function deleteCommands(client, rest, guildID) {
+	const data = guildID == "global"
+		? await rest.get(Routes.applicationCommands(client.user.id))
+		: await rest.get(Routes.applicationGuildCommands(client.user.id, guildID));
+	for (const command of data) {
+		const deleteUrl = guildID == "global"
+			? `${Routes.applicationCommand(client.user.id, command.id)}`
+			: `${Routes.applicationGuildCommands(client.user.id, guildID)}/${command.id}`;
+		await rest.delete(deleteUrl);
+	}
+}
+
+module.exports = {
+	loadCommands,
+	deleteCommands,
 };

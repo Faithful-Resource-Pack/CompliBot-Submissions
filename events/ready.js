@@ -2,7 +2,7 @@ const settings = require("@resources/settings.json");
 const DEV = process.env.DEV.toLowerCase() == "true";
 const MAINTENANCE = process.env.MAINTENANCE.toLowerCase() == "true";
 
-const loadCommands = require("@functions/loadCommands");
+const { loadCommands } = require("@functions/commandHandler");
 const fetchSettings = require("@functions/fetchSettings");
 
 const { sendToCouncil, sendToResults } = require("@submission/sendToChannel");
