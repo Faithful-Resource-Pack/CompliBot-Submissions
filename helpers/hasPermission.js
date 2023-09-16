@@ -1,4 +1,4 @@
-const { PermissionsBitField } = require("discord.js");
+const { PermissionFlagsBits } = require("discord.js");
 
 /**
  * Check permissions of a given member
@@ -8,7 +8,7 @@ const { PermissionsBitField } = require("discord.js");
  * @returns {Boolean} whether the member has the permissions
  */
 module.exports = function hasPermission(member, type = "any") {
-	const hasAdmin = member.permissions.has(PermissionsBitField.Flags.Administrator);
+	const hasAdmin = member.permissions.has(PermissionFlagsBits.Administrator);
 	const hasCouncil = member.roles.cache.some((role) => role.name.toLowerCase().includes("council"));
 
 	switch (type) {
