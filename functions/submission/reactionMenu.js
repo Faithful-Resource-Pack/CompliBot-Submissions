@@ -2,7 +2,7 @@ const settings = require("@resources/settings.json");
 
 const instapass = require("@submission/utility/instapass");
 const changeStatus = require("@submission/utility/changeStatus");
-const hasPermission = require("@helpers/hasPermission");
+const { hasPermission } = require("@helpers/permissions");
 const DEBUG = process.env.DEBUG.toLowerCase() == "true";
 /**
  * Opens reaction tray, listens for reaction, and closes tray

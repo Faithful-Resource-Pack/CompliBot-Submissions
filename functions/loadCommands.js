@@ -13,7 +13,10 @@ const { Collection } = require("discord.js");
 module.exports = async function loadCommands(client) {
 	client.commands = new Collection();
 	const commandPaths = walkSync(join(__dirname, "..", "commands")).filter((f) => f.endsWith(".js"));
+
+	// add to collection in bot so they can be fetched
 	for (const path of commandPaths) {
+		/** @type {import("@helpers/jsdoc").Command} */
 		const command = require(path);
 		client.commands.set(command.data.name, command);
 	}
@@ -21,12 +24,12 @@ module.exports = async function loadCommands(client) {
 	const rest = new REST({ version: "10" }).setToken(process.env.CLIENT_TOKEN);
 
 	try {
-		rest.put(
-			Routes.applicationCommands(client.user.id),
-			{ body: commandPaths.map((path) => require(path).data.toJSON()) }
-		)
+		// add to discord so they can be used in the slash command menu
+		rest.put(Routes.applicationCommands(client.user.id), {
+			body: commandPaths.map((path) => require(path).data.toJSON()),
+		});
 	} catch (err) {
 		devLogger(client, err, { title: "Slash Command Error" });
 		console.error(err);
 	}
-}
+};

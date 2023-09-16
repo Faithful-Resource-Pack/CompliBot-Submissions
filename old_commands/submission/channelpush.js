@@ -3,7 +3,7 @@ const strings = require("@resources/strings.json");
 
 const { sendToCouncil, sendToResults } = require("@submission/sendToChannel");
 const warnUser = require("@helpers/warnUser");
-const hasPermission = require("@helpers/hasPermission");
+const { hasPermission } = require("@helpers/permissions");
 
 /** @type {import("@helpers/jsdoc").Command} */
 module.exports = {

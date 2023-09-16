@@ -1,7 +1,9 @@
 const settings = require("@resources/settings.json");
 const strings = require("@resources/strings.json");
 
-const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js')
+const { SlashCommandBuilder } = require("discord.js");
+
+const { noPermission } = require("@helpers/permissions");
 
 const fs = require("fs");
 const { sendToCouncil, sendToResults } = require("@submission/sendToChannel");
@@ -13,10 +15,13 @@ const saveDB = require("@functions/saveDB");
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("hotfix")
-		.setDescription("Fix something, may change at anytime."),
+		.setDescription(strings.command.description.hotfix),
 	async execute(interaction) {
-		if (!process.env.DEVELOPERS.includes(interaction.user.id)) return;
+		if (!process.env.DEVELOPERS.includes(interaction.user.id)) return noPermission(interaction);
 		// put code here on the vps when editing
-		await interaction.reply({ content: settings.emojis.upvote });
+		await interaction.reply({
+			content: "This command doesn't currently do anything!",
+			ephemeral: true,
+		});
 	},
 };

@@ -1,7 +1,7 @@
 const settings = require("@resources/settings.json");
 const strings = require("@resources/strings.json");
 
-const hasPermission = require("@helpers/hasPermission");
+const { hasPermission } = require("@helpers/permissions");
 const formattedDate = require("@helpers/formattedDate");
 const pushTextures = require("@submission/pushTextures");
 const { downloadResults } = require("@submission/downloadResults");

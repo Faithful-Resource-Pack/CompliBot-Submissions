@@ -2,14 +2,12 @@ const addDeleteButton = require("@helpers/addDeleteButton");
 const settings = require("@resources/settings.json");
 const { default: axios } = require("axios");
 
-const { EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, SlashCommandBuilder } = require("discord.js");
 
 /** @type {import("@helpers/jsdoc").Command} */
 module.exports = {
-	name: "ping",
-	aliases: ["r"],
-	guildOnly: false,
-	async execute(client, message, args) {
+	data: new SlashCommandBuilder().setName("ping").setDescription("Pong!"),
+	async execute(interaction) {
 		const quotes = (
 			await axios.get(
 				`https://raw.githubusercontent.com/Faithful-Resource-Pack/CompliBot/main/lang/en-US/commands.json`,
@@ -19,11 +17,11 @@ module.exports = {
 		const quote = quotes[Math.floor(Math.random() * quotes.length)];
 		// NEVER USE AWAIT ASYNC
 		// only send response to maximize response time
-		return message.channel
-			.send("** **")
+		return interaction
+			.reply({ content: "** **", fetchReply: true })
 			.then((msg) => {
-				const apiPing = client.ws.ping;
-				const botPing = msg.createdTimestamp - message.createdTimestamp;
+				const apiPing = interaction.client.ws.ping;
+				const botPing = msg.createdTimestamp - interaction.createdTimestamp;
 
 				const embed = new EmbedBuilder().setTitle("Pong!").setColor(settings.colors.blue)
 					.setDescription(`_${quote.replace("%YEAR%", new Date().getFullYear() + 2)}_
@@ -33,11 +31,8 @@ ${botPing}ms
 ${Math.round(apiPing)}ms
 `);
 
-				return Promise.all([msg.delete(), message.reply({ embeds: [embed] })]);
+				return interaction.editReply({ embeds: [embed] });
 			})
-			.then((results) => {
-				const m = results[1];
-				addDeleteButton(m);
-			});
+			.then(addDeleteButton);
 	},
 };

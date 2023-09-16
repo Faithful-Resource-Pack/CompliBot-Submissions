@@ -7,6 +7,19 @@
 	"command": {
 		"error": "One of my developers made an error while making this command! Don't worry, the error is not on your side. Please contact <@360249987927638016>, <@473860522710794250>, or <@173336582265241601> if this keeps occurring.",
 		"maintenance": "I'm currently under maintenance, please try again later.",
+		"description": {
+            "autopush": "Push textures from a result channel to GitHub.",
+            "channelpush": "Send textures to council and result channels.",
+            "behave": "(⌯˃̶᷄ ﹏ ˂̶᷄⌯)",
+			"backup": "Back up all files to the Database GitHub repository.",
+            "hotfix": "Fix something, may change at anytime",
+            "ping": "Pong!",
+            "reload": "Reloads a command",
+            "restart": "Restart the bot.",
+            "say": "Make the bot send any message you specify",
+            "shutdown": "Stops the bot",
+            "status": "Changes the bot's status."
+        },
 		"args": {
 			"none_given": "You did not provide any arguments!",
 			"invalid": "You did not provide valid arguments!"
