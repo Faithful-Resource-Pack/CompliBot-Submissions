@@ -24,6 +24,7 @@
 			"none_given": "You did not provide any arguments!",
 			"invalid": "You did not provide valid arguments!"
 		},
+		"backup_failed": "At least one collection could not be backed up. Please check the developer logs for more information.",
 		"no_permission": "You don't have permission to run this command!",
 		"image": {
 			"not_found_in_10_last": "No image found in 10 previous messages.",

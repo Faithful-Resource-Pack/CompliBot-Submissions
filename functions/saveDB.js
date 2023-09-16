@@ -54,7 +54,11 @@ module.exports = async function saveDB(client, commitMessage = "Daily Backup", p
 	}
 
 	if (DEBUG) console.log(`Downloaded database files: ${successfulPushes}`);
-	await pushToGitHub(params.org, params.repo, params.branch, commitMessage, "./json/");
+	try {
+		await pushToGitHub(params.org, params.repo, params.branch, commitMessage, "./json/");
+	} catch {
+		if (DEBUG) console.log(`Branch ${params.branch} doesn't exist for repository ${params.repo}!`)
+	}
 
 	return successfulPushes.length >= Object.keys(settings.backup.urls).length;
 };

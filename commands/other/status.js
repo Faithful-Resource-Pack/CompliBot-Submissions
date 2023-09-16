@@ -15,7 +15,11 @@ module.exports = {
 				.setName("activity")
 				.setDescription("What activity the bot is doing (e.g. playing, streaming)")
 				.addChoices(
-					...Object.values(ActivityType).filter((x) => typeof x == "string").map((i) => { return { name: i, value: i }; })
+					...Object.values(ActivityType)
+						.filter((x) => typeof x == "string")
+						.map((i) => {
+							return { name: i, value: i };
+						}),
 				)
 				.setRequired(true),
 		)
@@ -26,7 +30,7 @@ module.exports = {
 				.addChoices(
 					{ name: "Online", value: "online" },
 					{ name: "Idle", value: "idle" },
-					{ name: "Do not Disturb", value: "dnd" }
+					{ name: "Do not Disturb", value: "dnd" },
 				)
 				.setRequired(true),
 		)
@@ -58,7 +62,7 @@ module.exports = {
 			embeds: [
 				new EmbedBuilder()
 					.setTitle("Bot status successfully changed!")
-					.setColor(settings.colors.blue)
+					.setColor(settings.colors.blue),
 			],
 			ephemeral: true,
 		});

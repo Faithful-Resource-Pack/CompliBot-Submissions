@@ -32,7 +32,14 @@ module.exports = {
 					`${strings.command.error}\nError for the developers:\n\`\`\`${error}\`\`\``,
 				);
 
-			const msgEmbed = await interaction.reply({ embeds: [embed], fetchReply: true });
+			let msgEmbed;
+			try {
+				msgEmbed = await interaction.reply({ embeds: [embed], fetchReply: true });
+			} catch {
+				// interaction already deferred, try following up instead
+				msgEmbed = await interaction.followUp({ embeds: [embed], fetchReply: true });
+			}
+
 			return await addDeleteButton(msgEmbed);
 		}
 	},
