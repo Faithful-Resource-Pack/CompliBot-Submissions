@@ -3,13 +3,12 @@ const tile = require("@images/tile");
 const palette = require("@images/palette");
 const difference = require("@images/difference");
 
-const minecraftSorter = require("@helpers/minecraftSorter");
-const { default: axios } = require("axios");
 const { EmbedBuilder } = require("discord.js");
 
 const strings = require("@resources/strings.json");
 const settings = require("@resources/settings.json");
 const getPackByChannel = require("@submission/utility/getPackByChannel");
+const warnUser = require("@helpers/warnUser");
 
 /**
  * "fake" emitted event to split up interactionCreate
@@ -17,8 +16,11 @@ const getPackByChannel = require("@submission/utility/getPackByChannel");
  */
 module.exports = {
 	name: "buttonUsed",
-	/** @param {import("discord.js").ButtonInteraction} interaction */
-	async execute(interaction) {
+	/**
+	 * @param {import("discord.js").Client} client
+	 * @param {import("discord.js").ButtonInteraction} interaction
+	 */
+	async execute(client, interaction) {
 		const message = interaction.message;
 		const image =
 			interaction.message?.embeds[0]?.thumbnail?.url ??
@@ -54,16 +56,11 @@ module.exports = {
 
 				const diff = await difference(currentUrl, proposedUrl);
 				if (!diff || !proposedUrl) {
-					return await interaction.editReply({
-						embeds: [
-							new EmbedBuilder()
-								.setTitle(strings.bot.error)
-								.setDescription("There is no existing texture to find the difference of!")
-								.setColor(settings.colors.red)
-								.setThumbnail(settings.images.error),
-						],
-						ephemeral: true,
-					});
+					return await warnUser(
+						interaction,
+						"There is no existing texture to find the difference of!",
+						true,
+					);
 				}
 				return await interaction.editReply({
 					embeds: [
@@ -97,16 +94,10 @@ module.exports = {
 					ephemeral: true,
 				});
 			default:
-				return await interaction.reply({
-					embeds: [
-						new EmbedBuilder()
-							.setTitle(strings.bot.error)
-							.setThumbnail(settings.images.error)
-							.setDescription(strings.bot.missing_interaction.replace("%INTERACTION%", "button"))
-							.setColor(settings.colors.red),
-					],
-					ephemeral: true,
-				});
+				return await warnUser(
+					interaction,
+					strings.bot.missing_interaction.replace("%INTERACTION%", "button"),
+				);
 		}
 	},
 };

@@ -1,4 +1,7 @@
-const { PermissionFlagsBits } = require("discord.js");
+const settings = require("@resources/settings.json");
+const strings = require("@resources/strings.json");
+
+const { EmbedBuilder, PermissionFlagsBits } = require("discord.js");
 
 /**
  * Check permissions of a given member
@@ -7,7 +10,7 @@ const { PermissionFlagsBits } = require("discord.js");
  * @param {"administrator" | "council" | "any"} type what type of role to check for
  * @returns {Boolean} whether the member has the permissions
  */
-module.exports = function hasPermission(member, type = "any") {
+function hasPermission(member, type = "any") {
 	const hasAdmin = member.permissions.has(PermissionFlagsBits.Administrator);
 	const hasCouncil = member.roles.cache.some((role) => role.name.toLowerCase().includes("council"));
 
@@ -19,4 +22,8 @@ module.exports = function hasPermission(member, type = "any") {
 		default:
 			return hasAdmin || hasCouncil;
 	}
+}
+
+module.exports = {
+	hasPermission,
 };

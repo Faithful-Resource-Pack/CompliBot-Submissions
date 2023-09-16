@@ -38,15 +38,11 @@
  * BOT:
  *
  * @typedef Command
- * @property {String} name main command name
- * @property {Boolean?} guildOnly server-reliant commands
- * @property {String[]?} aliases additional command names
+ * @property {import("discord.js").SlashCommandBuilder} data command setup
  * @property {CommandExecute} execute
  *
  * @callback CommandExecute
- * @param {import("discord.js").Client} client
- * @param {import("discord.js").Message} message message itself
- * @param {String[]} args each argument as an array
+ * @param {import("discord.js").ChatInputCommandInteraction} interaction
  *
  * @typedef Event
  * @property {String} name valid discord.js or client-emitted event name

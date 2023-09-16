@@ -1,25 +1,26 @@
 const strings = require("@resources/strings.json");
 
+const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
 const warnUser = require("@helpers/warnUser");
 
 /** @type {import("@helpers/jsdoc").Command} */
 module.exports = {
-	name: "say",
-	guildOnly: true,
-	async execute(client, message, args) {
-		if (!process.env.DEVELOPERS.includes(message.author.id)) return;
-		if (!args.length) return warnUser(message, strings.command.args.none_given);
+	data: new SlashCommandBuilder()
+		.setName("say")
+		.setDescription(strings.command.description.say)
+		.addStringOption((option) =>
+			option.setName("message").setDescription("What should the bot say?").setRequired(true),
+		)
+		.setDMPermission(false)
+		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+	async execute(interaction) {
+		if (!process.env.DEVELOPERS.includes(interaction.user.id))
+			return warnUser(interaction, strings.command.no_permission);
 
-		// remove first "word" which is the command
-		const content = message.content.substring(message.content.indexOf(" ") + 1);
+		const content = interaction.options.getString("message", true);
 
-		if (message.attachments.size)
-			await message.channel.send({
-				content,
-				files: [message.attachments.values().map((attachment) => attachment.url)],
-			});
-		else await message.channel.send({ content });
-
-		await message.delete().catch();
+		const msg = await interaction.reply({ content: "** **", fetchReply: true });
+		if (msg.deletable) await msg.delete();
+		await interaction.channel.send({ content });
 	},
 };

@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/Faithful-Resource-Pack/CompliBot-Submissions#readme",
   "dependencies": {
+    "@discordjs/rest": "^2.0.1",
     "@napi-rs/canvas": "^0.1.44",
     "@octokit/rest": "^19.0.13",
     "axios": "^1.5.0",

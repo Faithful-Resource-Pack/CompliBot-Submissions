@@ -1,39 +1,24 @@
-const strings = require("@resources/strings.json");
 const settings = require("@resources/settings.json");
+const strings = require("@resources/strings.json");
 
+const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
+
+const { loadCommands, deleteCommands } = require("@functions/commandHandler");
 const warnUser = require("@helpers/warnUser");
-const walkSync = require("@helpers/walkSync");
 
 /** @type {import("@helpers/jsdoc").Command} */
 module.exports = {
-	name: "reload",
-	aliases: ["r"],
-	guildOnly: false,
-	async execute(client, message, args) {
-		if (!process.env.DEVELOPERS.includes(message.author.id))
-			return warnUser(message, strings.command.no_permission);
+	data: new SlashCommandBuilder()
+		.setName("reload")
+		.setDescription(strings.command.description.reload)
+		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+		.setDMPermission(false),
+	async execute(interaction) {
+		if (!process.env.DEVELOPERS.includes(interaction.user.id))
+			return warnUser(interaction, strings.command.no_permission);
+		// put code here on the vps when editing
 
-		const commandName = args[0].toLowerCase();
-		const command =
-			message.client.commands.get(commandName) ||
-			message.client.commands.find((cmd) => cmd.aliases?.includes(commandName));
-
-		if (!command)
-			return warnUser(message, `There is no command with name or alias \`${commandName}\`!`);
-
-		const commandPath = walkSync("./commands")
-			.find((file) => file.includes(command.name))
-			.replace("./commands/", "../");
-
-		delete require.cache[require.resolve(commandPath)];
-
-		try {
-			const newCommand = require(commandPath);
-			message.client.commands.set(newCommand.name, newCommand);
-			await message.react(settings.emojis.upvote);
-		} catch (error) {
-			console.error(error);
-			await message.react(settings.emojis.downvote);
-		}
+		await deleteCommands(interaction.client, interaction.guild.id);
+		await loadCommands(interaction.client);
 	},
 };

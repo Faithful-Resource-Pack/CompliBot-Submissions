@@ -1,36 +1,31 @@
 const strings = require("@resources/strings.json");
 
+const { SlashCommandBuilder } = require("discord.js");
+
 /** @type {import("@helpers/jsdoc").Command} */
 module.exports = {
-	name: "behave",
-	guildOnly: false,
-	async execute(client, message, args) {
-		if (!process.env.DEVELOPERS.includes(message.author.id))
-			return await message.reply({ content: "lol no" });
+	data: new SlashCommandBuilder()
+		.setName("behave")
+		.setDescription(strings.command.description.behave)
+		.addStringOption((option) =>
+			option.setName("message").setDescription("Message ID to reply to").setRequired(false),
+		),
+	async execute(interaction) {
+		if (!process.env.DEVELOPERS.includes(interaction.user.id))
+			return await interaction.reply({ content: "lol no" });
 
-		if (args?.[0]?.includes("/channels/")) {
-			let ids;
-			const link = args[0];
-			const url = new URL(link).pathname;
-			if (
-				link.startsWith("https://canary.discord.com/channels/") ||
-				link.startsWith("https://discordapp.com/channels/") ||
-				link.startsWith("https://discord.com/channels/")
-			)
-				ids = url.replace("/channels/", "").replace("message", "").split("/");
-			else return await message.reply({ content: strings.command.behave });
+		const msgID = interaction.options.getString("message");
 
-			/** @type {import("discord.js").TextChannel} */
-			const channel = message.guild.channels.cache.get(ids[1]);
-			const messageToBehave = await channel.messages.fetch(ids[2]);
+		if (!msgID) return await interaction.reply({ content: strings.command.behave });
 
-			// delete command message
-			await message.delete();
+		try {
+			const message = await interaction.channel.messages.fetch(msgID);
+			const msg = await interaction.reply({ content: "** **", fetchReply: true });
+			msg.delete();
 
-			// reply to link message
-			return await messageToBehave.reply({ content: strings.command.behave });
+			return await message.reply({ content: strings.command.behave });
+		} catch {
+			return await interaction.reply({ content: strings.command.behave });
 		}
-
-		return await message.reply({ content: strings.command.behave });
 	},
 };

@@ -3,7 +3,7 @@ const strings = require("@resources/strings.json");
 
 const addDeleteButton = require("@helpers/addDeleteButton");
 const { EmbedBuilder } = require("discord.js");
-const hasPermission = require("@helpers/hasPermission");
+const { hasPermission } = require("@helpers/permissions");
 
 const DEBUG = process.env.DEBUG.toLowerCase() == "true";
 
