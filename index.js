@@ -68,10 +68,10 @@ function startBot() {
 
 // IMPORTANT: you always need to fetch settings BEFORE you start the bot
 fetchSettings()
-	.then(() => startBot())
+	.then(startBot)
 	.catch((err) => {
 		console.error("An error occurred starting the bot!");
 		console.error(err.response?.data ?? err);
 	});
 
-exports.startBot = startBot;
+module.exports = startBot;

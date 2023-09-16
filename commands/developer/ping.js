@@ -1,12 +1,14 @@
 const addDeleteButton = require("@helpers/addDeleteButton");
 const settings = require("@resources/settings.json");
+const strings = require("@resources/strings.json");
+
 const { default: axios } = require("axios");
 
 const { EmbedBuilder, SlashCommandBuilder } = require("discord.js");
 
 /** @type {import("@helpers/jsdoc").Command} */
 module.exports = {
-	data: new SlashCommandBuilder().setName("ping").setDescription("Pong!"),
+	data: new SlashCommandBuilder().setName("ping").setDescription(strings.command.description.ping),
 	async execute(interaction) {
 		const quotes = (
 			await axios.get(

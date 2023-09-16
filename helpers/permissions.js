@@ -1,4 +1,5 @@
 const settings = require("@resources/settings.json");
+const strings = require("@resources/strings.json");
 
 const { EmbedBuilder, PermissionFlagsBits } = require("discord.js");
 
@@ -27,14 +28,16 @@ function hasPermission(member, type = "any") {
  * Warn user ephemerally if they're missing permissions to use an interaction
  * @author Evorp
  * @param {import("discord.js").Interaction} interaction interaction to reply to
+ * @todo merge with warnUser probably (general ephemeral interactions)
  */
 function noPermission(interaction) {
-	return interaction.reply({
-		embed: [
+	interaction.reply({
+		embeds: [
 			new EmbedBuilder()
-				.setTitle("You don't have permission to run this command!")
-				.setDescription("Try running another command by opening the slash command menu.")
-				.setColor(settings.colors.blue),
+				.setTitle(strings.bot.error)
+				.setDescription(strings.command.no_permission)
+				.setColor(settings.colors.red)
+				.setThumbnail(settings.images.warning),
 		],
 		ephemeral: true,
 	});
