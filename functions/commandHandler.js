@@ -41,13 +41,16 @@ async function loadCommands(client) {
  * @param {String | "global"} guildID
  */
 async function deleteCommands(client, rest, guildID) {
-	const data = guildID == "global"
-		? await rest.get(Routes.applicationCommands(client.user.id))
-		: await rest.get(Routes.applicationGuildCommands(client.user.id, guildID));
+	const data =
+		guildID == "global"
+			? await rest.get(Routes.applicationCommands(client.user.id))
+			: // get all command ids
+			  await rest.get(Routes.applicationGuildCommands(client.user.id, guildID));
 	for (const command of data) {
-		const deleteUrl = guildID == "global"
-			? `${Routes.applicationCommand(client.user.id, command.id)}`
-			: `${Routes.applicationGuildCommands(client.user.id, guildID)}/${command.id}`;
+		const deleteUrl =
+			guildID == "global"
+				? `${Routes.applicationCommand(client.user.id, command.id)}`
+				: `${Routes.applicationGuildCommands(client.user.id, guildID)}/${command.id}`;
 		await rest.delete(deleteUrl);
 	}
 }

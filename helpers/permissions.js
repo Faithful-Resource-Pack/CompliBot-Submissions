@@ -24,26 +24,6 @@ function hasPermission(member, type = "any") {
 	}
 }
 
-/**
- * Warn user ephemerally if they're missing permissions to use an interaction
- * @author Evorp
- * @param {import("discord.js").Interaction} interaction interaction to reply to
- * @todo merge with warnUser probably (general ephemeral interactions)
- */
-function noPermission(interaction) {
-	interaction.reply({
-		embeds: [
-			new EmbedBuilder()
-				.setTitle(strings.bot.error)
-				.setDescription(strings.command.no_permission)
-				.setColor(settings.colors.red)
-				.setThumbnail(settings.images.warning),
-		],
-		ephemeral: true,
-	});
-}
-
 module.exports = {
 	hasPermission,
-	noPermission,
 };

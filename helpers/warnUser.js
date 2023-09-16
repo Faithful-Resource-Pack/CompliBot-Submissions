@@ -2,7 +2,6 @@ const settings = require("@resources/settings.json");
 const strings = require("@resources/strings.json");
 
 const { EmbedBuilder } = require("discord.js");
-const addDeleteButton = require("@helpers/addDeleteButton");
 
 /**
  * Sends pre-formatted red embed with warning sign
@@ -17,7 +16,5 @@ module.exports = async function warnUser(interaction, text) {
 		.setTitle(strings.bot.error)
 		.setDescription(text);
 
-	const embedMessage = await interaction.reply({ embeds: [embed], fetchReply: true });
-
-	addDeleteButton(embedMessage);
+	return await interaction.reply({ embeds: [embed], ephemeral: true });
 };
