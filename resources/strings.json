@@ -12,12 +12,12 @@
             "channelpush": "Send textures to council and result channels.",
             "behave": "(⌯˃̶᷄ ﹏ ˂̶᷄⌯)",
 			"backup": "Back up all files to the GitHub Database repository.",
-            "hotfix": "Fix something, may change at anytime",
+            "hotfix": "Fix something (may change at any time).",
             "ping": "Pong!",
-            "reload": "Reloads a command",
+            "reload": "Reloads all commands.",
             "restart": "Restart the bot.",
-            "say": "Make the bot send any message you specify",
-            "shutdown": "Stops the bot",
+            "say": "Make the bot say something.",
+            "shutdown": "Stops the bot.",
             "status": "Changes the bot's status."
         },
 		"args": {

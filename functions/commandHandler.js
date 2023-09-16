@@ -37,10 +37,11 @@ async function loadCommands(client) {
 /**
  * Delete all slash commands from either a guild or globally
  * @author Evorp
- * @param {REST} rest
  * @param {String | "global"} guildID
  */
-async function deleteCommands(client, rest, guildID) {
+async function deleteCommands(client, guildID) {
+	const rest = new REST({ version: "10" }).setToken(process.env.CLIENT_TOKEN);
+
 	const data =
 		guildID == "global"
 			? await rest.get(Routes.applicationCommands(client.user.id))
