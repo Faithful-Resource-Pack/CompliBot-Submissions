@@ -4,8 +4,6 @@ const strings = require("@resources/strings.json");
 const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require("discord.js");
 
 const { sendToCouncil, sendToResults } = require("@submission/sendToChannel");
-const warnUser = require("@helpers/warnUser");
-const { hasPermission } = require("@helpers/permissions");
 
 /** @type {import("@helpers/jsdoc").Command} */
 module.exports = {
@@ -28,9 +26,6 @@ module.exports = {
 		)
 		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 	async execute(interaction) {
-		if (!hasPermission(interaction.member, "administrator"))
-			return warnUser(interaction, strings.command.no_permission);
-
 		const choice = interaction.options.getString("pack", true);
 
 		/** @type {import("@helpers/jsdoc").SubmissionPack[]} */
