@@ -1,16 +1,10 @@
-const { EmbedBuilder } = require("discord.js");
-
-const MAINTENANCE = process.env.MAINTENANCE.toLowerCase() == "true";
-const PREFIX = process.env.PREFIX;
-
-const strings = require("@resources/strings.json");
 const settings = require("@resources/settings.json");
+const strings = require("@resources/strings.json");
 
 const submitTexture = require("@submission/submitTexture");
-
-const addDeleteButton = require("@helpers/addDeleteButton");
-const warnUser = require("@helpers/warnUser");
 const invalidSubmission = require("@functions/submission/utility/invalidSubmission");
+
+const magnifyMessage = require("@functions/magnifyMessage");
 
 /** @type {import("@helpers/jsdoc").Event} */
 module.exports = {
@@ -22,6 +16,12 @@ module.exports = {
 	async execute(client, message) {
 		// Ignore bot messages
 		if (message.author.bot) return;
+
+		// magnify shortcut
+		if (
+			message.content.startsWith(`${process.env.PREFIX}m`) ||
+			message.content.startsWith(`${process.env.PREFIX}z`)
+		) return magnifyMessage(message);
 
 		/**
 		 * TEXTURE SUBMISSION
