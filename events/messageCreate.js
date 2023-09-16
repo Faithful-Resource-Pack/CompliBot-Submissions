@@ -21,7 +21,8 @@ module.exports = {
 		if (
 			message.content.startsWith(`${process.env.PREFIX}m`) ||
 			message.content.startsWith(`${process.env.PREFIX}z`)
-		) return magnifyMessage(message);
+		)
+			return magnifyMessage(message);
 
 		/**
 		 * TEXTURE SUBMISSION

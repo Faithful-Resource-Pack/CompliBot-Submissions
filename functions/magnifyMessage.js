@@ -90,7 +90,6 @@ module.exports = async function magnifyMessage(message) {
 	}
 };
 
-
 async function previousImage(message) {
 	let found = false;
 	let list_messages = await message.channel.messages.fetch({ limit: 10 });

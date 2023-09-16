@@ -23,18 +23,17 @@ module.exports = {
 			`Manual backup executed by: ${interaction.user.username}`,
 		);
 
-		if (succeeded)
-			return await interaction.editReply({
-				embeds: [
-					new EmbedBuilder()
-						.setName("Database successfully backed up!")
-						.setUrl(
-							`https://github.com/${settings.backup.git.org}/${settings.backup.git.repo}/tree/${settings.backup.git.branch}`,
-						)
-						.setColor(settings.colors.blue),
-				],
-			});
+		if (!succeeded) return warnUser(interaction, strings.command.backup_failed, true);
 
-		return warnUser(interaction, strings.command.backup_failed, true);
+		return await interaction.editReply({
+			embeds: [
+				new EmbedBuilder()
+					.setName("Database successfully backed up!")
+					.setUrl(
+						`https://github.com/${settings.backup.git.org}/${settings.backup.git.repo}/tree/${settings.backup.git.branch}`,
+					)
+					.setColor(settings.colors.blue),
+			],
+		});
 	},
 };
