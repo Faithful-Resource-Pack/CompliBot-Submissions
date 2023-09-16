@@ -2,7 +2,7 @@ const strings = require("@resources/strings.json");
 const settings = require("@resources/settings.json");
 
 const warnUser = require("@helpers/warnUser");
-const { ActivityType, SlashCommandBuilder } = require("discord.js");
+const { ActivityType, SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
 const { EmbedBuilder } = require("discord.js");
 
 /** @type {import("@helpers/jsdoc").Command} */
@@ -39,7 +39,8 @@ module.exports = {
 				.setName("message")
 				.setDescription("Message to show after the bot activity")
 				.setRequired(true),
-		),
+		)
+		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 	async execute(interaction) {
 		if (!process.env.DEVELOPERS.includes(interaction.user.id))
 			return warnUser(interaction, strings.command.no_permission);

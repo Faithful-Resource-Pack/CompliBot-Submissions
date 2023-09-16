@@ -1,7 +1,7 @@
 const settings = require("@resources/settings.json");
 const strings = require("@resources/strings.json");
 
-const { SlashCommandBuilder } = require("discord.js");
+const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
 
 const fs = require("fs");
 const { sendToCouncil, sendToResults } = require("@submission/sendToChannel");
@@ -14,7 +14,8 @@ const warnUser = require("@helpers/warnUser");
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("hotfix")
-		.setDescription(strings.command.description.hotfix),
+		.setDescription(strings.command.description.hotfix)
+		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 	async execute(interaction) {
 		if (!process.env.DEVELOPERS.includes(interaction.user.id))
 			return warnUser(interaction, strings.command.no_permission);

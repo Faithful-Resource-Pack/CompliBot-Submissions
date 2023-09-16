@@ -1,6 +1,6 @@
 const strings = require("@resources/strings.json");
 
-const { SlashCommandBuilder } = require("discord.js");
+const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
 const warnUser = require("@helpers/warnUser");
 
 /** @type {import("@helpers/jsdoc").Command} */
@@ -10,7 +10,9 @@ module.exports = {
 		.setDescription(strings.command.description.say)
 		.addStringOption((option) =>
 			option.setName("message").setDescription("What should the bot say?").setRequired(true),
-		),
+		)
+		.setDMPermission(false)
+		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 	async execute(interaction) {
 		if (!process.env.DEVELOPERS.includes(interaction.user.id))
 			return warnUser(interaction, strings.command.no_permission);

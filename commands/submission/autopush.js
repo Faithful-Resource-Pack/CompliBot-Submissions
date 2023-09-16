@@ -1,7 +1,7 @@
 const settings = require("@resources/settings.json");
 const strings = require("@resources/strings.json");
 
-const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require("discord.js");
 
 const { hasPermission } = require("@helpers/permissions");
 const formattedDate = require("@helpers/formattedDate");
@@ -27,7 +27,8 @@ module.exports = {
 					{ name: "Classic Faithful 64x", value: "classic_faithful_64x" },
 				)
 				.setRequired(true),
-		),
+		)
+		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 	async execute(interaction) {
 		if (!hasPermission(interaction.member, "administrator"))
 			return warnUser(interaction, strings.command.no_permission);

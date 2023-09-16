@@ -3,14 +3,15 @@ const strings = require("@resources/strings.json");
 
 const saveDB = require("@functions/saveDB");
 
-const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require("discord.js");
 const warnUser = require("@helpers/warnUser");
 
 /** @type {import("@helpers/jsdoc").Command} */
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("backup")
-		.setDescription(strings.command.description.backup),
+		.setDescription(strings.command.description.backup)
+		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 	async execute(interaction) {
 		if (!process.env.DEVELOPERS.includes(interaction.user.id))
 			return await warnUser(interaction, strings.command.no_permission);

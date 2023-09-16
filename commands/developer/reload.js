@@ -1,7 +1,7 @@
 const settings = require("@resources/settings.json");
 const strings = require("@resources/strings.json");
 
-const { SlashCommandBuilder } = require("discord.js");
+const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
 
 const { loadCommands, deleteCommands } = require("@functions/commandHandler");
 const warnUser = require("@helpers/warnUser");
@@ -10,7 +10,9 @@ const warnUser = require("@helpers/warnUser");
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("reload")
-		.setDescription(strings.command.description.reload),
+		.setDescription(strings.command.description.reload)
+		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+		.setDMPermission(false),
 	async execute(interaction) {
 		if (!process.env.DEVELOPERS.includes(interaction.user.id))
 			return warnUser(interaction, strings.command.no_permission);

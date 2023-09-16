@@ -5,13 +5,14 @@ const startBot = require("@index");
 const fetchSettings = require("@functions/fetchSettings");
 
 const warnUser = require("@helpers/warnUser");
-const { EmbedBuilder, SlashCommandBuilder } = require("discord.js");
+const { EmbedBuilder, SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
 
 /** @type {import("@helpers/jsdoc").Command} */
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("restart")
-		.setDescription(strings.command.description.restart),
+		.setDescription(strings.command.description.restart)
+		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 	async execute(interaction) {
 		if (!process.env.DEVELOPERS.includes(interaction.user.id))
 			return warnUser(interaction, strings.command.no_permission);
