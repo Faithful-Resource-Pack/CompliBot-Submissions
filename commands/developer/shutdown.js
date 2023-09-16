@@ -20,7 +20,7 @@ module.exports = {
 		await interaction.reply({
 			embeds: [
 				new EmbedBuilder()
-					.setDescription(`<@${message.author.id}> has been banned`)
+					.setDescription(`<@${interaction.user.id}> has been banned`)
 					.addFields({ name: "Reason", value: "trying to stop me lmao" })
 					.setColor(settings.colors.red),
 			],
