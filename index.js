@@ -10,11 +10,10 @@ require("module-alias/register");
 require("dotenv").config();
 
 const { readdirSync } = require("fs");
-const walkSync = require("@helpers/walkSync");
 
 const fetchSettings = require("@functions/fetchSettings");
 const unhandledRejection = require("@events/unhandledRejection");
-const { Client, Collection, GatewayIntentBits, Partials } = require("discord.js");
+const { Client, GatewayIntentBits, Partials } = require("discord.js");
 
 function startBot() {
 	const client = new Client({
@@ -46,18 +45,6 @@ function startBot() {
 	});
 
 	exports.Client = client;
-
-	/**
-	 * COMMAND HANDLER
-	 * - see the ./commands folder
-	 */
-	const commandFiles = walkSync("./commands").filter((f) => f.endsWith(".js"));
-	client.commands = new Collection();
-	for (const file of commandFiles) {
-		/** @type {import("@helpers/jsdoc").Command} */
-		const command = require(file);
-		if (command.name) client.commands.set(command.name, command);
-	}
 
 	/**
 	 * EVENT HANDLER

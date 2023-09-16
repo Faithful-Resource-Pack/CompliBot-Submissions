@@ -11,6 +11,7 @@ const { sendToCouncil, sendToResults } = require("@submission/sendToChannel");
 const { downloadResults } = require("@submission/downloadResults");
 const pushTextures = require("@submission/pushTextures");
 const saveDB = require("@functions/saveDB");
+const loadCommands = require("@functions/loadCommands");
 
 const { ActivityType } = require("discord.js");
 
@@ -59,6 +60,8 @@ module.exports = {
 		console.log(`│                                                             │`);
 		console.log(`└─────────────────────────────────────────────────────────────┘\n\n`);
 
+		/** @see commands */
+		loadCommands(client);
 		if (MAINTENANCE)
 			client.user.setPresence({ activities: [{ name: "maintenance" }], status: "dnd" });
 		else client.user.setActivity({ name: "for submissions", type: ActivityType.Watching });

@@ -8,6 +8,7 @@ const DEBUG = process.env.DEBUG.toLowerCase() == "true";
 const { imageButtons } = require("@helpers/interactions");
 
 const { EmbedBuilder } = require("discord.js");
+const devLogger = require("@helpers/devLogger");
 
 /**
  * Instapass a given texture embed
@@ -38,7 +39,7 @@ module.exports = async function instapass(client, message, member) {
 	// this is why we send the channel rather than the pack into downloadResults()
 	/** @type {import("discord.js").TextChannel} */
 	const channelOut = await client.channels.fetch(channelOutID);
-	if (!channelOut) return warnUser(message, strings.submission.no_result_channel);
+	if (!channelOut) return devLogger(client, `#${channelOutID} is not a valid result channel!`)
 	await channelOut.send({
 		embeds: [
 			EmbedBuilder.from(message.embeds[0]).setDescription(

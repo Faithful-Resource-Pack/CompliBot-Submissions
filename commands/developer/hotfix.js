@@ -1,6 +1,8 @@
 const settings = require("@resources/settings.json");
 const strings = require("@resources/strings.json");
 
+const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js')
+
 const fs = require("fs");
 const { sendToCouncil, sendToResults } = require("@submission/sendToChannel");
 const { downloadResults } = require("@submission/downloadResults");
@@ -9,12 +11,12 @@ const saveDB = require("@functions/saveDB");
 
 /** @type {import("@helpers/jsdoc").Command} */
 module.exports = {
-	name: "hotfix",
-	aliases: ["fix"],
-	guildOnly: false,
-	async execute(client, message, args) {
-		if (!process.env.DEVELOPERS.includes(message.author.id)) return;
+	data: new SlashCommandBuilder()
+		.setName("hotfix")
+		.setDescription("Fix something, may change at anytime."),
+	async execute(interaction) {
+		if (!process.env.DEVELOPERS.includes(interaction.user.id)) return;
 		// put code here on the vps when editing
-		await message.react(settings.emojis.upvote);
+		await interaction.reply({ content: settings.emojis.upvote });
 	},
 };
