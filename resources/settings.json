@@ -1,0 +1,4 @@
+{
+    "note": "This file is dynamically loaded from our API. Upon starting the bot, this file should be replaced with the real bot settings.",
+    "note_2": "If this does not happen, you can manually download the settings.json file from https://api.faithfulpack.net/v2/settings/raw."
+}
