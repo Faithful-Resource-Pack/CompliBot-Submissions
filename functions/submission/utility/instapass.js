@@ -18,8 +18,7 @@ const pushTextures = require("@submission/pushTextures");
 const { randomBytes } = require("crypto");
 
 const { EmbedBuilder } = require("discord.js");
-const { default: axios } = require("axios");
-const getPackByChannel = require("./getPackByChannel");
+const getPackByChannel = require("@submission/utility/getPackByChannel");
 
 /**
  * Instapass a given texture embed

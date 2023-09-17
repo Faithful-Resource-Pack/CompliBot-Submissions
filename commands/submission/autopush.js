@@ -52,9 +52,12 @@ module.exports = {
 			ephemeral: true,
 		});
 
-		await pushTextures(
-			`Manual push executed by ${interaction.user.username} on ${formattedDate()}`,
-		); // Push them through GitHub
+		for (const pack of Object.keys(settings.submission.packs))
+			await pushTextures(
+				"./downloadedTextures",
+				pack,
+				`Manual push executed by ${interaction.user.username} on ${formattedDate()}`,
+			);
 
 		await interaction.editReply({
 			embeds: [

@@ -70,7 +70,8 @@ module.exports = {
 		 * @author Evorp, Juknum
 		 */
 		const pushToGithub = new CronJob("30 0 * * *", async () => {
-			await pushTextures();
+			for (const pack of Object.keys(settings.submission.packs))
+				await pushTextures("./downloadedTextures", pack);
 			await saveDB(client);
 		});
 

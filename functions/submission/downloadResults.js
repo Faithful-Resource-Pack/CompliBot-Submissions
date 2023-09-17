@@ -179,9 +179,9 @@ async function postContributions(contribution) {
 				bot: process.env.API_TOKEN,
 			},
 		});
-		if (DEBUG) console.log(`Added contributions: ${contribution}`);
+		if (DEBUG) console.log(`Added contribution(s): ${contribution}`);
 	} catch (err) {
-		if (DEBUG) console.error(`Couldn't add contributions for pack: ${pack}`);
+		if (DEBUG) console.error(`Couldn't add contribution(s) for pack: ${pack}`);
 		else
 			devLogger(client, JSON.stringify(err?.response?.data ?? err), {
 				title: "Contribution Error",

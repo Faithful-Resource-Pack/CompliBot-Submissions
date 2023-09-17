@@ -37,8 +37,8 @@ module.exports = {
 		await interaction.deferReply({ ephemeral: true });
 
 		for (const pack of packs) {
-			await sendToResults(client, pack);
-			if (pack.council_enabled) await sendToCouncil(client, pack);
+			await sendToResults(interaction.client, pack);
+			if (pack.council_enabled) await sendToCouncil(interaction.client, pack);
 		}
 
 		await interaction.editReply({

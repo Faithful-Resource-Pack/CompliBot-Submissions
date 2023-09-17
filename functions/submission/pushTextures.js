@@ -22,7 +22,10 @@ module.exports = async function pushTextures(
 	const editions = Object.keys(settings.versions).filter((k) => k != "id");
 	for (const edition of editions) {
 		const packGitHub = settings.repositories.repo_name[edition][pack];
-		if (!packGitHub) continue; // isn't supported for that edition yet
+		if (!packGitHub) {
+			if (DEBUG) console.log(`${pack} doesn't support ${edition} yet!`);;
+			continue;
+		}
 		for (const branch of settings.versions[edition]) {
 			const path = `${basePath}/${packGitHub.repo}/${branch}/`;
 
