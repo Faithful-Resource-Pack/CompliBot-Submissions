@@ -42,45 +42,43 @@ module.exports = {
 		}
 
 		/**
+		 * TEXTURE SUBMISSION SCHEDULED FUNCTIONS
+		 * - see functions/submission for more information
+		 */
+
+		/**
 		 * Send submission messages to their respective channels
 		 * Runs each day at midnight CE(S)T
 		 * @author Evorp
 		 */
-		const submissionProcess = new CronJob("0 0 * * *", async () => {
+		new CronJob("0 0 * * *", async () => {
 			for (const pack of Object.values(settings.submission.packs)) {
 				await sendToResults(client, pack);
 				if (pack.council_enabled) await sendToCouncil(client, pack);
 			}
-		});
+		}).start();
 
 		/**
 		 * Download passed textures
 		 * Runs each day at 12:15 AM CE(S)T
 		 * @author Evorp
 		 */
-		const downloadToBot = new CronJob("15 0 * * *", async () => {
+		new CronJob("15 0 * * *", async () => {
 			for (const pack of Object.values(settings.submission.packs)) {
 				await downloadResults(client, pack.channels.results);
 			}
-		});
+		}).start();
 
 		/**
 		 * Push downloaded textures to GitHub, and back up database files
 		 * Runs each day at 12:30 AM CE(S)T
 		 * @author Evorp, Juknum
 		 */
-		const pushToGithub = new CronJob("30 0 * * *", async () => {
+		new CronJob("30 0 * * *", async () => {
 			for (const pack of Object.keys(settings.submission.packs))
 				await pushTextures("./downloadedTextures", pack);
 			await saveDB(client);
-		});
-
-		/**
-		 * START TEXTURE SUBMISSION PROCESS
-		 */
-		submissionProcess.start();
-		downloadToBot.start();
-		pushToGithub.start();
+		}).start();
 
 		/**
 		 * LOOP EVENTS
