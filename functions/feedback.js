@@ -59,7 +59,7 @@ async function feedbackSuggestion(interaction) {
 	const description =
 		`### Is your feature request related to a problem?\n\n${isProblem || "*No response*"}\n\n` +
 		`### Describe the feature you'd like\n\n${describe}\n\n` +
-		`### Notes\n\n${notes}\n\n`;
+		`### Notes\n\n${notes || "*No response*"}\n\n`;
 
 	return feedbackSend(interaction, title, description);
 }
