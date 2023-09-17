@@ -8,7 +8,7 @@ const {
 	addContributorRole,
 	downloadTexture,
 	mapContribution,
-} = require("@submission/downloadResults");
+} = require("@submission/parseResults");
 
 const formattedDate = require("@helpers/formattedDate");
 const changeStatus = require("@submission/utility/changeStatus");

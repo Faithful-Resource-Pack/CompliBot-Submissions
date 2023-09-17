@@ -6,7 +6,7 @@ const { loadCommands, deleteCommands } = require("@functions/commandHandler");
 const fetchSettings = require("@functions/fetchSettings");
 
 const { sendToCouncil, sendToResults } = require("@submission/sendToChannel");
-const { downloadResults } = require("@submission/downloadResults");
+const { downloadResults } = require("@submission/parseResults");
 const pushTextures = require("@submission/pushTextures");
 const saveDB = require("@functions/saveDB");
 

@@ -5,7 +5,7 @@ const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
 
 const fs = require("fs");
 const { sendToCouncil, sendToResults } = require("@submission/sendToChannel");
-const { downloadResults } = require("@submission/downloadResults");
+const { downloadResults } = require("@submission/parseResults");
 const pushTextures = require("@submission/pushTextures");
 const saveDB = require("@functions/saveDB");
 const warnUser = require("@helpers/warnUser");

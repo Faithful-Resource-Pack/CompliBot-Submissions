@@ -5,7 +5,7 @@ const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require("disc
 
 const formattedDate = require("@helpers/formattedDate");
 const pushTextures = require("@submission/pushTextures");
-const { downloadResults } = require("@submission/downloadResults");
+const { downloadResults } = require("@submission/parseResults");
 
 /** @type {import("@helpers/jsdoc").Command} */
 module.exports = {
