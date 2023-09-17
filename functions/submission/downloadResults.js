@@ -56,36 +56,23 @@ async function downloadResults(client, channelResultID, instapass = false) {
 		);
 
 	/** @type {MappedTexture[]} */
-	const mappedTextures = messages.map((message) => {
-		return {
-			url: message.embeds[0].thumbnail.url,
-			authors: message.embeds[0].fields[0].value
-				.split("\n")
-				.map((auth) => auth.replace("<@!", "").replace(">", "")),
-			date: message.createdTimestamp,
-			id: message.embeds[0].title.match(/(?<=\[\#)(.*?)(?=\])/)?.[0],
-		};
-	});
+	const mappedTextures = messages.map(mapMessage);
 
 	/** @type {import("@helpers/jsdoc").Contribution[]} */
 	const allContribution = [];
-	/** @type {String} used in the instapass commit message if applicable */
-	let instapassName;
 
 	for (const texture of mappedTextures) {
-		const textureName = await downloadTexture(texture, packName, "./downloadedTextures");
-		if (instapass) instapassName = textureName;
-		// saves on post requests to add all contributions at once in an array, more reliable
-		allContribution.push({
-			date: texture.date,
-			resolution: Number(packName.match(/\d+/)?.[0] ?? 32), // stupid workaround but it works
-			pack: packName,
-			texture: texture.id,
-			authors: texture.authors,
-		});
+		await downloadTexture(texture, packName, "./downloadedTextures");
 
-		const guild = client.channels.cache.get(channelResultID).guildId;
-		await addContributorRole(client, packName, guild, texture.authors);
+		// saves on post requests to add all contributions at once in an array, more reliable
+		allContribution.push(mapContribution(texture, packName));
+
+		await addContributorRole(
+			client,
+			packName,
+			client.channels.cache.get(channelResultID).guildId,
+			texture.authors,
+		);
 	}
 
 	try {
@@ -104,7 +91,7 @@ async function downloadResults(client, channelResultID, instapass = false) {
 			});
 	}
 
-	if (instapass) await pushTextures(`Instapassed ${instapassName} from ${formattedDate()}`);
+	if (instapass) await pushTextures();
 }
 
 /**
@@ -113,7 +100,7 @@ async function downloadResults(client, channelResultID, instapass = false) {
  * @param {MappedTexture} texture message and texture info
  * @param {import("@helpers/jsdoc").Pack} packName which pack to download it to
  * @param {String} baseFolder where to download the texture to
- * @returns {Promise<String>} texture name
+ * @returns {Promise<import("@helpers/jsdoc").Texture>} info
  */
 async function downloadTexture(texture, packName, baseFolder) {
 	if (!texture.id || isNaN(Number(texture.id))) {
@@ -153,7 +140,7 @@ async function downloadTexture(texture, packName, baseFolder) {
 		}
 	}
 
-	return textureInfo.name;
+	return textureInfo;
 }
 
 /**
@@ -180,8 +167,44 @@ async function addContributorRole(client, packName, guildID, authors) {
 	}
 }
 
+/**
+ * Map a texture to a downloadable format
+ * @author Juknum
+ * @param {import("discord.js").Message} message
+ * @returns {MappedTexture}
+ */
+const mapMessage = (message) => {
+	return {
+		url: message.embeds[0].thumbnail.url,
+		authors: message.embeds[0].fields[0].value
+			.split("\n")
+			.map((auth) => auth.replace("<@!", "").replace(">", "")),
+		date: message.createdTimestamp,
+		id: message.embeds[0].title.match(/(?<=\[\#)(.*?)(?=\])/)?.[0],
+	};
+};
+
+/**
+ * Converts a submission embed to a contribution
+ * @author Juknum
+ * @param {MappedTexture} texture
+ * @param {import("@helpers/jsdoc").Pack} packName
+ * @returns {import("@helpers/jsdoc").Contribution}
+ */
+const mapContribution = (texture, packName) => {
+	return {
+		date: texture.date,
+		resolution: Number(packName.match(/\d+/)?.[0] ?? 32), // stupid workaround but it works
+		pack: packName,
+		texture: texture.id,
+		authors: texture.authors,
+	};
+};
+
 module.exports = {
 	downloadResults,
 	downloadTexture,
 	addContributorRole,
+	mapMessage,
+	mapContribution,
 };
