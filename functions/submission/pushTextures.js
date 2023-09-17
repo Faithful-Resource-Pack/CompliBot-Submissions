@@ -31,7 +31,7 @@ module.exports = async function pushTextures(
 			try {
 				await pushToGitHub(packGitHub.org, packGitHub.repo, branch, commitMessage, path);
 				// only remove path if pushing succeeded, so the bot tries the next day too
-				rmdirSync(basePath, { recursive: true });
+				rmdirSync(path, { recursive: true });
 				if (DEBUG) console.log(`Pushed: [${packGitHub.repo}:${branch}] (${packGitHub.org})`);
 			} catch {
 				// can also be an auth error or really anything but this is most likely
@@ -39,4 +39,7 @@ module.exports = async function pushTextures(
 			}
 		}
 	}
+
+	// delete the random hash folder as well to clear the directory
+	if (basePath.includes("instapass")) rmdirSync(basePath, { recursive: true });
 };

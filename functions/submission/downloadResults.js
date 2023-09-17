@@ -75,23 +75,7 @@ async function downloadResults(client, channelResultID, instapass = false) {
 		);
 	}
 
-	try {
-		await axios.post(`${process.env.API_URL}contributions`, allContribution, {
-			headers: {
-				bot: process.env.API_TOKEN,
-			},
-		});
-		if (DEBUG) console.log(`Added contributions: ${allContribution}`);
-	} catch (err) {
-		if (DEBUG) console.error(`Couldn't add contributions for pack: ${packName}`);
-		else
-			devLogger(client, JSON.stringify(err?.response?.data ?? err), {
-				title: "Contribution Error",
-				codeBlocks: "json",
-			});
-	}
-
-	if (instapass) await pushTextures();
+	return await postContributions(allContribution);
 }
 
 /**
@@ -201,10 +185,35 @@ const mapContribution = (texture, packName) => {
 	};
 };
 
+/**
+ * Post contributions to database
+ * @author Evorp
+ * @param {import("@helpers/jsdoc").Contribution | import("@helpers/jsdoc").Contribution[]} contribution
+ */
+async function postContributions(contribution) {
+	const pack = contribution.pack ?? contribution[0].pack;
+	try {
+		await axios.post(`${process.env.API_URL}contributions`, contribution, {
+			headers: {
+				bot: process.env.API_TOKEN,
+			},
+		});
+		if (DEBUG) console.log(`Added contributions: ${contribution}`);
+	} catch (err) {
+		if (DEBUG) console.error(`Couldn't add contributions for pack: ${pack}`);
+		else
+			devLogger(client, JSON.stringify(err?.response?.data ?? err), {
+				title: "Contribution Error",
+				codeBlocks: "json",
+			});
+	}
+}
+
 module.exports = {
 	downloadResults,
 	downloadTexture,
 	addContributorRole,
 	mapMessage,
 	mapContribution,
+	postContributions,
 };

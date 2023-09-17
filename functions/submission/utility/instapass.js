@@ -4,10 +4,13 @@ const DEBUG = process.env.DEBUG.toLowerCase() == "true";
 
 const {
 	mapMessage,
-	mapContribution,
+	postContributions,
 	addContributorRole,
 	downloadTexture,
+	mapContribution,
 } = require("@submission/downloadResults");
+
+const formattedDate = require("@helpers/formattedDate");
 const changeStatus = require("@submission/utility/changeStatus");
 const { imageButtons } = require("@helpers/interactions");
 const pushTextures = require("@submission/pushTextures");
@@ -39,31 +42,25 @@ module.exports = async function instapass(client, message, member) {
 	/** @type {import("discord.js").TextChannel} */
 	const channelOut = await client.channels.fetch(channelOutID);
 
-	const message = await channelOut.send({
-		embeds: [
-			EmbedBuilder.from(message.embeds[0]).setDescription(
-				`[Original Post](${message.url})\n${message.embeds[0].description ?? ""}`,
-			),
-		],
-		components: [imageButtons],
-	});
-
-	const texture = mapMessage(message);
+	const texture = mapMessage(
+		await channelOut.send({
+			embeds: [
+				EmbedBuilder.from(message.embeds[0]).setDescription(
+					`[Original Post](${message.url})\n${message.embeds[0].description ?? ""}`,
+				),
+			],
+			components: [imageButtons],
+		}),
+	);
 
 	// probably overkill but this eliminates any chance of weird stuff happening
 	const basePath = `./instapassedTextures/${randomBytes(6).toString("hex")}`;
 
 	// download the single texture to all its paths
-	const textureInfo = await downloadTexture(texture);
+	const textureInfo = await downloadTexture(texture, packName, basePath);
 
-	// add contribution
-	await axios.post(`${process.env.API_URL}contributions`, mapContribution(texture, packName), {
-		headers: {
-			bot: process.env.API_TOKEN,
-		},
-	});
-
-	await addContributorRole(client, packName, message.channel.guildId);
+	await postContributions(mapContribution(texture, packName));
+	await addContributorRole(client, packName, message.channel.guildId, texture.authors);
 	await pushTextures(basePath, packName, `Instapassed ${textureInfo.name} from ${formattedDate()}`);
 
 	if (DEBUG) console.log(`Texture instapassed: ${message.embeds[0].title}`);
