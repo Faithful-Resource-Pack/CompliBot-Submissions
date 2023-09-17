@@ -1,7 +1,8 @@
-const { Octokit } = require("@octokit/rest");
 const settings = require("@resources/settings.json");
+const strings = require("@resources/strings.json");
 
 const { EmbedBuilder } = require("discord.js");
+const { Octokit } = require("@octokit/rest");
 
 /**
  * Create a bug report on GitHub with modal information
@@ -13,9 +14,7 @@ async function feedbackBug(interaction) {
 		embeds: [
 			new EmbedBuilder()
 				.setTitle("Bug report received!")
-				.setDescription(
-					"Your ticket will be created shortly on GitHub. Thank you for helping us improve the bot!",
-				)
+				.setDescription(strings.command.feedback_sent)
 				.setColor(settings.colors.blue),
 		],
 	});
@@ -44,9 +43,7 @@ async function feedbackSuggestion(interaction) {
 		embeds: [
 			new EmbedBuilder()
 				.setTitle("Feature request received!")
-				.setDescription(
-					"Your ticket will be created shortly on GitHub. Thank you for helping us improve the bot!",
-				)
+				.setDescription(strings.command.feedback_sent)
 				.setColor(settings.colors.blue),
 		],
 	});

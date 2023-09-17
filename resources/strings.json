@@ -21,11 +21,9 @@
             "shutdown": "Stops the bot.",
             "status": "Changes the bot's status."
         },
-		"args": {
-			"none_given": "You did not provide any arguments!",
-			"invalid": "You did not provide valid arguments!"
-		},
+		"feedback_sent": "Your ticket will be created shortly on GitHub. Thank you for helping us improve the bot!",
 		"backup_failed": "At least one collection could not be backed up. Please check the developer logs for more information.",
+		"behave": "I'm so sorry! (⌯˃̶᷄ ﹏ ˂̶᷄⌯)",
 		"no_permission": "You don't have permission to run this command!",
 		"image": {
 			"not_found_in_10_last": "No image found in 10 previous messages.",
@@ -38,8 +36,7 @@
 			"no_reply_attachment": "This reply does not have any image attached.",
 			"input_too_big": "The input picture is too big!",
 			"output_too_big": "The output picture will be too big!"
-		},
-		"behave": "I'm so sorry! (⌯˃̶᷄ ﹏ ˂̶᷄⌯)"
+		}
 	},
 	"submission": {
 		"autoreact": {

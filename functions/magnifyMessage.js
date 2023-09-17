@@ -92,8 +92,8 @@ module.exports = async function magnifyMessage(message) {
 
 async function previousImage(message) {
 	let found = false;
-	let list_messages = await message.channel.messages.fetch({ limit: 10 });
-	let lastMsg = list_messages
+	let listMessages = await message.channel.messages.fetch({ limit: 10 });
+	let lastMsg = listMessages
 		.sort((a, b) => b.createdTimestamp - a.createdTimestamp)
 		.filter((m) => m.attachments.size > 0 || m.embeds[0] != undefined)
 		.first();

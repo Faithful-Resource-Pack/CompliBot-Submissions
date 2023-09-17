@@ -12,12 +12,12 @@ const DEV = process.env.DEV.toLowerCase() == "true";
 module.exports = function unhandledRejection(client, error, promise, originMessage) {
 	if (DEV) return console.trace(error?.stack ?? error);
 
-	let eproto_error = false;
+	let eprotoError = false;
 	let description = error.stack; // stack else AxiosError else random error
 	let codeBlocks = "";
 	if (error.isAxiosError) {
 		description = JSON.stringify(error.toJSON());
-		eproto_error = error.code === "EPROTO";
+		eprotoError = error.code === "EPROTO";
 		codeBlocks = "json";
 	} else if (!description) {
 		description = JSON.stringify(error);
@@ -26,7 +26,7 @@ module.exports = function unhandledRejection(client, error, promise, originMessa
 		// not on our end, just clutters logs
 		return console.error(error, promise, description);
 
-	if (eproto_error) return console.error(error, promise, description);
+	if (eprotoError) return console.error(error, promise, description);
 
 	if (originMessage?.url !== undefined)
 		description = `Coming from [this message](${originMessage.url})\n` + description;
