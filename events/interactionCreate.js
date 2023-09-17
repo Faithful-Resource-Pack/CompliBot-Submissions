@@ -11,5 +11,6 @@ module.exports = {
 	async execute(client, interaction) {
 		if (interaction.isButton()) return client.emit("buttonUsed", interaction);
 		if (interaction.isChatInputCommand()) return client.emit("slashCommandUsed", interaction);
+		if (interaction.isModalSubmit()) return client.emit("modalSubmit", interaction);
 	},
 };

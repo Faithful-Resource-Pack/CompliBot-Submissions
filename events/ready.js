@@ -2,7 +2,7 @@ const settings = require("@resources/settings.json");
 const DEV = process.env.DEV.toLowerCase() == "true";
 const MAINTENANCE = process.env.MAINTENANCE.toLowerCase() == "true";
 
-const { loadCommands } = require("@functions/commandHandler");
+const { loadCommands, deleteCommands } = require("@functions/commandHandler");
 const fetchSettings = require("@functions/fetchSettings");
 
 const { sendToCouncil, sendToResults } = require("@submission/sendToChannel");
@@ -27,7 +27,8 @@ module.exports = {
 		console.log(`└─────────────────────────────────────────────────────────────┘\n\n`);
 
 		/** @see commands */
-		loadCommands(client);
+		await loadCommands(client);
+
 		if (MAINTENANCE)
 			client.user.setPresence({ activities: [{ name: "maintenance" }], status: "dnd" });
 		else client.user.setActivity({ name: "for submissions", type: ActivityType.Watching });

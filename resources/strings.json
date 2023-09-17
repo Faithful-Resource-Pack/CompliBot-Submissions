@@ -11,6 +11,7 @@
             "autopush": "Push textures from a result channel to GitHub.",
             "channelpush": "Send textures to council and result channels.",
             "behave": "(⌯˃̶᷄ ﹏ ˂̶᷄⌯)",
+			"feedback": "Create a new suggestion or bug report on our GitHub bug tracker.",
 			"backup": "Back up all files to the GitHub Database repository.",
             "hotfix": "Fix something (may change at any time).",
             "ping": "Pong!",
