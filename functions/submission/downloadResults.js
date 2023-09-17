@@ -2,8 +2,6 @@ const settings = require("@resources/settings.json");
 const DEBUG = process.env.DEBUG.toLowerCase() == "true";
 
 const getMessages = require("@helpers/getMessages");
-const pushTextures = require("@submission/pushTextures");
-const formattedDate = require("@helpers/formattedDate");
 const devLogger = require("@helpers/devLogger");
 const getPackByChannel = require("@submission/utility/getPackByChannel");
 
@@ -19,13 +17,12 @@ const { default: axios } = require("axios");
  */
 
 /**
- * Push textures from a channel to all its paths locally and add contributions/roles
+ * Download passed submissions and add contributions/roles
  * @author Juknum, Evorp
  * @param {import("discord.js").Client} client
  * @param {String} channelResultID result channel to download from
- * @param {Boolean?} instapass whether to push the texture directly after downloading
  */
-async function downloadResults(client, channelResultID, instapass = false) {
+async function downloadResults(client, channelResultID) {
 	const packName = getPackByChannel(channelResultID, "results");
 
 	// get messages from the same day
@@ -38,33 +35,16 @@ async function downloadResults(client, channelResultID, instapass = false) {
 			messageDate.getMonth() == delayedDate.getMonth() &&
 			messageDate.getFullYear() == delayedDate.getFullYear() &&
 			// is a submission
-			message.embeds?.[0]?.fields?.[1]?.value
+			message.embeds?.[0]?.fields?.[1]?.value?.includes(settings.emojis.upvote)
 		);
 	});
-
-	if (DEBUG) console.log(`Starting texture downloads for pack: ${packName}`);
-
-	if (instapass)
-		// get most recent message being instapassed
-		messages = [
-			messages.find((msg) => msg.embeds[0].fields[1].value.includes(settings.emojis.instapass)),
-		];
-	// just filter out rejected textures
-	else
-		messages = messages.filter((message) =>
-			message.embeds[0].fields[1].value.includes(settings.emojis.upvote),
-		);
-
-	/** @type {MappedTexture[]} */
-	const mappedTextures = messages.map(mapMessage);
 
 	/** @type {import("@helpers/jsdoc").Contribution[]} */
 	const allContribution = [];
 
-	for (const texture of mappedTextures) {
+	for (const texture of messages.map(mapMessage)) {
 		await downloadTexture(texture, packName, "./downloadedTextures");
 
-		// saves on post requests to add all contributions at once in an array, more reliable
 		allContribution.push(mapContribution(texture, packName));
 
 		await addContributorRole(
@@ -75,6 +55,7 @@ async function downloadResults(client, channelResultID, instapass = false) {
 		);
 	}
 
+	// post all contributions at once (saves on requests)
 	return await postContributions(allContribution);
 }
 
@@ -169,7 +150,7 @@ const mapMessage = (message) => {
 };
 
 /**
- * Converts a submission embed to a contribution
+ * Converts a mapped message to a contribution
  * @author Juknum
  * @param {MappedTexture} texture
  * @param {import("@helpers/jsdoc").Pack} packName
@@ -186,7 +167,7 @@ const mapContribution = (texture, packName) => {
 };
 
 /**
- * Post contributions to database
+ * Post contribution(s) to database
  * @author Evorp
  * @param {import("@helpers/jsdoc").Contribution | import("@helpers/jsdoc").Contribution[]} contribution
  */

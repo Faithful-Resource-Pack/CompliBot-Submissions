@@ -40,6 +40,6 @@ module.exports = async function pushTextures(
 		}
 	}
 
-	// delete the random hash folder as well to clear the directory
+	// delete the random hash folder as well so you don't end up with 5 morbillion empty folders
 	if (basePath.includes("instapass")) rmdirSync(basePath, { recursive: true });
 };
