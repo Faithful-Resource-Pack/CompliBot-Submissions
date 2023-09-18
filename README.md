@@ -43,6 +43,7 @@ pnpm dev
 - Go to the **Bot** tab, create a bot and copy its token.
 - Rename the **.env.example** file to **.env** and open it using any text editor.
 - Paste in your token after `CLIENT_TOKEN`.
+- Create a file in in `resources/` called `settings.json`, which can be just a set of curly brackets `{}`. This will be loaded dynamically later but needs to be created first because of GitHub limitations.
 
 ## Configuration
 

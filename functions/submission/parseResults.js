@@ -2,8 +2,6 @@ const settings = require("@resources/settings.json");
 const DEBUG = process.env.DEBUG.toLowerCase() == "true";
 
 const getMessages = require("@helpers/getMessages");
-const pushTextures = require("@submission/pushTextures");
-const formattedDate = require("@helpers/formattedDate");
 const devLogger = require("@helpers/devLogger");
 const getPackByChannel = require("@submission/utility/getPackByChannel");
 
@@ -19,13 +17,12 @@ const { default: axios } = require("axios");
  */
 
 /**
- * Push textures from a channel to all its paths locally and add contributions/roles
+ * Download passed submissions and add contributions/roles
  * @author Juknum, Evorp
  * @param {import("discord.js").Client} client
  * @param {String} channelResultID result channel to download from
- * @param {Boolean?} instapass whether to push the texture directly after downloading
  */
-async function downloadResults(client, channelResultID, instapass = false) {
+async function downloadResults(client, channelResultID) {
 	const packName = getPackByChannel(channelResultID, "results");
 
 	// get messages from the same day
@@ -38,73 +35,28 @@ async function downloadResults(client, channelResultID, instapass = false) {
 			messageDate.getMonth() == delayedDate.getMonth() &&
 			messageDate.getFullYear() == delayedDate.getFullYear() &&
 			// is a submission
-			message.embeds?.[0]?.fields?.[1]?.value
+			message.embeds?.[0]?.fields?.[1]?.value?.includes(settings.emojis.upvote)
 		);
-	});
-
-	if (DEBUG) console.log(`Starting texture downloads for pack: ${packName}`);
-
-	if (instapass)
-		// get most recent message being instapassed
-		messages = [
-			messages.find((msg) => msg.embeds[0].fields[1].value.includes(settings.emojis.instapass)),
-		];
-	// just filter out rejected textures
-	else
-		messages = messages.filter((message) =>
-			message.embeds[0].fields[1].value.includes(settings.emojis.upvote),
-		);
-
-	/** @type {MappedTexture[]} */
-	const mappedTextures = messages.map((message) => {
-		return {
-			url: message.embeds[0].thumbnail.url,
-			authors: message.embeds[0].fields[0].value
-				.split("\n")
-				.map((auth) => auth.replace("<@!", "").replace(">", "")),
-			date: message.createdTimestamp,
-			id: message.embeds[0].title.match(/(?<=\[\#)(.*?)(?=\])/)?.[0],
-		};
 	});
 
 	/** @type {import("@helpers/jsdoc").Contribution[]} */
 	const allContribution = [];
-	/** @type {String} used in the instapass commit message if applicable */
-	let instapassName;
 
-	for (const texture of mappedTextures) {
-		const textureName = await downloadTexture(texture, packName, "./downloadedTextures");
-		if (instapass) instapassName = textureName;
-		// saves on post requests to add all contributions at once in an array, more reliable
-		allContribution.push({
-			date: texture.date,
-			resolution: Number(packName.match(/\d+/)?.[0] ?? 32), // stupid workaround but it works
-			pack: packName,
-			texture: texture.id,
-			authors: texture.authors,
-		});
+	for (const texture of messages.map(mapMessage)) {
+		await downloadTexture(texture, packName, "./downloadedTextures");
 
-		const guild = client.channels.cache.get(channelResultID).guildId;
-		await addContributorRole(client, packName, guild, texture.authors);
+		allContribution.push(mapContribution(texture, packName));
+
+		await addContributorRole(
+			client,
+			packName,
+			client.channels.cache.get(channelResultID).guildId,
+			texture.authors,
+		);
 	}
 
-	try {
-		await axios.post(`${process.env.API_URL}contributions`, allContribution, {
-			headers: {
-				bot: process.env.API_TOKEN,
-			},
-		});
-		if (DEBUG) console.log(`Added contributions: ${allContribution}`);
-	} catch (err) {
-		if (DEBUG) console.error(`Couldn't add contributions for pack: ${packName}`);
-		else
-			devLogger(client, JSON.stringify(err?.response?.data ?? err), {
-				title: "Contribution Error",
-				codeBlocks: "json",
-			});
-	}
-
-	if (instapass) await pushTextures(`Instapassed ${instapassName} from ${formattedDate()}`);
+	// post all contributions at once (saves on requests)
+	return await postContributions(allContribution);
 }
 
 /**
@@ -113,7 +65,7 @@ async function downloadResults(client, channelResultID, instapass = false) {
  * @param {MappedTexture} texture message and texture info
  * @param {import("@helpers/jsdoc").Pack} packName which pack to download it to
  * @param {String} baseFolder where to download the texture to
- * @returns {Promise<String>} texture name
+ * @returns {Promise<import("@helpers/jsdoc").Texture>} info
  */
 async function downloadTexture(texture, packName, baseFolder) {
 	if (!texture.id || isNaN(Number(texture.id))) {
@@ -153,7 +105,7 @@ async function downloadTexture(texture, packName, baseFolder) {
 		}
 	}
 
-	return textureInfo.name;
+	return textureInfo;
 }
 
 /**
@@ -180,8 +132,69 @@ async function addContributorRole(client, packName, guildID, authors) {
 	}
 }
 
+/**
+ * Map a texture to a downloadable format
+ * @author Juknum
+ * @param {import("discord.js").Message} message
+ * @returns {MappedTexture}
+ */
+const mapMessage = (message) => {
+	return {
+		url: message.embeds[0].thumbnail.url,
+		authors: message.embeds[0].fields[0].value
+			.split("\n")
+			.map((auth) => auth.replace("<@!", "").replace(">", "")),
+		date: message.createdTimestamp,
+		id: message.embeds[0].title.match(/(?<=\[\#)(.*?)(?=\])/)?.[0],
+	};
+};
+
+/**
+ * Converts a mapped message to a contribution
+ * @author Juknum
+ * @param {MappedTexture} texture
+ * @param {import("@helpers/jsdoc").Pack} packName
+ * @returns {import("@helpers/jsdoc").Contribution}
+ */
+const mapContribution = (texture, packName) => {
+	return {
+		date: texture.date,
+		resolution: Number(packName.match(/\d+/)?.[0] ?? 32), // stupid workaround but it works
+		pack: packName,
+		texture: texture.id,
+		authors: texture.authors,
+	};
+};
+
+/**
+ * Post contribution(s) to database
+ * @author Evorp
+ * @param {import("@helpers/jsdoc").Contribution | import("@helpers/jsdoc").Contribution[]} contribution
+ */
+async function postContributions(contribution) {
+	const pack = contribution.pack ?? contribution[0].pack;
+	try {
+		await axios.post(`${process.env.API_URL}contributions`, contribution, {
+			headers: {
+				bot: process.env.API_TOKEN,
+			},
+		});
+		if (DEBUG) console.log(`Added contribution(s): ${contribution}`);
+	} catch (err) {
+		if (DEBUG) console.error(`Couldn't add contribution(s) for pack: ${pack}`);
+		else
+			devLogger(client, JSON.stringify(err?.response?.data ?? err), {
+				title: "Contribution Error",
+				codeBlocks: "json",
+			});
+	}
+}
+
 module.exports = {
 	downloadResults,
 	downloadTexture,
 	addContributorRole,
+	mapMessage,
+	mapContribution,
+	postContributions,
 };

@@ -1,8 +1,8 @@
 node_modules
 json/
 downloadedTextures/
+instapassedTextures/
 desktop.ini
 .DS_Store
 .env
-.vscode/
 resources/settings.json
