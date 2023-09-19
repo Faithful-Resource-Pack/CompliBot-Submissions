@@ -47,7 +47,7 @@ async function downloadResults(client, channelResultID) {
 
 		allContribution.push(mapContribution(texture, packName));
 
-		await addContributorRole(
+		addContributorRole(
 			client,
 			packName,
 			client.channels.cache.get(channelResultID).guildId,
@@ -56,7 +56,7 @@ async function downloadResults(client, channelResultID) {
 	}
 
 	// post all contributions at once (saves on requests)
-	return await postContributions(allContribution);
+	if (allContribution.length) return await postContributions(allContribution);
 }
 
 /**
@@ -172,7 +172,6 @@ const mapContribution = (texture, packName) => {
  * @param {import("@helpers/jsdoc").Contribution | import("@helpers/jsdoc").Contribution[]} contribution
  */
 async function postContributions(contribution) {
-	const pack = contribution.pack ?? contribution[0].pack;
 	try {
 		await axios.post(`${process.env.API_URL}contributions`, contribution, {
 			headers: {
@@ -181,6 +180,7 @@ async function postContributions(contribution) {
 		});
 		if (DEBUG) console.log(`Added contribution(s): ${contribution}`);
 	} catch (err) {
+		const pack = contribution.pack ?? contribution[0]?.pack;
 		if (DEBUG) console.error(`Couldn't add contribution(s) for pack: ${pack}`);
 		else
 			devLogger(client, JSON.stringify(err?.response?.data ?? err), {
