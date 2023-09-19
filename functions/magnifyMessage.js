@@ -90,6 +90,10 @@ module.exports = async function magnifyMessage(message) {
 	}
 };
 
+/**
+ * Checks previous messages for image urls
+ * @param {import("discord.js").Message} message
+ */
 async function previousImage(message) {
 	let found = false;
 	let listMessages = await message.channel.messages.fetch({ limit: 10 });

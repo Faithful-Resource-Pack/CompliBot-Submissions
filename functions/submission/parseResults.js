@@ -5,7 +5,7 @@ const getMessages = require("@helpers/getMessages");
 const devLogger = require("@helpers/devLogger");
 const getPackByChannel = require("@submission/utility/getPackByChannel");
 
-const { promises, writeFile } = require("fs");
+const { mkdirSync, writeFile } = require("fs");
 const { default: axios } = require("axios");
 
 /**
@@ -91,13 +91,8 @@ async function downloadTexture(texture, packName, baseFolder) {
 			for (const version of path.versions) {
 				const fullPath = `${baseFolder}/${packFolder}/${version}/${path.name}`;
 
-				// make full folder chain
-				await promises
-					// removes the texture name from the full path
-					.mkdir(fullPath.substring(0, fullPath.lastIndexOf("/")), { recursive: true })
-					.catch(console.error);
-
-				// write texture to previously generated path
+				// write file to every version
+				mkdirSync(fullPath.substring(0, fullPath.lastIndexOf("/")), { recursive: true })
 				writeFile(fullPath, Buffer.from(imageFile), (err) => {
 					if (DEBUG) return console.log(err ?? `Added texture to path: ${fullPath}`);
 				});

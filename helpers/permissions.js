@@ -1,7 +1,7 @@
 const settings = require("@resources/settings.json");
 const strings = require("@resources/strings.json");
 
-const { EmbedBuilder, PermissionFlagsBits } = require("discord.js");
+const { PermissionFlagsBits } = require("discord.js");
 
 /**
  * Check permissions of a given member

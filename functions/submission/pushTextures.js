@@ -1,10 +1,9 @@
-const { rmdirSync, existsSync } = require("fs");
+const { existsSync, rmSync } = require("fs");
 
 const settings = require("@resources/settings.json");
 const formattedDate = require("@helpers/formattedDate");
 
 const pushToGitHub = require("@functions/pushToGitHub");
-const { default: axios } = require("axios");
 const DEBUG = process.env.DEBUG.toLowerCase() == "true";
 
 /**
@@ -23,7 +22,7 @@ module.exports = async function pushTextures(
 	for (const edition of editions) {
 		const packGitHub = settings.repositories.repo_name[edition][pack];
 		if (!packGitHub) {
-			if (DEBUG) console.log(`${pack} doesn't support ${edition} yet!`);;
+			if (DEBUG) console.log(`${pack} doesn't support ${edition} yet!`);
 			continue;
 		}
 		for (const branch of settings.versions[edition]) {
@@ -34,7 +33,7 @@ module.exports = async function pushTextures(
 			try {
 				await pushToGitHub(packGitHub.org, packGitHub.repo, branch, commitMessage, path);
 				// only remove path if pushing succeeded, so the bot tries the next day too
-				rmdirSync(path, { recursive: true });
+				rmSync(path, { recursive: true });
 				if (DEBUG) console.log(`Pushed: [${packGitHub.repo}:${branch}] (${packGitHub.org})`);
 			} catch {
 				// can also be an auth error or really anything but this is most likely
@@ -44,5 +43,5 @@ module.exports = async function pushTextures(
 	}
 
 	// delete the random hash folder as well so you don't end up with 5 morbillion empty folders
-	if (basePath.includes("instapass")) rmdirSync(basePath, { recursive: true });
+	if (basePath.includes("instapass")) rmSync(basePath, { recursive: true });
 };
