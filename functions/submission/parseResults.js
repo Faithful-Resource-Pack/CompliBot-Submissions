@@ -92,7 +92,7 @@ async function downloadTexture(texture, packName, baseFolder) {
 				const fullPath = `${baseFolder}/${packFolder}/${version}/${path.name}`;
 
 				// write file to every version
-				mkdirSync(fullPath.substring(0, fullPath.lastIndexOf("/")), { recursive: true })
+				mkdirSync(fullPath.substring(0, fullPath.lastIndexOf("/")), { recursive: true });
 				writeFile(fullPath, Buffer.from(imageFile), (err) => {
 					if (DEBUG) return console.log(err ?? `Added texture to path: ${fullPath}`);
 				});

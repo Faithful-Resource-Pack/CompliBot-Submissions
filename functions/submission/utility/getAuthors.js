@@ -15,7 +15,7 @@ module.exports = async function getAuthors(message) {
 		?.map((name) => name.toLowerCase().trim());
 
 	if (names?.length) {
-		// fetch all contributors and check if their username matches the one in curly brackets
+		/** @type {import("@helpers/jsdoc").User[]} filter contributors that match regex */
 		const users = (await axios.get(`${process.env.API_URL}users/names`)).data;
 		for (const user of users)
 			if (names.includes(user.username?.toLowerCase()) && !authors.includes(user.id))

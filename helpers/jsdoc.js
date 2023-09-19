@@ -35,6 +35,14 @@
  * @property {Path[]} paths paths and their attached uses
  * @property {Contribution[]?} contributions
  *
+ * @typedef User
+ * @property {String} id
+ * @property {String?} username
+ * @property {String?} uuid
+ * @property {String[]?} roles
+ * @property {String[]?} media
+ * @property {Boolean?} anonymous
+ *
  * BOT:
  *
  * @typedef Command
