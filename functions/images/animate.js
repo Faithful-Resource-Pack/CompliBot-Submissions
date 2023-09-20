@@ -30,7 +30,7 @@ module.exports = async function animate(baseCanvas, mcmeta) {
 	let frametime = mcmeta.animation?.frametime || 1;
 	if (frametime > 15) frametime = 15;
 
-	/** @type {({index?: Number, duration?: Number})[]} */
+	/** @type {({index: Number, duration: Number})[]} */
 	const frames = [];
 	if (mcmeta.animation.frames?.length) {
 		// add frames in specified order if possible
