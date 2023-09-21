@@ -24,7 +24,8 @@ module.exports = async function getAuthors(message) {
 
 	// detect by ping (using regex to ensure users not in the server get included)
 	const mentions = message.content.match(/(?<=\<\@)(.*?)(?=\>)/g) ?? [];
-	for (const mention of mentions) if (!authors.includes(mention)) authors.push(mention);
+	for (const mention of mentions)
+		if (!authors.includes(mention)) authors.push(mention.replace(/[\D]/g), "");
 
 	return authors;
 };
