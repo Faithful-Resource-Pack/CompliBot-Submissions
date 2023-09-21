@@ -2,7 +2,7 @@ const settings = require("@resources/settings.json");
 const strings = require("@resources/strings.json");
 
 const submitTexture = require("@submission/submitTexture");
-const invalidSubmission = require("@functions/submission/utility/invalidSubmission");
+const cancelSubmission = require("@functions/submission/utility/cancelSubmission");
 
 const magnifyMessage = require("@functions/magnifyMessage");
 
@@ -37,7 +37,7 @@ module.exports = {
 		 */
 		if (settings.submission.autoreact.includes(message.channel.id)) {
 			if (!message.attachments.size)
-				return await invalidSubmission(message, strings.submission.image_not_attached);
+				return await cancelSubmission(message, strings.submission.image_not_attached);
 
 			await message.react(settings.emojis.upvote);
 			await message.react(settings.emojis.downvote);

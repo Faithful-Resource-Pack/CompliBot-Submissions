@@ -13,7 +13,7 @@ const DEBUG = process.env.DEBUG.toLowerCase() == "true";
  * @param {import("discord.js").Message} message message to check permissions of
  * @param {String?} error optional error message
  */
-module.exports = async function invalidSubmission(message, error = "No error given!") {
+module.exports = async function cancelSubmission(message, error = "No error given!") {
 	// allow managers and council to talk in submit channels
 	if (
 		hasPermission(message.member, "any") &&

@@ -1,6 +1,6 @@
 const settings = require("@resources/settings.json");
 
-const instapass = require("@submission/utility/instapass");
+const instapass = require("@submission/instapass");
 const changeStatus = require("@submission/utility/changeStatus");
 const { hasPermission } = require("@helpers/permissions");
 const DEBUG = process.env.DEBUG.toLowerCase() == "true";

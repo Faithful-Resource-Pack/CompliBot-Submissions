@@ -4,7 +4,7 @@ const DEBUG = process.env.DEBUG.toLowerCase() == "true";
 
 const choiceEmbed = require("@submission/utility/choiceEmbed");
 const makeEmbed = require("@submission/makeEmbed");
-const invalidSubmission = require("@submission/utility/invalidSubmission");
+const cancelSubmission = require("@submission/utility/cancelSubmission");
 
 const getAuthors = require("@submission/utility/getAuthors");
 const minecraftSorter = require("@helpers/minecraftSorter");
@@ -20,7 +20,7 @@ const { default: axios } = require("axios");
 module.exports = async function submitTexture(client, message) {
 	// break if no file is attached
 	if (!message.attachments.size)
-		return invalidSubmission(message, strings.submission.image_not_attached);
+		return cancelSubmission(message, strings.submission.image_not_attached);
 
 	// needs to be set to -1 since we initialize it to zero directly after
 	let attachmentIndex = -1;
@@ -34,7 +34,7 @@ module.exports = async function submitTexture(client, message) {
 
 		// remove extra metadata
 		if (!attachment.url.split("?")[0].endsWith(".png")) {
-			invalidSubmission(message, strings.submission.invalid_format);
+			cancelSubmission(message, strings.submission.invalid_format);
 			continue;
 		}
 
@@ -52,7 +52,7 @@ module.exports = async function submitTexture(client, message) {
 			/** @type {import("@helpers/jsdoc").Texture} */
 			const texture = (await axios.get(`${process.env.API_URL}textures/${id}/all`)).data;
 			if (!Object.keys(texture).length)
-				await invalidSubmission(message, strings.submission.unknown_id + err);
+				await cancelSubmission(message, strings.submission.unknown_id + err);
 			else await makeEmbed(client, message, texture, attachment, param);
 			continue;
 		}
@@ -62,7 +62,7 @@ module.exports = async function submitTexture(client, message) {
 
 		// if there's no search and no id the submission can't be valid
 		if (!search) {
-			await invalidSubmission(message, strings.submission.no_name_given);
+			await cancelSubmission(message, strings.submission.no_name_given);
 			continue;
 		}
 
@@ -70,7 +70,7 @@ module.exports = async function submitTexture(client, message) {
 		const results = (await axios.get(`${process.env.API_URL}textures/${search}/all`)).data;
 
 		if (!results.length) {
-			await invalidSubmission(message, strings.submission.does_not_exist + "\n" + search);
+			await cancelSubmission(message, strings.submission.does_not_exist + "\n" + search);
 			continue;
 		} else if (results.length == 1) {
 			await makeEmbed(client, message, results[0], attachment, param);
