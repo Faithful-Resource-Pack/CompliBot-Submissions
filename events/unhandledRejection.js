@@ -13,23 +13,27 @@ module.exports = function unhandledRejection(client, error, promise, originMessa
 	if (DEV) return console.trace(error?.stack ?? error);
 
 	let eprotoError = false;
-	let description = error.stack; // stack else AxiosError else random error
+	let description = error.stack;
 	let codeBlocks = "";
+
 	if (error.isAxiosError) {
+		// axios errors are JSON
 		description = JSON.stringify(error.toJSON());
 		eprotoError = error.code === "EPROTO";
 		codeBlocks = "json";
 	} else if (!description) {
+		// no stack trace so it's JSON
 		description = JSON.stringify(error);
 		codeBlocks = "json";
 	} else if (error instanceof DiscordAPIError)
 		// not on our end, just clutters logs
 		return console.error(error, promise, description);
 
+	// silence EPROTO errors
 	if (eprotoError) return console.error(error, promise, description);
 
 	if (originMessage?.url !== undefined)
-		description = `Coming from [this message](${originMessage.url})\n` + description;
+		description = `Coming from [this message](${originMessage.url})\n${description}`;
 
 	console.error(error, promise);
 
