@@ -1,7 +1,7 @@
 const settings = require("@resources/settings.json");
 
-const instapass = require("@submission/instapass");
-const changeStatus = require("@submission/utility/changeStatus");
+const instapass = require("@submission/utility/instapass");
+const invalidate = require("@submission/utility/invalidate");
 const { hasPermission } = require("@helpers/permissions");
 const DEBUG = process.env.DEBUG.toLowerCase() == "true";
 /**
@@ -33,8 +33,8 @@ module.exports = async function reactionMenu(client, openReaction, user) {
 	// remove the arrow emoji and generate the tray
 	const trayReactions = loadReactions(message, member, allReactions);
 	await openReaction.remove().catch(console.error);
-	for (const emoji of trayReactions) await message.react(emoji);
 	if (DEBUG) console.log(`Reaction tray opened by: ${user.username}`);
+	for (const emoji of trayReactions) await message.react(emoji);
 
 	/**
 	 * @param {import("discord.js").MessageReaction} collectedReaction
@@ -69,15 +69,15 @@ module.exports = async function reactionMenu(client, openReaction, user) {
 	// already confirmed it's the same user reacting
 	if (hasPermission(member, "any")) {
 		switch (actionReaction.emoji.id) {
+			// flush votes and reaction menu
 			case settings.emojis.instapass:
-				// flush votes and reaction menu
 				removeReactions(message, [
 					settings.emojis.upvote,
 					settings.emojis.downvote,
 					...trayReactions,
 				]);
 
-				return instapass(client, message, member);
+				return instapass(message, member);
 			case settings.emojis.invalid:
 				removeReactions(message, [
 					settings.emojis.upvote,
@@ -85,11 +85,7 @@ module.exports = async function reactionMenu(client, openReaction, user) {
 					...trayReactions,
 				]);
 
-				return changeStatus(
-					message,
-					`<:invalid:${settings.emojis.invalid}> Invalidated by <@${member.id}>`,
-					settings.colors.red,
-				);
+				return invalidate(message, member);
 		}
 	}
 

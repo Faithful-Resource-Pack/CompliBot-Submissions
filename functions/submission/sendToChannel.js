@@ -1,7 +1,7 @@
 const settings = require("@resources/settings.json");
 
 const retrieveSubmission = require("@submission/utility/retrieveSubmission");
-const changeStatus = require("@submission/utility/changeStatus");
+const { changeStatus } = require("@submission/utility/changeStatus");
 const { imageButtons, submissionReactions } = require("@helpers/interactions");
 
 const { EmbedBuilder } = require("discord.js");
