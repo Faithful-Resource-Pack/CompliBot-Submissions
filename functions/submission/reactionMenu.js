@@ -7,11 +7,10 @@ const DEBUG = process.env.DEBUG.toLowerCase() == "true";
 /**
  * Opens reaction tray, listens for reaction, and closes tray
  * @author Evorp, Juknum
- * @param {import("discord.js").Client} client
  * @param {import("discord.js").MessageReaction} openReaction reaction that opened the tray
  * @param {import("discord.js").User} user person who reacted
  */
-module.exports = async function reactionMenu(client, openReaction, user) {
+module.exports = async function reactionMenu(openReaction, user) {
 	const allReactions = [
 		settings.emojis.see_less,
 		settings.emojis.delete,

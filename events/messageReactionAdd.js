@@ -21,7 +21,7 @@ module.exports = {
 			.flat();
 
 		if (channelArray.includes(reaction.message.channel.id)) {
-			return await reactionMenu(reaction.message.client, reaction, user);
+			return await reactionMenu(reaction, user);
 		}
 	},
 };
