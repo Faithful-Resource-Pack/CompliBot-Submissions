@@ -14,11 +14,10 @@ const DEBUG = process.env.DEBUG.toLowerCase() == "true";
 /**
  * Selection menu for dealing with multiple valid options
  * @author Evorp
- * @param {import("discord.js").Client} client
  * @param {import("discord.js").Message} message message to reply to
  * @param {import("discord.js").MessageSelectOptionData[]} choices pre-mapped choices
  */
-module.exports = async function choiceEmbed(client, message, choices) {
+module.exports = async function choiceEmbed(message, choices) {
 	const emojis = settings.emojis.default_select;
 	const components = [];
 	const choicesLength = choices.length; // we're modifying choices directly so it needs to be saved first
@@ -73,7 +72,7 @@ module.exports = async function choiceEmbed(client, message, choices) {
 			const texture = (await axios.get(`${process.env.API_URL}textures/${id}/all`)).data;
 			if (choiceMessage.deletable) await choiceMessage.delete();
 
-			return await makeEmbed(client, message, texture, attachments[index], param);
+			return await makeEmbed(message, texture, attachments[index], param);
 		}
 	});
 

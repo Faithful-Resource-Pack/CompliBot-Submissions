@@ -14,10 +14,9 @@ const { default: axios } = require("axios");
 /**
  * Get submission information and create embed
  * @author Juknum, Evorp
- * @param {import("discord.js").Client} client
  * @param {import("discord.js").Message} message message to check and embed
  */
-module.exports = async function submitTexture(client, message) {
+module.exports = async function submitTexture(message) {
 	// break if no file is attached
 	if (!message.attachments.size)
 		return cancelSubmission(message, strings.submission.image_not_attached);
@@ -53,7 +52,7 @@ module.exports = async function submitTexture(client, message) {
 			const texture = (await axios.get(`${process.env.API_URL}textures/${id}/all`)).data;
 			if (!Object.keys(texture).length)
 				await cancelSubmission(message, strings.submission.unknown_id + err);
-			else await makeEmbed(client, message, texture, attachment, param);
+			else await makeEmbed(message, texture, attachment, param);
 			continue;
 		}
 
@@ -73,7 +72,7 @@ module.exports = async function submitTexture(client, message) {
 			await cancelSubmission(message, strings.submission.does_not_exist + "\n" + search);
 			continue;
 		} else if (results.length == 1) {
-			await makeEmbed(client, message, results[0], attachment, param);
+			await makeEmbed(message, results[0], attachment, param);
 			continue;
 		}
 
@@ -88,7 +87,7 @@ module.exports = async function submitTexture(client, message) {
 			};
 		});
 
-		await choiceEmbed(client, message, mappedResults);
+		await choiceEmbed(message, mappedResults);
 	}
 	if (!ongoingMenu && message.deletable) await message.delete();
 };

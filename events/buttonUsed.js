@@ -16,11 +16,8 @@ const warnUser = require("@helpers/warnUser");
  */
 module.exports = {
 	name: "buttonUsed",
-	/**
-	 * @param {import("discord.js").Client} client
-	 * @param {import("discord.js").ButtonInteraction} interaction
-	 */
-	async execute(client, interaction) {
+	/** @param {import("discord.js").ButtonInteraction} interaction */
+	async execute(interaction) {
 		const message = interaction.message;
 		const image =
 			interaction.message?.embeds[0]?.thumbnail?.url ??

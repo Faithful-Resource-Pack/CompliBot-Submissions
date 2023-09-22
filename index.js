@@ -52,8 +52,12 @@ function startBot() {
 	for (const file of eventsFiles) {
 		/** @type {import("@helpers/jsdoc").Event} */
 		const event = require(`./events/${file}`);
-		if (event.once) client.once(event.name, (...args) => event.execute(client, ...args));
-		else client.on(event.name, (...args) => event.execute(client, ...args));
+
+		// not a discord.js compatible event (e.g. unhandledRejection)
+		if (typeof event != "object") continue;
+
+		if (event.once) client.once(event.name, event.execute);
+		else client.on(event.name, event.execute);
 	}
 
 	/**

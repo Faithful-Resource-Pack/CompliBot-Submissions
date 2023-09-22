@@ -15,13 +15,12 @@ const { submissionReactions } = require("@helpers/interactions");
 /**
  * Make a submission embed for a given texture and image
  * @author Juknum, Evorp
- * @param {import("discord.js").Client} client
  * @param {import("discord.js").Message} message used for channel and author information
  * @param {import("@helpers/jsdoc").Texture} texture texture information
  * @param {import("discord.js").AttachmentBuilder} attachment raw texture to embed
  * @param {{ description?: String, authors: String[] }} params additional info (e.g. description, coauthors)
  */
-module.exports = async function makeEmbed(client, message, texture, attachment, params = {}) {
+module.exports = async function makeEmbed(message, texture, attachment, params = {}) {
 	const packName = getPackByChannel(message.channel.id, "submit");
 	let imgButtons;
 
@@ -78,7 +77,7 @@ module.exports = async function makeEmbed(client, message, texture, attachment, 
 		);
 
 		// send to #submission-spam for permanent urls
-		const [thumbnailUrl, comparedUrl] = await getImages(client, rawImage, comparisonImage);
+		const [thumbnailUrl, comparedUrl] = await getImages(message.client, rawImage, comparisonImage);
 
 		embed.setImage(comparedUrl);
 		embed.setThumbnail(thumbnailUrl);
@@ -99,7 +98,7 @@ module.exports = async function makeEmbed(client, message, texture, attachment, 
 			);
 
 		// image is too big so we just add it directly to the embed without comparison
-		const [imageUrl] = await getImages(client, attachment);
+		const [imageUrl] = await getImages(message.client, attachment);
 		embed
 			.setImage(imageUrl)
 			.setThumbnail(imageUrl)

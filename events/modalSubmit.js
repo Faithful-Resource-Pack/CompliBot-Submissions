@@ -6,11 +6,8 @@ const { feedbackBug, feedbackSuggestion } = require("@functions/feedback");
 /** @type {import("@helpers/jsdoc").Event} */
 module.exports = {
 	name: "modalSubmit",
-	/**
-	 * @param {import("discord.js").Client} client
-	 * @param {import("discord.js").ModalSubmitInteraction} interaction
-	 */
-	async execute(client, interaction) {
+	/** @param {import("discord.js").ModalSubmitInteraction} interaction */
+	async execute(interaction) {
 		switch (interaction.customId) {
 			case "bugTicket":
 				return await feedbackBug(interaction, "bug");

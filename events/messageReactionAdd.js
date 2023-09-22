@@ -9,7 +9,7 @@ module.exports = {
 	 * @param {import("discord.js").MessageReaction} reaction
 	 * @param {import("discord.js").User} user
 	 */
-	async execute(client, reaction, user) {
+	async execute(reaction, user) {
 		if (user.bot) return;
 
 		// dark magic to fetch messages sent before the start of the bot
@@ -21,7 +21,7 @@ module.exports = {
 			.flat();
 
 		if (channelArray.includes(reaction.message.channel.id)) {
-			return await reactionMenu(client, reaction, user);
+			return await reactionMenu(reaction.message.client, reaction, user);
 		}
 	},
 };

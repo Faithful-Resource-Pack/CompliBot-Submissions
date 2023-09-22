@@ -9,11 +9,8 @@ const magnifyMessage = require("@functions/magnifyMessage");
 /** @type {import("@helpers/jsdoc").Event} */
 module.exports = {
 	name: "messageCreate",
-	/**
-	 * @param {import("discord.js").Client} client
-	 * @param {import("discord.js").Message} message
-	 */
-	async execute(client, message) {
+	/** @param {import("discord.js").Message} message */
+	async execute(message) {
 		// Ignore bot messages
 		if (message.author.bot) return;
 
@@ -30,7 +27,7 @@ module.exports = {
 		const submissionChannels = Object.values(settings.submission.packs).map(
 			(pack) => pack.channels.submit,
 		);
-		if (submissionChannels.includes(message.channel.id)) return submitTexture(client, message);
+		if (submissionChannels.includes(message.channel.id)) return submitTexture(message);
 
 		/**
 		 * BASIC AUTOREACT
