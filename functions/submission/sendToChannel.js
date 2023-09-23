@@ -78,14 +78,12 @@ async function sendToResults(client, params) {
 	);
 
 	for (const message of messagesUpvoted) {
+		const statusField = message.embed.fields[1];
+		statusField.value = `<:upvote:${
+			settings.emojis.upvote
+		}> Will be added in a future version! ${getPercentage(message.upvote, message.downvote)}`;
 		const resultEmbed = EmbedBuilder.from(message.embed)
-			.spliceFields(1, 1, {
-				name: "Status",
-				value: `<:upvote:${
-					settings.emojis.upvote
-				}> Will be added in a future version! ${getPercentage(message.upvote, message.downvote)}`,
-				inline: true,
-			})
+			.spliceFields(1, 1, statusField)
 			.setColor(settings.colors.green);
 
 		// if we're coming straight from submissions
@@ -105,18 +103,16 @@ async function sendToResults(client, params) {
 
 	for (const message of messagesDownvoted) {
 		if (params.council_enabled) {
-			// everyone thank discord.js v14 for this monstrosity
+			const statusField = message.embed.fields[1];
+			statusField.value = `<:downvote:${
+				settings.emojis.downvote
+			}> This texture did not pass council voting and therefore will not be added. ${getPercentage(
+				message.upvote,
+				message.downvote,
+			)}`;
+
 			const resultEmbed = EmbedBuilder.from(message.embed)
-				.spliceFields(1, 1, {
-					name: "Status",
-					value: `<:downvote:${
-						settings.emojis.downvote
-					}> This texture did not pass council voting and therefore will not be added. ${getPercentage(
-						message.upvote,
-						message.downvote,
-					)}`,
-					inline: true,
-				})
+				.spliceFields(1, 1, statusField)
 				.setColor(settings.colors.red);
 
 			const users = await message.downvote.users.fetch();
