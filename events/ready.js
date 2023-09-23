@@ -19,12 +19,12 @@ module.exports = {
 	once: true,
 	/** @param {import("discord.js").Client} client */
 	async execute(client) {
-		console.log(`┌─────────────────────────────────────────────────┐`);
-		console.log(`│                                                 │`);
-		console.log(`│    ─=≡Σ((( つ◕ل͜◕)つ                             │`);
-		console.log(`│  JavaScript is a pain, but I'm fine, I hope...  │`);
-		console.log(`│                                                 │`);
-		console.log(`└─────────────────────────────────────────────────┘\n\n`);
+		console.log(`┌───────────────────────────────────────────────────┐`);
+		console.log(`│                                                   │`);
+		console.log(`│     ─=≡Σ((( つ◕ل͜◕)つ                              │`);
+		console.log(`│   JavaScript is a pain, but I'm fine, I hope...   │`);
+		console.log(`│                                                   │`);
+		console.log(`└───────────────────────────────────────────────────┘\n\n`);
 
 		/** @see commands */
 		await loadCommands(client);

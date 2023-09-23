@@ -15,5 +15,5 @@ module.exports = async function invalidate(message, member) {
 	const status = `<:invalid:${settings.emojis.invalid}> Invalidated by <@${member.id}>`;
 
 	await changeStatus(message, status, settings.colors.red);
-	await changeOriginalStatus(message, status, settings.colors, red);
+	await changeOriginalStatus(message, status, settings.colors.red);
 };
