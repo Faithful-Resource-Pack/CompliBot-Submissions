@@ -1,4 +1,4 @@
-const { ActionRowBuilder } = require("discord.js");
+const { ActionRowBuilder, ComponentType } = require("discord.js");
 const { deleteButton } = require("@helpers/interactions");
 
 /**
@@ -7,16 +7,14 @@ const { deleteButton } = require("@helpers/interactions");
  * @param {import("discord.js").Message} message message sent by bot
  */
 module.exports = async function addDeleteButton(message) {
-	// Based off the TypeScript version
 	if (
 		message.components[0] != undefined &&
 		message.components.at(-1).components.length < 5 && //check there aren't 5 buttons
-		message.components.at(-1).components[0].type === "BUTTON" //checks there isn't a select menu
+		message.components.at(-1).components[0].type === ComponentType.Button //checks there isn't a select menu
 	) {
-		message.components.at(-1).addComponents([deleteButton]);
-
+		const deleteRow = ActionRowBuilder.from(message.components.at(-1)).addComponents(deleteButton);
 		return message.edit({
-			components: [...message.components],
+			components: [...message.components.slice(0, -1), deleteRow],
 		});
 	}
 	return message.edit({
