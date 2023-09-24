@@ -44,12 +44,10 @@ module.exports = async function reactionMenu(openReaction, user) {
 
 	/** @type {import("discord.js").MessageReaction} await reaction from user */
 	const actionReaction = (
-		await message
-			.awaitReactions({ filter, max: 1, time: 30000, errors: ["time"] })
-			.catch(async (err) => {
-				closeTray(message, allReactions);
-				console.error(err);
-			})
+		await message.awaitReactions({ filter, max: 1, time: 30000, errors: ["time"] }).catch((err) => {
+			closeTray(message, allReactions);
+			console.error(err);
+		})
 	)?.first(); // first person to react
 
 	// if there's no reaction collected just reset the message and return early

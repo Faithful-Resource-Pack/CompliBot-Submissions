@@ -6,6 +6,7 @@ const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require("disc
 const formattedDate = require("@helpers/formattedDate");
 const pushTextures = require("@submission/pushTextures");
 const { downloadResults } = require("@submission/parseResults");
+const warnUser = require("@helpers/warnUser");
 
 /** @type {import("@helpers/jsdoc").Command} */
 module.exports = {
@@ -29,6 +30,8 @@ module.exports = {
 		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 	async execute(interaction) {
 		const choice = interaction.options.getString("pack", true);
+		if (choice == "all" && !process.env.DEVELOPERS.includes(interaction.user.id))
+			return warnUser(interaction, strings.command.no_permission);
 
 		/** @type {import("@helpers/jsdoc").SubmissionPack[]} */
 		const packs =

@@ -49,7 +49,6 @@ module.exports = {
 		/**
 		 * Send submission messages to their respective channels
 		 * Runs each day at midnight CE(S)T
-		 * @author Evorp
 		 */
 		new CronJob("0 0 * * *", async () => {
 			for (const pack of Object.values(settings.submission.packs)) {
@@ -61,7 +60,6 @@ module.exports = {
 		/**
 		 * Download passed textures
 		 * Runs each day at 12:15 AM CE(S)T
-		 * @author Evorp
 		 */
 		new CronJob("15 0 * * *", async () => {
 			for (const pack of Object.values(settings.submission.packs)) {
@@ -72,7 +70,6 @@ module.exports = {
 		/**
 		 * Push downloaded textures to GitHub, and back up database files
 		 * Runs each day at 12:30 AM CE(S)T
-		 * @author Evorp, Juknum
 		 */
 		new CronJob("30 0 * * *", async () => {
 			for (const pack of Object.keys(settings.submission.packs))

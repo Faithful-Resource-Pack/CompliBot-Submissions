@@ -1,7 +1,7 @@
 /**
  * Get today's date as a string
  * @author Juknum, Evorp
- * @param {"ymd" | "dmy" | "mdy"?} format format to send date as
+ * @param {"ymd" | "dmy" | "mdy"} format format to send date as
  */
 module.exports = function formattedDate(format = "dmy") {
 	const today = new Date();

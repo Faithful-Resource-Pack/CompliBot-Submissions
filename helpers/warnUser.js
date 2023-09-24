@@ -5,11 +5,11 @@ const { EmbedBuilder, Message } = require("discord.js");
 const addDeleteButton = require("./addDeleteButton");
 
 /**
- * Sends pre-formatted red embed with warning sign
- * @author Juknum
+ * Generic error message for both interactions and messages
+ * @author Juknum, Evorp
  * @param {import("discord.js").ChatInputCommandInteraction | Message} interaction valid message/interaction object
  * @param {String} text
- * @param {Boolean?} deferred whether to reply directly or to edit the deferred reply
+ * @param {Boolean} deferred whether to reply directly or to edit the deferred reply
  */
 module.exports = async function warnUser(interaction, text, deferred = false) {
 	const embed = new EmbedBuilder()

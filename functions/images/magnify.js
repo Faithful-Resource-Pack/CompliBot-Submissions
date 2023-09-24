@@ -44,7 +44,7 @@ async function magnifyBuffer(origin, isAnimation = false) {
  * Returns discord attachment
  * @author Juknum
  * @param {String | Image | Buffer} origin url to magnify
- * @param {String?} name name, defaults to "magnified.png"
+ * @param {String} name name, defaults to "magnified.png"
  * @returns {Promise<AttachmentBuilder>} magnified file
  */
 async function magnifyAttachment(origin, name = "magnified.png") {

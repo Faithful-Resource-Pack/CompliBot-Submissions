@@ -7,11 +7,11 @@ const pushToGitHub = require("@functions/pushToGitHub");
 const DEBUG = process.env.DEBUG.toLowerCase() == "true";
 
 /**
- * Push a single texture to GitHub
+ * Push textures to all versions of a given pack
  * @author Juknum, Evorp
  * @param {String} basePath no trailing slash
  * @param {import("@helpers/jsdoc").Pack} pack pack to push
- * @param {String?} commitMessage commit message
+ * @param {String} commitMessage commit message
  */
 module.exports = async function pushTextures(
 	basePath,

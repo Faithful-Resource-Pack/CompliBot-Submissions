@@ -13,7 +13,7 @@ const settings = require("@resources/settings.json");
  * @author Evorp, EwanHowell
  * @param {String} firstUrl first url to compare
  * @param {String} secondUrl second url to compare
- * @param {Number?} tolerance difference between colors considered acceptable
+ * @param {Number} tolerance difference between colors considered acceptable
  * @returns {Promise<import("discord.js").AttachmentBuilder>} compared image
  */
 module.exports = async function difference(firstUrl, secondUrl, tolerance = 0) {
