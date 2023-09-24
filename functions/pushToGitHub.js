@@ -19,9 +19,8 @@ const { readFileSync } = require("fs");
  * @param {String} localPath
  */
 module.exports = async function pushToGitHub(org, repo, branch, commitMessage, localPath) {
-	// Authentification through CompliBot GitHub Account
 	const octo = new Octokit({
-		auth: process.env.COMPLIBOT_GIT_TOKEN,
+		auth: process.env.GIT_TOKEN,
 	});
 
 	// Upload files to repo:

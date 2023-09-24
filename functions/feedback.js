@@ -71,7 +71,7 @@ async function feedbackSuggestion(interaction) {
 async function feedbackSend(interaction, title, description) {
 	try {
 		const octokit = new Octokit({
-			auth: process.env.COMPLIBOT_GIT_TOKEN,
+			auth: process.env.GIT_TOKEN,
 		});
 
 		octokit.issues.create({
