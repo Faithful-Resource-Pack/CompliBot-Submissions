@@ -1,7 +1,6 @@
 const settings = require("@resources/settings.json");
 const strings = require("@resources/strings.json");
 
-const startBot = require("@index");
 const fetchSettings = require("@functions/fetchSettings");
 
 const warnUser = require("@helpers/warnUser");
@@ -23,18 +22,9 @@ module.exports = {
 
 		interaction.client.destroy();
 
-		fetchSettings()
-			.then(() => startBot())
-			.catch(() =>
-				interaction.channel.send({
-					embeds: [
-						new EmbedBuilder()
-							.setTitle("Something went wrong when restarting the bot!")
-							.setDescription("This error is likely related to fetching `settings.json`")
-							.setColor(settings.colors.red)
-							.setThumbnail(settings.images.error),
-					],
-				}),
-			);
+		// delete bot cache
+		Object.keys(require.cache).forEach((key) => delete require.cache[key]);
+		// restart bot by launching index file
+		require("@index");
 	},
 };
