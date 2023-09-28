@@ -1,8 +1,6 @@
 const settings = require("@resources/settings.json");
 const strings = require("@resources/strings.json");
 
-const fetchSettings = require("@functions/fetchSettings");
-
 const warnUser = require("@helpers/warnUser");
 const { EmbedBuilder, SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
 
