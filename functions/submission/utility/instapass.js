@@ -39,7 +39,7 @@ module.exports = async function instapass(message, member) {
 	const embed = EmbedBuilder.from(message.embeds[0]);
 
 	// if instapassed in council "original post" is already there
-	if (!message.embeds[0].description.startsWith("[Original Post]("))
+	if (!message.embeds[0].description?.startsWith("[Original Post]("))
 		embed.setDescription(`[Original Post](${message.url})\n${message.embeds[0].description ?? ""}`);
 
 	const texture = mapMessage(
