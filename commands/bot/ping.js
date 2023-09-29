@@ -25,13 +25,14 @@ module.exports = {
 				const apiPing = interaction.client.ws.ping;
 				const botPing = msg.createdTimestamp - interaction.createdTimestamp;
 
-				const embed = new EmbedBuilder().setTitle("Pong!").setColor(settings.colors.blue)
-					.setDescription(`_${quote.replace("%YEAR%", new Date().getFullYear() + 2)}_
-### Bot Latency:
-${botPing}ms
-### API Latency:
-${Math.round(apiPing)}ms
-`);
+				const embed = new EmbedBuilder()
+					.setTitle("Pong!")
+					.setDescription(`_${quote.replace("%YEAR%", new Date().getFullYear() + 2)}_`)
+					.setColor(settings.colors.blue)
+					.addFields(
+						{ name: "Bot Latency", value: `${botPing}ms`, inline: true },
+						{ name: "API Latency", value: `${Math.round(apiPing)}ms`, inline: true },
+					);
 
 				return interaction.editReply({ embeds: [embed] });
 			})
