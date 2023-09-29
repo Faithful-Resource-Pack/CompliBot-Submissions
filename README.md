@@ -11,10 +11,9 @@
 
 ---
 
-## Online on:
+## Found a bug or want to suggest something?
 
-- [Faithful](https://discord.gg/sN9YRQbBv7)
-- [Classic Faithful](https://discord.gg/KSEhCVtg4J)
+You can either create an issue on our [bug tracker](https://github.com/Faithful-Resource-Pack/CompliBot-Submissions/issues/new/choose) or use the `/feedback` form on our bot.
 
 ---
 
@@ -35,7 +34,7 @@ pnpm dev
 
 ---
 
-## Bot setup
+## Bot Setup
 
 **DISCLAIMER: We won't help you rebrand the bot for any other server. If you really want to do that, then you need to figure it out yourself.**
 
@@ -44,6 +43,10 @@ pnpm dev
 - Rename the **.env.example** file to **.env** and open it using any text editor.
 - Paste in your token after `CLIENT_TOKEN`.
 - Create a file in in `resources/` called `settings.json`, which can be just a set of curly brackets `{}`. This will be loaded dynamically later but needs to be created first because of GitHub limitations.
+
+## API Reference:
+
+This project is heavily developed around our public API. Check out our API documentation at https://api.faithfulpack.net/docs for more information about endpoints and making requests.
 
 ## Configuration
 
