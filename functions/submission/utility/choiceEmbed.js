@@ -13,7 +13,7 @@ const DEBUG = process.env.DEBUG.toLowerCase() == "true";
 
 /**
  * Selection menu for dealing with multiple valid options
- * @author Evorp
+ * @author Juknum, Evorp
  * @param {import("discord.js").Message} message message to reply to
  * @param {import("discord.js").MessageSelectOptionData[]} choices pre-mapped choices
  */

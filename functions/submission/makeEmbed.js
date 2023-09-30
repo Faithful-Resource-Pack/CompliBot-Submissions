@@ -126,6 +126,7 @@ module.exports = async function makeEmbed(message, texture, attachment, params =
 
 /**
  * Return organized path data for a given texture
+ * @author Juknum
  * @param {import("@helpers/jsdoc").Texture} texture
  * @returns {import("discord.js").EmbedFieldData[]}
  */
