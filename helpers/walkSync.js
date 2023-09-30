@@ -2,6 +2,7 @@ const { readdirSync, statSync } = require("fs");
 
 /**
  * Return an array of all filepaths in a directory
+ * @author Juknum, Evorp
  * @param {String} dir
  * @param {String[]} filelist recursion
  * @returns {String[]} array of file paths
