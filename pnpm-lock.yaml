@@ -5,9 +5,6 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
-  '@discordjs/rest':
-    specifier: ^2.0.1
-    version: 2.0.1
   '@napi-rs/canvas':
     specifier: ^0.1.44
     version: 0.1.44

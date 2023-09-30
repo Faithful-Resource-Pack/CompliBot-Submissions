@@ -1,9 +1,8 @@
-const { Routes } = require("discord.js");
-const { REST } = require("@discordjs/rest");
-const walkSync = require("@helpers/walkSync");
+const { Routes, REST, Collection } = require("discord.js");
 const { join } = require("path");
+
+const walkSync = require("@helpers/walkSync");
 const devLogger = require("@helpers/devLogger");
-const { Collection } = require("discord.js");
 
 /**
  * Load slash commands and add them to the client
