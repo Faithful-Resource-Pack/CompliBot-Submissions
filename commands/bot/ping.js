@@ -10,6 +10,7 @@ const { EmbedBuilder, SlashCommandBuilder } = require("discord.js");
 module.exports = {
 	data: new SlashCommandBuilder().setName("ping").setDescription(strings.command.description.ping),
 	async execute(interaction) {
+		/** @todo when complibot v4 is done fetch the json directly */
 		const quotes = (
 			await axios.get(
 				`https://raw.githubusercontent.com/Faithful-Resource-Pack/CompliBot/main/lang/en-US/commands.json`,

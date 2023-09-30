@@ -62,8 +62,7 @@ async function magnifyAttachment(origin, name = "magnified.png") {
 async function magnify(message, url) {
 	const attachment = await magnifyAttachment(url);
 
-	const embedMessage = await message.reply({ files: [attachment] });
-	await addDeleteButton(embedMessage);
+	await message.reply({ files: [attachment] }).then(addDeleteButton);
 	return attachment;
 }
 
