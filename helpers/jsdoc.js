@@ -50,7 +50,7 @@
  * @property {CommandExecute} execute
  *
  * @callback CommandExecute
- * @param {import("discord.js").ChatInputCommandInteraction} interaction
+ * @param {import("discord.js").CommandInteraction} interaction
  *
  * @typedef Event
  * @property {String} name valid discord.js or client-emitted event name

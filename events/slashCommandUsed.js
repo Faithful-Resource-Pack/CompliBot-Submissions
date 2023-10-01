@@ -10,7 +10,7 @@ const { EmbedBuilder } = require("discord.js");
  */
 module.exports = {
 	name: "slashCommandUsed",
-	/** @param {import("discord.js").ChatInputCommandInteraction} interaction */
+	/** @param {import("discord.js").CommandInteraction} interaction */
 	async execute(interaction) {
 		/** @type {import("@helpers/jsdoc").Command} */
 		const command = await interaction.client.commands.get(interaction.commandName);
