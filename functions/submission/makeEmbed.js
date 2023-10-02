@@ -36,24 +36,21 @@ module.exports = async function makeEmbed(message, texture, attachment, params =
 		}
 	}
 
-	// needed to edit later on when necessary (djs v14 workaround)
-	const authorField = {
-		name: "Author",
-		value: `<@!${params.authors.join(">\n<@!").toString()}>`,
-		inline: true,
-	};
-
 	// create base embed
 	const embed = new EmbedBuilder()
 		.setAuthor({ name: message.author.username, iconURL: message.author.displayAvatarURL() })
 		.setColor(settings.colors.blue)
 		.setTitle(`[#${texture.id}] ${texture.name}`)
 		.setURL(`https://webapp.faithfulpack.net/#/gallery/java/32x/latest/all/?show=${texture.id}`)
-		.addFields([
-			authorField,
+		.addFields(
+			{
+				name: "Author",
+				value: `<@!${params.authors.join(">\n<@!")}>`,
+				inline: true,
+			},
 			{ name: "Status", value: `<:pending:${settings.emojis.pending}> Pending...`, inline: true },
 			...addPathsToEmbed(texture),
-		]);
+		);
 
 	// load raw image to pull from
 	const rawImage = new AttachmentBuilder(attachment.url, { name: `${texture.name}.png` });
@@ -110,6 +107,7 @@ module.exports = async function makeEmbed(message, texture, attachment, params =
 	if (params.description) embed.setDescription(params.description);
 	if (params.authors.length > 1) {
 		// plural authors
+		const authorField = embed.data.fields[0];
 		authorField.name += "s";
 		embed.spliceFields(0, 1, authorField);
 	}
