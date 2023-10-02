@@ -32,8 +32,8 @@ async function magnifyBuffer(origin, isAnimation = false) {
 
 	const width = dimension.width * factor;
 	const height = dimension.height * factor;
-	const canvasResult = createCanvas(width, height);
-	const canvasResultCTX = canvasResult.getContext("2d");
+	let canvasResult = createCanvas(width, height);
+	let canvasResultCTX = canvasResult.getContext("2d");
 
 	canvasResultCTX.imageSmoothingEnabled = false;
 	canvasResultCTX.drawImage(tmp, 0, 0, width, height);
