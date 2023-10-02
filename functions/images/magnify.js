@@ -1,26 +1,20 @@
 const { createCanvas, loadImage, Image } = require("@napi-rs/canvas");
 
 const { AttachmentBuilder } = require("discord.js");
-const getDimensions = require("@images/getDimensions");
 const addDeleteButton = require("@helpers/addDeleteButton");
 
 /**
  * The actual magnification function
  * @author Juknum, Evorp
- * @param {String | Image | Buffer} origin url, image, or buffer to magnify
+ * @param {string | URL | Buffer | ArrayBufferLike | Uint8Array | Image | import("stream").Readable} origin any loadable image
  * @param {Boolean} isAnimation whether to magnify the image as a tilesheet
  * @returns {Promise<{ magnified: Buffer, width: Number, height: Number, factor: Number }>} buffer for magnified image
  */
 async function magnifyBuffer(origin, isAnimation = false) {
-	const tmp = await loadImage(origin).catch((err) => Promise.reject(err));
-
-	const dimension =
-		typeof origin == "string"
-			? await getDimensions(origin)
-			: { width: tmp.width, height: tmp.height };
+	const input = await loadImage(origin).catch((err) => Promise.reject(err));
 
 	// ignore height if tilesheet, otherwise it's not scaled as much
-	const surface = isAnimation ? dimension.width * 16 : dimension.width * dimension.height;
+	const surface = isAnimation ? input.width * 16 : input.width * input.height;
 
 	let factor = 64;
 	if (surface == 256) factor = 32;
@@ -30,20 +24,20 @@ async function magnifyBuffer(origin, isAnimation = false) {
 	if (surface > 65536) factor = 2;
 	if (surface > 262144) factor = 1;
 
-	const width = dimension.width * factor;
-	const height = dimension.height * factor;
-	let canvasResult = createCanvas(width, height);
-	let canvasResultCTX = canvasResult.getContext("2d");
+	const width = input.width * factor;
+	const height = input.height * factor;
+	const output = createCanvas(width, height);
+	const ctx = output.getContext("2d");
 
-	canvasResultCTX.imageSmoothingEnabled = false;
-	canvasResultCTX.drawImage(tmp, 0, 0, width, height);
-	return { magnified: canvasResult.toBuffer("image/png"), width, height, factor };
+	ctx.imageSmoothingEnabled = false;
+	ctx.drawImage(input, 0, 0, width, height);
+	return { magnified: output.toBuffer("image/png"), width, height, factor };
 }
 
 /**
  * Returns discord attachment
  * @author Juknum
- * @param {String | Image | Buffer} origin url to magnify
+ * @param {string | URL | Buffer | ArrayBufferLike | Uint8Array | Image | import("stream").Readable} origin any loadable image
  * @param {String} name name, defaults to "magnified.png"
  * @returns {Promise<AttachmentBuilder>} magnified file
  */
