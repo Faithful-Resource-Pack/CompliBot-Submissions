@@ -8,11 +8,13 @@ const { readdirSync, statSync } = require("fs");
  * @returns {String[]} array of file paths
  */
 module.exports = function walkSync(dir, filelist = []) {
-	if (dir[dir.length - 1] != "/") dir = dir.concat("/");
-	const files = readdirSync(dir);
-	files.forEach((file) => {
-		if (statSync(dir + file).isDirectory()) filelist = walkSync(dir + file + "/", filelist);
+	// add trailing slash if not present
+	if (dir[dir.length - 1] != "/") dir += "/";
+	for (const file of readdirSync(dir)) {
+		if (statSync(dir + file).isDirectory())
+			// read directories inside directories recursively
+			filelist = walkSync(dir + file + "/", filelist);
 		else filelist.push(dir + file);
-	});
+	}
 	return filelist;
 };
