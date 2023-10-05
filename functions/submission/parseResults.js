@@ -138,7 +138,7 @@ const mapMessage = (message) => {
 		url: message.embeds[0].thumbnail.url,
 		authors: message.embeds[0].fields[0].value
 			.split("\n")
-			.map((auth) => auth.replace("<@!", "").replace(">", "")),
+			.map((auth) => auth.match(/\d+/g)?.[0]),
 		date: message.createdTimestamp,
 		id: message.embeds[0].title.match(/(?<=\[\#)(.*?)(?=\])/)?.[0],
 	};
