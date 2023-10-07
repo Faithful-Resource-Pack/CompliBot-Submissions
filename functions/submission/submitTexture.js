@@ -46,13 +46,15 @@ module.exports = async function submitTexture(message) {
 			authors: await getAuthors(message),
 		};
 
-		// priority to ids -> faster
 		if (id) {
-			/** @type {import("@helpers/jsdoc").Texture} */
-			const texture = (await axios.get(`${process.env.API_URL}textures/${id}/all`)).data;
-			if (!Object.keys(texture).length)
+			try {
+				/** @type {import("@helpers/jsdoc").Texture} */
+				const texture = (await axios.get(`${process.env.API_URL}textures/${id}/all`)).data;
+				await makeEmbed(message, texture, attachment, param);
+			} catch {
+				// texture id doesn't exist
 				await cancelSubmission(message, strings.submission.unknown_id + err);
-			else await makeEmbed(message, texture, attachment, param);
+			}
 			continue;
 		}
 
@@ -66,7 +68,10 @@ module.exports = async function submitTexture(message) {
 		}
 
 		/** @type {import("@helpers/jsdoc").Texture[]} */
-		const results = (await axios.get(`${process.env.API_URL}textures/${search}/all`)).data;
+		let results = (await axios.get(`${process.env.API_URL}textures/${search}/all`)).data;
+
+		// if using texture id
+		if (!Array.isArray(results)) results = [results];
 
 		if (!results.length) {
 			await cancelSubmission(message, strings.submission.does_not_exist + "\n" + search);
