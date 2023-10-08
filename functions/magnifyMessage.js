@@ -85,7 +85,7 @@ module.exports = async function magnifyMessage(message) {
 				} else return warnUser(message, strings.command.image.not_attached.id);
 			})
 			.catch((error) => {
-				return warnUser(message, error ?? "Invalid message ID!");
+				return warnUser(message, error || "Invalid message ID!");
 			});
 	}
 };

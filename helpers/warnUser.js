@@ -12,7 +12,7 @@ const addDeleteButton = require("./addDeleteButton");
  * @param {Boolean} deferred whether to reply directly or to edit the deferred reply
  * @returns {Promise<Message>} warn message
  */
-module.exports = async function warnUser(interaction, text, deferred = false) {
+module.exports = async function warnUser(interaction, text = strings.bot.error, deferred = false) {
 	const embed = new EmbedBuilder()
 		.setColor(settings.colors.red)
 		.setThumbnail(settings.images.warning)
