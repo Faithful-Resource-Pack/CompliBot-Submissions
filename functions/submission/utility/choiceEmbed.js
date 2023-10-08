@@ -56,7 +56,7 @@ module.exports = async function choiceEmbed(message, choices) {
 		interaction.message.id == choiceMessage.id && // format is choiceEmbed_<ROWNUMBER>
 		interaction.user.id == message.author.id; // correct permissions
 
-	const collector = message.channel.createMessageComponentCollector({ filter, time: 30000 });
+	const collector = message.channel.createMessageComponentCollector({ filter, time: 60000 });
 
 	collector.once("collect", async (interaction) => {
 		if (message.deletable) {
