@@ -4,8 +4,6 @@ const strings = require("@resources/strings.json");
 const submitTexture = require("@submission/submitTexture");
 const cancelSubmission = require("@functions/submission/utility/cancelSubmission");
 
-const magnifyMessage = require("@functions/magnifyMessage");
-
 /** @type {import("@helpers/jsdoc").Event} */
 module.exports = {
 	name: "messageCreate",
@@ -13,13 +11,6 @@ module.exports = {
 	async execute(message) {
 		// Ignore bot messages
 		if (message.author.bot) return;
-
-		// magnify shortcut
-		if (
-			message.content.startsWith(`${process.env.PREFIX}m`) ||
-			message.content.startsWith(`${process.env.PREFIX}z`)
-		)
-			return magnifyMessage(message);
 
 		/**
 		 * TEXTURE SUBMISSION
