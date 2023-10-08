@@ -82,6 +82,8 @@ module.exports = {
 		 */
 		setInterval(() => {
 			fetchSettings();
+			// optionally post to a status page
+			if (process.env.STATUS_URL) fetch(process.env.STATUS_URL + client.ws.ping);
 		}, 900000); // 15 minutes
 	},
 };

@@ -5,9 +5,13 @@ const getAuthors = require("@submission/utility/getAuthors");
 const makeEmbed = require("@submission/makeEmbed");
 const addDeleteButton = require("@helpers/addDeleteButton");
 
+const {
+	EmbedBuilder,
+	ActionRowBuilder,
+	StringSelectMenuBuilder,
+	SelectMenuInteraction,
+} = require("discord.js");
 const { default: axios } = require("axios");
-const { EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require("discord.js");
-const { SelectMenuInteraction } = require("discord.js");
 
 const DEBUG = process.env.DEBUG.toLowerCase() == "true";
 
@@ -63,7 +67,7 @@ module.exports = async function choiceEmbed(message, choices) {
 			// message already deleted so we clean up and break early
 			if (choiceMessage.deletable) choiceMessage.delete();
 			return;
-		};
+		}
 
 		const [id, index] = interaction.values[0].split("__");
 		if (DEBUG) console.log(`Texture selected: ${id}`);
