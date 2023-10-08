@@ -62,7 +62,7 @@ module.exports = async function magnifyMessage(message) {
 	}
 
 	// Image URL
-	else if (args[0].startsWith("https://") || args[0].startsWith("http://")) {
+	else if (args[0].startsWith("http")) {
 		if (
 			args[0].endsWith(".png") ||
 			args[0].endsWith(".jpeg") ||
@@ -84,9 +84,10 @@ module.exports = async function magnifyMessage(message) {
 					return magnify(message, data);
 				} else return warnUser(message, strings.command.image.not_attached.id);
 			})
-			.catch((error) => {
-				return warnUser(message, error || "Invalid message ID!");
-			});
+			.catch(() => {
+				return warnUser(message, strings.command.image.url);
+			})
+
 	}
 };
 
