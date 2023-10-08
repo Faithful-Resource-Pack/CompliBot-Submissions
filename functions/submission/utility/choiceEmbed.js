@@ -52,29 +52,33 @@ module.exports = async function choiceEmbed(message, choices) {
 
 	/** @param {SelectMenuInteraction} interaction */
 	const filter = (interaction) =>
-		interaction.customId.startsWith("choiceEmbed") &&
-		interaction.message.id == choiceMessage.id && // format is choiceEmbed_<ROWNUMBER>
+		interaction.customId.startsWith("choiceEmbed") && // format is choiceEmbed_<ROWNUMBER>
+		interaction.message.id == choiceMessage.id &&
 		interaction.user.id == message.author.id; // correct permissions
 
 	const collector = message.channel.createMessageComponentCollector({ filter, time: 60000 });
 
 	collector.once("collect", async (interaction) => {
-		if (message.deletable) {
-			const [id, index] = interaction.values[0].split("__");
-			if (DEBUG) console.log(`Texture selected: ${id}`);
-			const attachments = Array.from(message.attachments.values());
+		if (!message.deletable) {
+			// message already deleted so we clean up and break early
+			if (choiceMessage.deletable) choiceMessage.delete();
+			return;
+		};
 
-			const param = {
-				description: message.content,
-				authors: await getAuthors(message),
-			};
+		const [id, index] = interaction.values[0].split("__");
+		if (DEBUG) console.log(`Texture selected: ${id}`);
+		const attachments = Array.from(message.attachments.values());
 
-			/** @type {import("@helpers/jsdoc").Texture} */
-			const texture = (await axios.get(`${process.env.API_URL}textures/${id}/all`)).data;
-			if (choiceMessage.deletable) await choiceMessage.delete();
+		const param = {
+			description: message.content,
+			authors: await getAuthors(message),
+		};
 
-			return await makeEmbed(message, texture, attachments[index], param);
-		}
+		/** @type {import("@helpers/jsdoc").Texture} */
+		const texture = (await axios.get(`${process.env.API_URL}textures/${id}/all`)).data;
+		if (choiceMessage.deletable) await choiceMessage.delete();
+
+		return await makeEmbed(message, texture, attachments[index], param);
 	});
 
 	collector.once("end", async () => {
