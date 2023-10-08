@@ -20,25 +20,20 @@ const getMessages = require("@helpers/getMessages");
  * @returns {Promise<{messagesUpvoted: MappedMessage[], messagesDownvoted: MappedMessage[]}>}
  */
 module.exports = async function retrieveSubmission(client, channelID, delay) {
-	let messages = await getMessages(client, channelID);
-
 	const delayedDate = new Date();
 	delayedDate.setDate(delayedDate.getDate() - delay);
 
-	// filter message in the right timezone
-	messages = messages
-		.filter((message) => {
-			const messageDate = new Date(message.createdTimestamp);
-			return (
-				// correct date
-				messageDate.getDate() == delayedDate.getDate() &&
-				messageDate.getMonth() == delayedDate.getMonth() &&
-				messageDate.getFullYear() == delayedDate.getFullYear() &&
-				// only get pending submissions
-				message.embeds?.[0]?.fields[1]?.value?.includes(settings.emojis.pending)
-			);
-		})
-		.reverse(); // upload from oldest to newest
+	const messages = await getMessages(client, channelID, (message) => {
+		const messageDate = new Date(message.createdTimestamp);
+		return (
+			// correct date
+			messageDate.getDate() == delayedDate.getDate() &&
+			messageDate.getMonth() == delayedDate.getMonth() &&
+			messageDate.getFullYear() == delayedDate.getFullYear() &&
+			// only get pending submissions
+			message.embeds?.[0]?.fields[1]?.value?.includes(settings.emojis.pending)
+		);
+	});
 
 	/** @type {MappedMessage[]} */
 	const mappedMessages = messages.map((message) => {

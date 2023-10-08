@@ -27,7 +27,7 @@ async function downloadResults(client, channelResultID) {
 
 	// get messages from the same day
 	const delayedDate = new Date();
-	let messages = (await getMessages(client, channelResultID)).filter((message) => {
+	const messages = await getMessages(client, channelResultID, (message) => {
 		const messageDate = new Date(message.createdTimestamp);
 		return (
 			// correct date
@@ -136,9 +136,7 @@ async function addContributorRole(client, packName, guildID, authors) {
 const mapMessage = (message) => {
 	return {
 		url: message.embeds[0].thumbnail.url,
-		authors: message.embeds[0].fields[0].value
-			.split("\n")
-			.map((auth) => auth.match(/\d+/g)?.[0]),
+		authors: message.embeds[0].fields[0].value.split("\n").map((auth) => auth.match(/\d+/g)?.[0]),
 		date: message.createdTimestamp,
 		id: message.embeds[0].title.match(/(?<=\[\#)(.*?)(?=\])/)?.[0],
 	};
