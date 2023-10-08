@@ -86,8 +86,7 @@ module.exports = async function magnifyMessage(message) {
 			})
 			.catch(() => {
 				return warnUser(message, strings.command.image.url);
-			})
-
+			});
 	}
 };
 

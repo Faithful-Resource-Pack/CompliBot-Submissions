@@ -52,12 +52,13 @@ module.exports = async function choiceEmbed(message, choices) {
 
 	/** @param {SelectMenuInteraction} interaction */
 	const filter = (interaction) =>
-		interaction.customId.startsWith("choiceEmbed") && // format is choiceEmbed_<ROWNUMBER>
+		interaction.customId.startsWith("choiceEmbed") &&
+		interaction.message.id == choiceMessage.id && // format is choiceEmbed_<ROWNUMBER>
 		interaction.user.id == message.author.id; // correct permissions
 
 	const collector = message.channel.createMessageComponentCollector({ filter, time: 30000 });
 
-	collector.on("collect", async (interaction) => {
+	collector.once("collect", async (interaction) => {
 		if (message.deletable) {
 			const [id, index] = interaction.values[0].split("__");
 			if (DEBUG) console.log(`Texture selected: ${id}`);
@@ -76,8 +77,9 @@ module.exports = async function choiceEmbed(message, choices) {
 		}
 	});
 
-	collector.on("end", async () => {
-		if (message.deletable) message.delete();
-		if (choiceMessage.deletable) await choiceMessage.delete();
+	collector.once("end", async () => {
+		// throws error if already deleted, for some reason .deletable doesn't work?
+		message.delete().catch(() => {});
+		choiceMessage.delete().catch(() => {});
 	});
 };
