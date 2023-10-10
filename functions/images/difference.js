@@ -1,7 +1,7 @@
 const { createCanvas, loadImage, ImageData } = require("@napi-rs/canvas");
 const { AttachmentBuilder } = require("discord.js");
 
-const { magnifyBuffer } = require("@images/magnify");
+const { magnify } = require("@images/magnify");
 
 const settings = require("@resources/settings.json");
 
@@ -20,7 +20,7 @@ module.exports = async function difference(firstUrl, secondUrl, tolerance = 0) {
 	const mappedUrls = [];
 	let invalidUrl = false;
 	for (const url of [firstUrl, secondUrl]) {
-		const temp = await magnifyBuffer(url).catch(() => {
+		const temp = await magnify(url).catch(() => {
 			invalidUrl = true;
 		});
 		// null values are handled in the button code itself

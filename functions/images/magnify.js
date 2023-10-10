@@ -10,7 +10,7 @@ const addDeleteButton = require("@helpers/addDeleteButton");
  * @param {Boolean} isAnimation whether to magnify the image as a tilesheet
  * @returns {Promise<{ magnified: Buffer, width: Number, height: Number, factor: Number }>} buffer for magnified image
  */
-async function magnifyBuffer(origin, isAnimation = false) {
+async function magnify(origin, isAnimation = false) {
 	const input = await loadImage(origin).catch((err) => Promise.reject(err));
 
 	// ignore height if tilesheet, otherwise it's not scaled as much
@@ -42,26 +42,11 @@ async function magnifyBuffer(origin, isAnimation = false) {
  * @returns {Promise<AttachmentBuilder>} magnified file
  */
 async function magnifyAttachment(origin, name = "magnified.png") {
-	const { magnified } = await magnifyBuffer(origin);
+	const { magnified } = await magnify(origin);
 	return new AttachmentBuilder(magnified, { name });
-}
-
-/**
- * Sends message with magnified image
- * @author Juknum
- * @param {import("discord.js").Message} message message to reply to
- * @param {String} url
- * @returns {Promise<AttachmentBuilder>} the attachment that was sent
- */
-async function magnify(message, url) {
-	const attachment = await magnifyAttachment(url);
-
-	await message.reply({ files: [attachment] }).then(addDeleteButton);
-	return attachment;
 }
 
 module.exports = {
 	magnify,
 	magnifyAttachment,
-	magnifyBuffer,
 };

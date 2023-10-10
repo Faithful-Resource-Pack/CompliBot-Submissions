@@ -1,6 +1,6 @@
 const settings = require("@resources/settings.json");
 const stitch = require("@images/stitch");
-const { magnifyAttachment, magnifyBuffer } = require("@images/magnify");
+const { magnifyAttachment, magnify } = require("@images/magnify");
 const { loadImage } = require("@napi-rs/canvas");
 const { default: axios } = require("axios");
 const minecraftSorter = require("@helpers/minecraftSorter");
@@ -123,7 +123,7 @@ module.exports = async function generateComparison(pack, attachment, info) {
 		// otherwise ugly width and height properties are always shown
 		const displayedMcmeta = structuredClone(mcmeta);
 
-		const { magnified, width, factor } = await magnifyBuffer(stitched, true);
+		const { magnified, width, factor } = await magnify(stitched, true);
 
 		mcmeta.animation.width = mcmeta.animation.width
 			? (mcmeta.animation.width * images.length + totalGaps) * factor
