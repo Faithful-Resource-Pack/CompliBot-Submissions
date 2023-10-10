@@ -5,8 +5,8 @@ const { EmbedBuilder } = require("discord.js");
  * @author Evorp
  * @param {import("discord.js").Message} message message to edit
  * @param {String} status status to change (e.g. instapass, invalid, etc)
- * @param {String?} color optionally change embed color to match with status
- * @param {import("discord.js").ActionRowBuilder[]?} components optionally change components to match status
+ * @param {String} [color] optionally change embed color to match with status
+ * @param {import("discord.js").ActionRowBuilder[]} [components] optionally change components to match status
  */
 async function changeStatus(message, status, color, components) {
 	const embed = EmbedBuilder.from(message.embeds[0]);
@@ -27,8 +27,8 @@ async function changeStatus(message, status, color, components) {
  * @author Evorp
  * @param {import("discord.js").Message} message message to get original message from
  * @param {String} status status to change (e.g. instapass, invalid, etc)
- * @param {String?} color optionally change embed color to match with status
- * @param {import("discord.js").ActionRowBuilder[]?} components optionally change components to match status
+ * @param {String} [color] optionally change embed color to match with status
+ * @param {import("discord.js").ActionRowBuilder[]} [components] optionally change components to match status
  */
 async function changeOriginalStatus(message, status, color, components) {
 	const description = message.embeds[0]?.description;

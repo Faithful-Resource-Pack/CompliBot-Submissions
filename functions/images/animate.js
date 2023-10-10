@@ -5,11 +5,11 @@ const GIFEncoder = require("@images/GIFEncoder");
  * @typedef MCMETA
  * @property {Animation} animation
  * @typedef Animation literally all the properties here are optional
- * @property {Number?} frametime
- * @property {Boolean?} interpolate
- * @property {(Number | { index?: Number, time?: Number })[]?} frames thank you mojang very cool
- * @property {Number?} height
- * @property {Number?} width
+ * @property {Number} [frametime]
+ * @property {Boolean} [interpolate]
+ * @property {(Number | { index?: Number, time?: Number })[]} [frames] thank you mojang very cool
+ * @property {Number} [height]
+ * @property {Number} [width]
  */
 
 /**

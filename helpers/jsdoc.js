@@ -33,15 +33,15 @@
  * @property {String[]} tags
  * @property {Use[]} uses
  * @property {Path[]} paths paths and their attached uses
- * @property {Contribution[]?} contributions
+ * @property {Contribution[]} [contributions]
  *
  * @typedef User
  * @property {String} id
- * @property {String?} username
- * @property {String?} uuid
- * @property {String[]?} roles
- * @property {String[]?} media
- * @property {Boolean?} anonymous
+ * @property {String} [username]
+ * @property {String} [uuid]
+ * @property {String[]} [roles]
+ * @property {String[]} [media]
+ * @property {Boolean} [anonymous]
  *
  * BOT:
  *
@@ -54,7 +54,7 @@
  *
  * @typedef Event
  * @property {String} name valid discord.js or client-emitted event name
- * @property {Boolean?} once only happens once (e.g. on ready)
+ * @property {Boolean} [once] only happens once (e.g. on ready)
  * @property {Function} execute
  *
  * SETTINGS:
@@ -62,13 +62,13 @@
  * @typedef SubmissionPack
  * @property {SubmissionChannels} channels
  * @property {Boolean} council_enabled
- * @property {Number?} time_to_council
+ * @property {Number} [time_to_council]
  * @property {Number} time_to_results
- * @property {String?} contributor_role
+ * @property {String} [contributor_role]
  *
  * @typedef SubmissionChannels
  * @property {String} submit
- * @property {String?} council
+ * @property {String} [council]
  * @property {String} results
  */
 

@@ -12,14 +12,14 @@ const { AttachmentBuilder } = require("discord.js");
  * @property {String} path
  * @property {String} version
  * @property {String} edition
- * @property {import("@helpers/jsdoc").Path?} animation
+ * @property {import("@helpers/jsdoc").Path} [animation]
  */
 
 /**
  * @typedef ReturnParams
  * @property {AttachmentBuilder} comparisonImage
  * @property {Boolean} hasReference
- * @property {import("@images/animate").MCMETA?} mcmeta
+ * @property {import("@images/animate").MCMETA} [mcmeta]
  */
 
 /**

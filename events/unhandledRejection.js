@@ -7,7 +7,7 @@ const DEV = process.env.DEV.toLowerCase() == "true";
  * @param {import("discord.js").Client} client Discord client treating the information
  * @param {Error} error The object with which the promise was rejected
  * @param {Promise} promise The rejected promise
- * @param {import("discord.js").Message?} originMessage Origin user message
+ * @param {import("discord.js").Message} [originMessage] Origin user message
  */
 module.exports = function unhandledRejection(client, error, promise, originMessage) {
 	if (DEV) return console.trace(error?.stack ?? error);
