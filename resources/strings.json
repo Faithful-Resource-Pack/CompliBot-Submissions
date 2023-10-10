@@ -26,14 +26,6 @@
 		"behave": "I'm so sorry! (⌯˃̶᷄ ﹏ ˂̶᷄⌯)",
 		"no_permission": "You don't have permission to run this command!",
 		"image": {
-			"not_found_in_10_last": "No image found in 10 previous messages.",
-			"not_attached": {
-				"message": "This message does not have any image attached.",
-				"id": "This ID does not have any image attached."
-			},
-			"url": "The message URL needs to be from the same channel. Don't ask why, I don't know myself.",
-			"invalid_extension": "Image extension is not supported",
-			"no_reply_attachment": "This reply does not have any image attached.",
 			"input_too_big": "The input picture is too big!",
 			"output_too_big": "The output picture will be too big!"
 		}

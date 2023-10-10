@@ -21,6 +21,8 @@ const { submissionReactions } = require("@helpers/interactions");
  * @param {{ description?: String, authors: String[] }} params additional info (e.g. description, coauthors)
  */
 module.exports = async function makeEmbed(message, texture, attachment, params = {}) {
+	// so the user doesn't think the bot is dead when it's loading a huge comparison
+	message.channel.sendTyping();
 	const packName = getPackByChannel(message.channel.id, "submit");
 	let imgButtons;
 
