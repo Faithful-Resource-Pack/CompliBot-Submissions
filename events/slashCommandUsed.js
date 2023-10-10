@@ -3,6 +3,10 @@ const strings = require("@resources/strings.json");
 
 const addDeleteButton = require("@helpers/addDeleteButton");
 const { EmbedBuilder } = require("discord.js");
+const devLogger = require("@helpers/devLogger");
+
+const DEBUG = process.env.DEBUG.toLowerCase() == "true";
+const DEV = process.env.DEV.toLowerCase() == "true";
 
 /**
  * "fake" emitted event to split up interactionCreate
@@ -19,7 +23,9 @@ module.exports = {
 		try {
 			await command.execute(interaction);
 		} catch (error) {
-			console.trace(error);
+			if (DEBUG) console.trace(error);
+			if (!DEV)
+				devLogger(client, error?.stack ?? error ?? "A command failed to run!", { codeBlocks: "" });
 
 			const embed = new EmbedBuilder()
 				.setColor(settings.colors.red)
