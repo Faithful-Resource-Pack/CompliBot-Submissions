@@ -68,20 +68,10 @@ module.exports = async function reactionMenu(openReaction, user) {
 		switch (actionReaction.emoji.id) {
 			// flush votes and reaction menu
 			case settings.emojis.instapass:
-				removeReactions(message, [
-					settings.emojis.upvote,
-					settings.emojis.downvote,
-					...trayReactions,
-				]);
-
+				message.reactions.removeAll();
 				return instapass(message, member);
 			case settings.emojis.invalid:
-				removeReactions(message, [
-					settings.emojis.upvote,
-					settings.emojis.downvote,
-					...trayReactions,
-				]);
-
+				message.reactions.removeAll();
 				return invalidate(message, member);
 		}
 	}
@@ -164,7 +154,6 @@ function closeTray(message, trayReactions) {
  * @param {String[]} emojis what to remove
  */
 function removeReactions(message, emojis) {
-	for (const emoji of emojis) {
+	for (const emoji of emojis)
 		message.reactions.cache.get(emoji)?.remove()?.catch(console.error);
-	}
 }
