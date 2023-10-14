@@ -12,19 +12,19 @@ const DEBUG = process.env.DEBUG.toLowerCase() == "true";
  * Send textures to a new channel following council rules
  * @author Evorp
  * @param {import("discord.js").Client} client
- * @param {import("@helpers/jsdoc").SubmissionPack} params pack information
+ * @param {import("@helpers/jsdoc").SubmissionPack} pack pack information
  */
-async function sendToCouncil(client, params) {
+async function sendToCouncil(client, pack) {
 	// pack improperly set up, send to results instead
-	if (!params.channels.council) return sendToResults(client, params);
-	const channelOut = client.channels.cache.get(params.channels.council);
+	if (!pack.channels.council) return;
+	const channelOut = client.channels.cache.get(pack.channels.council);
 
 	if (DEBUG) console.log(`Sending textures to channel: #${channelOut.name}`);
 
 	const { messagesUpvoted, messagesDownvoted } = await retrieveSubmission(
 		client,
-		params.channels.submit, // always fetching from submission channel
-		params.time_to_council,
+		pack.channels.submit, // always fetching from submission channel
+		pack.time_to_council,
 	);
 
 	for (const message of messagesUpvoted) {
@@ -62,19 +62,20 @@ async function sendToCouncil(client, params) {
  * Send textures to a new channel following result-like rules
  * @author Evorp
  * @param {import("discord.js").Client} client
- * @param {import("@helpers/jsdoc").SubmissionPack} params pack information
+ * @param {import("@helpers/jsdoc").SubmissionPack} pack pack information
  */
-async function sendToResults(client, params) {
-	const channelOut = client.channels.cache.get(params.channels.results);
+async function sendToResults(client, pack) {
+	const channelOut = client.channels.cache.get(pack.channels.results);
 
 	if (DEBUG) console.log(`Sending textures to channel: #${channelOut.name}`);
 
 	const { messagesUpvoted, messagesDownvoted } = await retrieveSubmission(
 		client,
-		// if there's no council we pull directly from submissions
-		params.council_enabled ? params.channels.council : params.channels.submit,
+		pack.council_enabled
+			? pack.channels.council ?? pack.channels.submit // pack improperly set up, pull from submissions
+			: pack.channels.submit, // pull from submissions if council disabled
 		// with this delay format we can reuse it for both council enabled and disabled packs
-		params.time_to_results,
+		pack.time_to_results,
 	);
 
 	for (const message of messagesUpvoted) {
@@ -102,7 +103,7 @@ async function sendToResults(client, params) {
 	}
 
 	for (const message of messagesDownvoted) {
-		if (params.council_enabled) {
+		if (pack.council_enabled) {
 			const statusField = message.embed.fields[1];
 			statusField.value = `<:downvote:${
 				settings.emojis.downvote
