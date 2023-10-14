@@ -4,12 +4,13 @@ const { DiscordAPIError } = require("discord.js");
 const DEV = process.env.DEV.toLowerCase() == "true";
 
 /**
+ * Handle errors and log them as necessary
+ * @author TheRolf, Evorp
  * @param {import("discord.js").Client} client Discord client treating the information
- * @param {Error} error The object with which the promise was rejected
- * @param {Promise} promise The rejected promise
- * @param {import("discord.js").Message} [originMessage] Origin user message
+ * @param {Error} error the error itself
+ * @param {"Unhandled Rejection" | "Uncaught Exception"} type type of error
  */
-module.exports = function unhandledRejection(client, error, promise, originMessage) {
+module.exports = function handleErrors(client, error, type) {
 	if (DEV) return console.trace(error?.stack ?? error);
 
 	let eprotoError = false;
@@ -27,16 +28,13 @@ module.exports = function unhandledRejection(client, error, promise, originMessa
 		codeBlocks = "json";
 	} else if (error instanceof DiscordAPIError)
 		// not on our end, just clutters logs
-		return console.error(error, promise, description);
+		return console.error(error, description);
 
 	// silence EPROTO errors
-	if (eprotoError) return console.error(error, promise, description);
+	if (eprotoError) return console.error(error, description);
 
-	if (originMessage?.url !== undefined)
-		description = `Coming from [this message](${originMessage.url})\n${description}`;
-
-	console.error(error, promise);
+	console.error(error?.stack ?? error);
 
 	// DO NOT DELETE THIS CATCH, IT AVOIDS INFINITE LOOP IF THIS PROMISE REJECTS
-	devLogger(client, description, { codeBlocks }).catch(console.error);
+	devLogger(client, description, { codeBlocks, title: type }).catch(console.error);
 };

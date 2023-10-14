@@ -12,7 +12,7 @@ require("dotenv").config();
 const { readdirSync } = require("fs");
 
 const fetchSettings = require("@functions/fetchSettings");
-const unhandledRejection = require("@events/unhandledRejection");
+const handleErrors = require("@functions/handleErrors");
 const { Client, GatewayIntentBits, Partials } = require("discord.js");
 
 function startBot() {
@@ -53,7 +53,7 @@ function startBot() {
 		/** @type {import("@helpers/jsdoc").Event} */
 		const event = require(`./events/${file}`);
 
-		// not a discord.js compatible event (e.g. unhandledRejection)
+		// catch invalid events
 		if (typeof event != "object") continue;
 
 		if (event.once) client.once(event.name, event.execute);
@@ -63,11 +63,11 @@ function startBot() {
 	/**
 	 * ERROR HANDLER
 	 */
-	process.on("unhandledRejection", (reason, promise) =>
-		unhandledRejection(client, reason, promise),
+	process.on("unhandledRejection", (reason) =>
+		handleErrors(client, reason, "Unhandled Rejection"),
 	);
-	process.on("uncaughtException", (error, origin) =>
-		unhandledRejection(client, error, null, origin),
+	process.on("uncaughtException", (error) =>
+		unhandledRejection(client, error, "Uncaught Exception"),
 	);
 
 	client.login(process.env.CLIENT_TOKEN).catch(console.error);
