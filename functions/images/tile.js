@@ -10,7 +10,7 @@ const strings = require("@resources/strings.json");
  * @param {import("discord.js").MessageComponentInteraction} interaction
  * @param {String} url image url
  * @param {String} type tiling type
- * @returns {Promise<Buffer | null>} tiled image as a buffer
+ * @returns {Promise<Buffer>} tiled image as a buffer
  */
 module.exports = async function tile(interaction, url, type = "grid") {
 	const dimension = await getDimensions(url);

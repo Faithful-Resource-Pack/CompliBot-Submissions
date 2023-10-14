@@ -62,8 +62,6 @@ module.exports = async function makeEmbed(message, texture, attachment, params =
 	if (dimension.width * dimension.height <= 262144) {
 		if (DEBUG) console.log(`Generating comparison image for texture: ${texture.name}`);
 
-		const isAnimated = texture.paths.filter((p) => p.mcmeta === true).length !== 0;
-
 		const { comparisonImage, hasReference, mcmeta } = await generateComparison(
 			packName,
 			attachment,
@@ -128,7 +126,7 @@ module.exports = async function makeEmbed(message, texture, attachment, params =
  * Return organized path data for a given texture
  * @author Juknum
  * @param {import("@helpers/jsdoc").Texture} texture
- * @returns {import("discord.js").EmbedFieldData[]}
+ * @returns {import("discord.js").APIEmbedField[]}
  */
 function addPathsToEmbed(texture) {
 	const tmp = {};

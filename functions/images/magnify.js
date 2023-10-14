@@ -1,7 +1,6 @@
 const { createCanvas, loadImage, Image } = require("@napi-rs/canvas");
 
 const { AttachmentBuilder } = require("discord.js");
-const addDeleteButton = require("@helpers/addDeleteButton");
 
 /**
  * The actual magnification function

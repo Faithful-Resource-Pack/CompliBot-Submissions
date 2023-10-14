@@ -154,6 +154,5 @@ function closeTray(message, trayReactions) {
  * @param {String[]} emojis what to remove
  */
 function removeReactions(message, emojis) {
-	for (const emoji of emojis)
-		message.reactions.cache.get(emoji)?.remove()?.catch(console.error);
+	for (const emoji of emojis) message.reactions.cache.get(emoji)?.remove()?.catch(console.error);
 }
