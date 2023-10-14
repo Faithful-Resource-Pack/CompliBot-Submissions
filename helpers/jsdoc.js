@@ -65,6 +65,15 @@
  * @property {Number} [time_to_council]
  * @property {Number} time_to_results
  * @property {String} [contributor_role]
+ * @property {SubmissionGitHub} github
+ *
+ * @typedef SubmissionGitHub
+ * @property {GitHub} java
+ * @property {GitHub} bedrock
+ *
+ * @typedef GitHub
+ * @property {String} org
+ * @property {String} repo
  *
  * @typedef SubmissionChannels
  * @property {String} submit
