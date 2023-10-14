@@ -63,12 +63,8 @@ function startBot() {
 	/**
 	 * ERROR HANDLER
 	 */
-	process.on("unhandledRejection", (reason) =>
-		handleErrors(client, reason, "Unhandled Rejection"),
-	);
-	process.on("uncaughtException", (error) =>
-		unhandledRejection(client, error, "Uncaught Exception"),
-	);
+	process.on("unhandledRejection", (reason) => handleErrors(client, reason, "Unhandled Rejection"));
+	process.on("uncaughtException", (error) => handleErrors(client, error, "Uncaught Exception"));
 
 	client.login(process.env.CLIENT_TOKEN).catch(console.error);
 }
