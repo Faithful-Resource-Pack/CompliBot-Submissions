@@ -20,7 +20,7 @@ module.exports = async function pushTextures(
 ) {
 	const editions = Object.keys(settings.versions).filter((k) => k != "id");
 	for (const edition of editions) {
-		const packGitHub = settings[pack].github[edition];
+		const packGitHub = settings.submission.packs[pack].github[edition];
 		if (!packGitHub) {
 			if (DEBUG) console.log(`${pack} doesn't support ${edition} yet!`);
 			continue;
