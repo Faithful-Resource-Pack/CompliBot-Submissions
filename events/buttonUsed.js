@@ -1,4 +1,4 @@
-const { magnifyAttachment } = require("@images/magnify");
+const { magnifyToAttachment } = require("@images/magnify");
 const tile = require("@images/tile");
 const palette = require("@images/palette");
 const difference = require("@images/difference");
@@ -26,7 +26,7 @@ module.exports = {
 		switch (interaction.customId) {
 			case "magnifyButton":
 				return await interaction.reply({
-					files: [await magnifyAttachment(image)],
+					files: [await magnifyToAttachment(image)],
 					ephemeral: true,
 				});
 			case "tileButton":
@@ -34,7 +34,7 @@ module.exports = {
 				const tileBuffer = await tile(interaction, image);
 				if (!tileBuffer) return;
 				return await interaction.reply({
-					files: [await magnifyAttachment(tileBuffer)],
+					files: [await magnifyToAttachment(tileBuffer)],
 					ephemeral: true,
 				});
 			case "paletteButton":

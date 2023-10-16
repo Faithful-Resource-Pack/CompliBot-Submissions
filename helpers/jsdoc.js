@@ -7,41 +7,41 @@
  * @typedef {"faithful 32x" | "faithful_64x" | "classic_faithful_32x" | "classic_faithful_64x" | "classic_faithful_32x_progart"} Pack
  *
  * @typedef Path
- * @property {String} id internal id
- * @property {String} use use it's attached to
- * @property {String} name the actual path
- * @property {Boolean} mcmeta whether it can be animated
- * @property {String[]} versions
+ * @property {string} id internal id
+ * @property {string} use use it's attached to
+ * @property {string} name the actual path
+ * @property {boolean} mcmeta whether it can be animated
+ * @property {string[]} versions
  *
  * @typedef Use
- * @property {String} id texture id + letter
- * @property {String} name use name (usually blank)
- * @property {Number} texture texture id without letter
+ * @property {string} id texture id + letter
+ * @property {string} name use name (usually blank)
+ * @property {number} texture texture id without letter
  * @property {"java" | "bedrock"} edition
  *
  * @typedef Contribution
- * @property {String} id internal id
- * @property {Number} date unix timestamp
- * @property {String} texture texture id
+ * @property {string} id internal id
+ * @property {number} date unix timestamp
+ * @property {string} texture texture id
  * @property {8 | 16 | 32 | 64 | 128 | 256 | 512} resolution
  * @property {Pack} pack
- * @property {String[]} authors
+ * @property {string[]} authors
  *
  * @typedef Texture
- * @property {String} id regular texture id
- * @property {String} name display name
- * @property {String[]} tags
+ * @property {string} id regular texture id
+ * @property {string} name display name
+ * @property {string[]} tags
  * @property {Use[]} uses
  * @property {Path[]} paths paths and their attached uses
  * @property {Contribution[]} [contributions]
  *
  * @typedef User
- * @property {String} id
- * @property {String} [username]
- * @property {String} [uuid]
- * @property {String[]} [roles]
- * @property {String[]} [media]
- * @property {Boolean} [anonymous]
+ * @property {string} id
+ * @property {string} [username]
+ * @property {string} [uuid]
+ * @property {string[]} [roles]
+ * @property {string[]} [media]
+ * @property {boolean} [anonymous]
  *
  * BOT:
  *
@@ -53,32 +53,24 @@
  * @param {import("discord.js").ChatInputCommandInteraction} interaction
  *
  * @typedef Event
- * @property {String} name valid discord.js or client-emitted event name
- * @property {Boolean} [once] only happens once (e.g. on ready)
+ * @property {string} name valid discord.js or client-emitted event name
+ * @property {boolean} [once] only happens once (e.g. on ready)
  * @property {Function} execute
  *
  * SETTINGS:
  *
  * @typedef SubmissionPack
  * @property {SubmissionChannels} channels
- * @property {Boolean} council_enabled
- * @property {Number} [time_to_council]
- * @property {Number} time_to_results
- * @property {String} [contributor_role]
- * @property {SubmissionGitHub} github
- *
- * @typedef SubmissionGitHub
- * @property {GitHub} java
- * @property {GitHub} bedrock
- *
- * @typedef GitHub
- * @property {String} org
- * @property {String} repo
+ * @property {boolean} council_enabled
+ * @property {number} [time_to_council]
+ * @property {number} time_to_results
+ * @property {string} [contributor_role]
+ * @property {Object<string, { org: string, repo: string }>} github java and bedrock
  *
  * @typedef SubmissionChannels
- * @property {String} submit
- * @property {String} [council]
- * @property {String} results
+ * @property {string} submit
+ * @property {string} [council]
+ * @property {string} results
  */
 
 // so js doesn't complain that this isn't a module

@@ -11,9 +11,9 @@ const settings = require("@resources/settings.json");
  * red is removed
  * green is added
  * @author Evorp, EwanHowell
- * @param {String} firstUrl first url to compare
- * @param {String} secondUrl second url to compare
- * @param {Number} tolerance difference between colors considered acceptable
+ * @param {string} firstUrl first url to compare
+ * @param {string} secondUrl second url to compare
+ * @param {number} tolerance difference between colors considered acceptable
  * @returns {Promise<import("discord.js").AttachmentBuilder>} compared image
  */
 module.exports = async function difference(firstUrl, secondUrl, tolerance = 0) {
@@ -106,8 +106,8 @@ module.exports = async function difference(firstUrl, secondUrl, tolerance = 0) {
 /**
  * converts from hex string to array of rgba numbers
  * @author Evorp
- * @param {String} hex e.g. #a1b2c3
- * @returns {Number[]} [r, g, b, a] array
+ * @param {string} hex e.g. #a1b2c3
+ * @returns {number[]} [r, g, b, a] array
  */
 function hexToArr(hex) {
 	hex = hex.replace("#", "");

@@ -4,8 +4,8 @@ const { EmbedBuilder } = require("discord.js");
  * Log dev errors and information to a dedicated channel
  * @author Evorp
  * @param {import("discord.js").Client} client
- * @param {String} description what to log
- * @param {{ color?: String, title?: String, codeBlocks?: String }} params optional config
+ * @param {string} description what to log
+ * @param {{ color?: string, title?: string, codeBlocks?: string }} params optional config
  */
 module.exports = async function devLogger(client, description, params = {}) {
 	// declared inside module body to stop init errors from unhandledRejection

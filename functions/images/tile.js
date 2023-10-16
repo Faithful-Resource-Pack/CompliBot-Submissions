@@ -1,5 +1,4 @@
 const { createCanvas, loadImage } = require("@napi-rs/canvas");
-const getDimensions = require("@images/getDimensions");
 const { EmbedBuilder } = require("discord.js");
 const settings = require("@resources/settings.json");
 const strings = require("@resources/strings.json");
@@ -8,28 +7,21 @@ const strings = require("@resources/strings.json");
  * Tile an image
  * @author Juknum
  * @param {import("discord.js").MessageComponentInteraction} interaction
- * @param {String} url image url
- * @param {String} type tiling type
+ * @param {string | URL | Buffer | ArrayBufferLike | Uint8Array | Image | import("stream").Readable} origin image url
+ * @param {string} type tiling type
  * @returns {Promise<Buffer>} tiled image as a buffer
  */
-module.exports = async function tile(interaction, url, type = "grid") {
-	const dimension = await getDimensions(url);
-	// aliases of type
-	if (type == undefined || type == "g") type = "grid";
-	if (type == "v") type = "vertical";
-	if (type == "h") type = "horizontal";
-	if (type == "r") type = "round";
-	if (type == "p") type = "plus";
+module.exports = async function tile(interaction, origin) {
+	const input = await loadImage(origin).catch((err) => Promise.reject(err));
 
-	const sizeResult = dimension.width * dimension.height * 3;
-	if (sizeResult > 262144) {
+	if (input.width * input.height * 3 > 262144) {
 		interaction.reply({
 			embeds: [
 				new EmbedBuilder()
 					.setTitle(strings.command.image.output_too_big)
 					.setDescription(
-						`Maximum output allowed: 512 x 512 px²\nYours is: ${dimension.width * 3}x ${
-							dimension.height * 3
+						`Maximum output allowed: 512x512px²\nYours is: ${input.width * 3}x ${
+							input.height * 3
 						}px²`,
 					)
 					.setColor(settings.colors.blue),
@@ -39,100 +31,15 @@ module.exports = async function tile(interaction, url, type = "grid") {
 		return null;
 	}
 
-	let canvas;
-	let canvasContext;
-	let i, j;
+	const canvas = createCanvas(input.width * 3, input.height * 3);
+	const ctx = canvas.getContext("2d");
 
-	/**
-	 * Follows this pattern:
-	 *  x x x
-	 *  x x x
-	 *  x x x
-	 */
-	if (type == "grid") {
-		canvas = createCanvas(dimension.width * 3, dimension.height * 3);
-		canvasContext = canvas.getContext("2d");
+	ctx.imageSmoothingEnabled = false;
 
-		const temp = await loadImage(url);
-		for (i = 0; i < 3; ++i) {
-			for (j = 0; j < 3; ++j) {
-				canvasContext.drawImage(temp, i * dimension.width, j * dimension.height);
-			}
+	for (let i = 0; i < 3; ++i) {
+		for (let j = 0; j < 3; ++j) {
+			ctx.drawImage(input, i * input.width, j * input.height);
 		}
-	} else if (type == "vertical") {
-		/**
-		 * Follows this pattern:
-		 *  . x .
-		 *  . x .
-		 *  . x .
-		 */
-		canvas = createCanvas(dimension.width, dimension.height * 3);
-		canvasContext = canvas.getContext("2d");
-
-		const temp = await loadImage(url);
-		for (i = 0; i < 3; ++i) {
-			for (j = 0; j < 3; ++j) {
-				canvasContext.drawImage(temp, i * dimension.width, j * dimension.height);
-			}
-		}
-	} else if (type == "horizontal") {
-		/**
-		 * Follows this pattern:
-		 *  . . .
-		 *  x x x
-		 *  . . .
-		 */
-		canvas = createCanvas(dimension.width * 3, dimension.height);
-		canvasContext = canvas.getContext("2d");
-
-		const temp = await loadImage(url);
-		for (i = 0; i < 3; ++i) {
-			for (j = 0; j < 3; ++j) {
-				canvasContext.drawImage(temp, i * dimension.width, j * dimension.height);
-			}
-		}
-	} else if (type == "round") {
-		/**
-		 * Follows this pattern:
-		 *  x x x
-		 *  x . x
-		 *  x x x
-		 */
-		canvas = createCanvas(dimension.width * 3, dimension.height * 3);
-		canvasContext = canvas.getContext("2d");
-
-		const temp = await loadImage(url);
-		for (i = 0; i < 3; ++i) {
-			for (j = 0; j < 3; ++j) {
-				canvasContext.drawImage(temp, i * dimension.width, j * dimension.height);
-			}
-		}
-		canvasContext.clearRect(dimension.width, dimension.height, dimension.width, dimension.height);
-	} else if (type == "plus") {
-		/**
-		 * Follows this pattern:
-		 *  . x .
-		 *  x x x
-		 *  . x .
-		 */
-		canvas = createCanvas(dimension.width * 3, dimension.height * 3);
-		canvasContext = canvas.getContext("2d");
-
-		const temp = await loadImage(url);
-		for (i = 0; i < 3; ++i) {
-			for (j = 0; j < 3; ++j) {
-				canvasContext.drawImage(temp, i * dimension.width, j * dimension.height);
-			}
-		}
-		canvasContext.clearRect(0, 0, dimension.width, dimension.height); // top left
-		canvasContext.clearRect(dimension.width * 2, 0, dimension.width, dimension.height); // top right
-		canvasContext.clearRect(
-			dimension.width * 2,
-			dimension.height * 2,
-			dimension.width,
-			dimension.height,
-		); // bottom right
-		canvasContext.clearRect(0, dimension.height * 2, dimension.width, dimension.height); // bottom left
 	}
 
 	return canvas.toBuffer("image/png");

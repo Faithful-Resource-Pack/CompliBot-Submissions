@@ -151,7 +151,7 @@ async function sendToResults(client, pack) {
  * @author Evorp, Juknum
  * @param {import("discord.js").MessageReaction} upvotes upvote objects
  * @param {import("discord.js").MessageReaction} downvotes downvote objects
- * @returns {String} formatted string (or an empty string if not possible)
+ * @returns {string} formatted string (or an empty string if not possible)
  */
 function getPercentage(upvotes, downvotes) {
 	const upvotePercentage =

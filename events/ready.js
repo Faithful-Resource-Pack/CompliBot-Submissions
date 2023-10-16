@@ -34,11 +34,10 @@ module.exports = {
 		else client.user.setActivity({ name: "for submissions", type: ActivityType.Watching });
 
 		if (DEV) {
-			setInterval(() => {
+			return setInterval(() => {
 				// format the settings for easier viewing
 				fetchSettings(true);
 			}, 20000); // 20 seconds
-			return;
 		}
 
 		/**
@@ -62,9 +61,8 @@ module.exports = {
 		 * Runs each day at 12:15 AM CE(S)T
 		 */
 		new CronJob("15 0 * * *", async () => {
-			for (const pack of Object.values(settings.submission.packs)) {
+			for (const pack of Object.values(settings.submission.packs))
 				await downloadResults(client, pack.channels.results);
-			}
 		}).start();
 
 		/**
@@ -74,6 +72,7 @@ module.exports = {
 		new CronJob("30 0 * * *", async () => {
 			for (const pack of Object.keys(settings.submission.packs))
 				await pushTextures("./downloadedTextures", pack);
+
 			await saveDB(client);
 		}).start();
 

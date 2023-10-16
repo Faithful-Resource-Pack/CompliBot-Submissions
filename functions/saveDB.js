@@ -13,9 +13,9 @@ const devLogger = require("@helpers/devLogger");
  * push all raw api collections to github
  * @author Evorp, Juknum
  * @param {import("discord.js").Client} client
- * @param {String} commitMessage
- * @param {{org?: String, repo?: String, branch?: String}} params configure where to backup to
- * @returns {Promise<Boolean>} if every collection could be backed up
+ * @param {string} commitMessage
+ * @param {{org?: string, repo?: string, branch?: string}} params configure where to backup to
+ * @returns {Promise<boolean>} if every collection could be backed up
  */
 module.exports = async function saveDB(client, commitMessage = "Daily Backup", params = {}) {
 	if (!params.org) params.org = settings.backup.git.org;

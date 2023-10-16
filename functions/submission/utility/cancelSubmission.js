@@ -11,7 +11,7 @@ const DEBUG = process.env.DEBUG.toLowerCase() == "true";
  * Logic for handling an invalid submission
  * @author Juknum
  * @param {import("discord.js").Message} message message to check permissions of
- * @param {String} error optional error message
+ * @param {string} error optional error message
  */
 module.exports = async function cancelSubmission(message, error = "No error given!") {
 	// allow managers and council to talk in submit channels

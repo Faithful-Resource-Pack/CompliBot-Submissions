@@ -6,7 +6,7 @@ const { default: axios } = require("axios");
 /**
  * Download and apply remote settings file
  * @author Juknum, Evorp
- * @param {Boolean} format whether to format the setting file being downloaded
+ * @param {boolean} format whether to format the setting file being downloaded
  */
 module.exports = async function fetchSettings(format = false) {
 	if (!FETCH_SETTINGS) return;

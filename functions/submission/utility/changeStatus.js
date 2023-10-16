@@ -4,8 +4,8 @@ const { EmbedBuilder } = require("discord.js");
  * Edit submission status
  * @author Evorp
  * @param {import("discord.js").Message} message message to edit
- * @param {String} status status to change (e.g. instapass, invalid, etc)
- * @param {String} [color] optionally change embed color to match with status
+ * @param {string} status status to change (e.g. instapass, invalid, etc)
+ * @param {string} [color] optionally change embed color to match with status
  * @param {import("discord.js").ActionRowBuilder[]} [components] optionally change components to match status
  */
 async function changeStatus(message, status, color, components) {
@@ -26,8 +26,8 @@ async function changeStatus(message, status, color, components) {
  * Edit original post's status from council
  * @author Evorp
  * @param {import("discord.js").Message} message message to get original message from
- * @param {String} status status to change (e.g. instapass, invalid, etc)
- * @param {String} [color] optionally change embed color to match with status
+ * @param {string} status status to change (e.g. instapass, invalid, etc)
+ * @param {string} [color] optionally change embed color to match with status
  * @param {import("discord.js").ActionRowBuilder[]} [components] optionally change components to match status
  */
 async function changeOriginalStatus(message, status, color, components) {

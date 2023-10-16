@@ -86,8 +86,8 @@ module.exports = async function reactionMenu(openReaction, user) {
  * @param {import("discord.js").Message} message
  * @param {import("discord.js").MessageReaction} openReaction
  *  * @param {import("discord.js").GuildMember} member
- * @param {String} submissionAuthorID
- * @returns {Boolean} whether the user can react
+ * @param {string} submissionAuthorID
+ * @returns {boolean} whether the user can react
  */
 function canOpenTray(message, openReaction, member, submissionAuthorID) {
 	// only accept submissions and the see_more reaction
@@ -113,8 +113,8 @@ function canOpenTray(message, openReaction, member, submissionAuthorID) {
  * @author Evorp
  * @param {import("discord.js").Message} message
  * @param {import("discord.js").GuildMember} member check permissions of
- * @param {String[]} allReactions
- * @returns {String[]}
+ * @param {string[]} allReactions
+ * @returns {string[]}
  */
 function loadReactions(message, member, allReactions) {
 	// if the submission is in council remove delete reaction (avoid misclick)
@@ -138,7 +138,7 @@ function loadReactions(message, member, allReactions) {
  * Reset tray completely
  * @author Evorp
  * @param {import("discord.js").Message} message
- * @param {String[]} trayReactions reactions to remove (isn't global)
+ * @param {string[]} trayReactions reactions to remove (isn't global)
  */
 function closeTray(message, trayReactions) {
 	if (message.deletable) {
@@ -151,7 +151,7 @@ function closeTray(message, trayReactions) {
  * Convenience method to remove multiple reactions at once
  * @author Juknum
  * @param {import("discord.js").Message} message where to remove reactions from
- * @param {String[]} emojis what to remove
+ * @param {string[]} emojis what to remove
  */
 function removeReactions(message, emojis) {
 	for (const emoji of emojis) message.reactions.cache.get(emoji)?.remove()?.catch(console.error);

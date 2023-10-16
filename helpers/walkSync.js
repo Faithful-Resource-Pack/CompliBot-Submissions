@@ -3,9 +3,9 @@ const { readdirSync, statSync } = require("fs");
 /**
  * Return an array of all filepaths in a directory
  * @author Juknum, Evorp
- * @param {String} dir
- * @param {String[]} filelist recursion
- * @returns {String[]} array of file paths
+ * @param {string} dir
+ * @param {string[]} filelist recursion
+ * @returns {string[]} array of file paths
  */
 module.exports = function walkSync(dir, filelist = []) {
 	// add trailing slash if not present

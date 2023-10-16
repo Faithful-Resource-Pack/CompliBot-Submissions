@@ -4,7 +4,7 @@ const { default: axios } = require("axios");
  * Detects co-authors from pings and curly bracket syntax in a given message
  * @author Evorp
  * @param {import("discord.js").Message} message
- * @returns {Promise<String[]>} array of author's discord IDs
+ * @returns {Promise<string[]>} array of author's discord IDs
  */
 module.exports = async function getAuthors(message) {
 	const authors = [message.author.id];

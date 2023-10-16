@@ -4,7 +4,7 @@ const sizeOf = require("image-size");
 /**
  * Get dimensions of an image and validate url
  * @author Juknum
- * @param {String} imageURL
+ * @param {string} imageURL
  * @returns {Promise<import("image-size/dist/types/interface").ISizeCalculationResult>}
  */
 module.exports = async function getDimensions(imageURL) {

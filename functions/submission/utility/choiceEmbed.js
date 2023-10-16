@@ -19,7 +19,7 @@ const DEBUG = process.env.DEBUG.toLowerCase() == "true";
  * Selection menu for dealing with multiple valid options
  * @author Juknum, Evorp
  * @param {import("discord.js").Message} message message to reply to
- * @param {import("discord.js").MessageSelectOptionData[]} choices pre-mapped choices
+ * @param {import("discord.js").SelectMenuComponentOptionData[]} choices pre-mapped choices
  */
 module.exports = async function choiceEmbed(message, choices) {
 	const emojis = settings.emojis.default_select;
@@ -28,7 +28,7 @@ module.exports = async function choiceEmbed(message, choices) {
 
 	const maxRows = 4; // actually 5 but - 1 because we are adding a delete button to it (the 5th one)
 	for (let currentRow = 0; currentRow <= maxRows && choices.length; ++currentRow) {
-		/** @type {import("discord.js").MessageSelectOptionData[]} */
+		/** @type {import("discord.js").SelectMenuComponentOptionData[]} */
 		const options = [];
 		for (let i = 0; i < emojis.length; ++i) {
 			if (choices[0] !== undefined) {

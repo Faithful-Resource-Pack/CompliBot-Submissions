@@ -1,6 +1,6 @@
 const settings = require("@resources/settings.json");
 const stitch = require("@images/stitch");
-const { magnifyAttachment, magnify } = require("@images/magnify");
+const { magnifyToAttachment, magnify } = require("@images/magnify");
 const { loadImage } = require("@napi-rs/canvas");
 const { default: axios } = require("axios");
 const minecraftSorter = require("@helpers/minecraftSorter");
@@ -9,24 +9,24 @@ const { AttachmentBuilder } = require("discord.js");
 
 /**
  * @typedef TextureInfo
- * @property {String} path
- * @property {String} version
- * @property {String} edition
+ * @property {string} path
+ * @property {string} version
+ * @property {string} edition
  * @property {import("@helpers/jsdoc").Path} [animation]
  */
 
 /**
  * @typedef ReturnParams
  * @property {AttachmentBuilder} comparisonImage
- * @property {Boolean} hasReference
+ * @property {boolean} hasReference
  * @property {import("@images/animate").MCMETA} [mcmeta]
  */
 
 /**
  * Generate a submission comparison for a given texture, pack, and image
  * @author Evorp
- * @param {String} pack pack to compare against (e.g. faithful_32x, classic_faithful_64x)
- * @param {AttachmentBuilder} attachment raw texture being submitted
+ * @param {string} pack pack to compare against (e.g. faithful_32x, classic_faithful_64x)
+ * @param {import("discord.js").Attachment} attachment raw texture being submitted
  * @param {TextureInfo} info used for searching for references/current
  * @returns {Promise<ReturnParams>} compared texture and info
  */
@@ -95,7 +95,7 @@ module.exports = async function generateComparison(pack, attachment, info) {
 	if (images.length == 1) {
 		const img = await loadImage(images[0]);
 		return {
-			comparisonImage: await magnifyAttachment(img, "magnified.png"),
+			comparisonImage: await magnifyToAttachment(img, "magnified.png"),
 			hasReference: false,
 		};
 	}
@@ -141,7 +141,7 @@ module.exports = async function generateComparison(pack, attachment, info) {
 	}
 
 	return {
-		comparisonImage: await magnifyAttachment(stitched, "compared.png"),
+		comparisonImage: await magnifyToAttachment(stitched, "compared.png"),
 		hasReference: images.length == 3,
 	};
 };

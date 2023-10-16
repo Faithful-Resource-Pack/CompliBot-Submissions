@@ -1,14 +1,14 @@
 /**
  * @callback MessageFilter
  * @param {import("discord.js").Message}
- * @returns {Boolean}
+ * @returns {boolean}
  */
 
 /**
  * Fetch messages from a Discord channel
  * @author Juknum
  * @param {import("discord.js").Client} client
- * @param {String} channelID channel where messages are fetched from
+ * @param {string} channelID channel where messages are fetched from
  * @param {MessageFilter} filter
  * @returns {Promise<import("discord.js").Message[]>} Returns an Array of all fetched messages
  */

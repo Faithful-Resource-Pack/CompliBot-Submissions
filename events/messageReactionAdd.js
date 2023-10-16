@@ -20,8 +20,7 @@ module.exports = {
 			.map((pack) => Object.values(pack.channels))
 			.flat();
 
-		if (channelArray.includes(reaction.message.channel.id)) {
+		if (channelArray.includes(reaction.message.channel.id))
 			return await reactionMenu(reaction, user);
-		}
 	},
 };

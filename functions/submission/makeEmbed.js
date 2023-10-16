@@ -17,8 +17,8 @@ const { submissionReactions } = require("@helpers/interactions");
  * @author Juknum, Evorp
  * @param {import("discord.js").Message} message used for channel and author information
  * @param {import("@helpers/jsdoc").Texture} texture texture information
- * @param {import("discord.js").AttachmentBuilder} attachment raw texture to embed
- * @param {{ description?: String, authors: String[] }} params additional info (e.g. description, coauthors)
+ * @param {import("discord.js").Attachment} attachment raw texture to embed
+ * @param {{ description?: string, authors: string[] }} params additional info (e.g. description, coauthors)
  */
 module.exports = async function makeEmbed(message, texture, attachment, params = {}) {
 	// so the user doesn't think the bot is dead when it's loading a huge comparison

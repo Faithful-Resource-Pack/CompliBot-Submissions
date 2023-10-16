@@ -3,7 +3,6 @@ const settings = require("@resources/settings.json");
 const strings = require("@resources/strings.json");
 
 const { EmbedBuilder, AttachmentBuilder } = require("discord.js");
-const getDimensions = require("@images/getDimensions");
 
 const COOLORS_URL = "https://coolors.co/";
 
@@ -19,33 +18,44 @@ const GRADIENT_BAND_WIDTH = 3;
 const GRADIENT_HEIGHT = 50;
 
 /**
+ * @typedef ColorStorage
+ * @property {string} hex
+ * @property {number[]} opacity
+ * @property {{ r: number, g: number, b: number }} rgb
+ * @property {number} count
+ */
+
+/**
+ * @typedef {Object<string, ColorStorage>} AllColors
+ */
+
+/**
  * Sends an ephemeral message with the palette of a given image url
  * @author Juknum, Evorp
  * @param {import("discord.js").MessageComponentInteraction} interaction discord interaction to respond to
- * @param {String} url Image URL
+ * @param {string | URL | Buffer | ArrayBufferLike | Uint8Array | Image | import("stream").Readable} origin Image URL
  */
-module.exports = async function palette(interaction, url) {
-	const dimension = await getDimensions(url);
+module.exports = async function palette(interaction, origin) {
+	const input = await loadImage(origin).catch((err) => Promise.reject(err));
 
-	if (dimension.width * dimension.height > 262144)
+	if (input.width * input.height > 262144)
 		return await interaction.reply({
 			content: strings.command.image.input_too_big,
 			ephemeral: true,
 		});
 
-	const canvas = createCanvas(dimension.width, dimension.height).getContext("2d");
+	const ctx = createCanvas(input.width, input.height).getContext("2d");
+
+	/** @type {AllColors} */
 	const allColors = {};
 
-	const temp = await loadImage(url);
-	canvas.drawImage(temp, 0, 0);
+	ctx.drawImage(input, 0, 0);
 
-	const imageData = canvas.getImageData(0, 0, dimension.width, dimension.height).data;
+	const imageData = ctx.getImageData(0, 0, input.width, input.height).data;
 
-	let x, y;
-
-	for (x = 0; x < dimension.width; ++x) {
-		for (y = 0; y < dimension.height; ++y) {
-			let index = (y * dimension.width + x) * 4;
+	for (let x = 0; x < input.width; ++x) {
+		for (let y = 0; y < input.height; ++y) {
+			let index = (y * input.width + x) * 4;
 			let r = imageData[index];
 			let g = imageData[index + 1];
 			let b = imageData[index + 2];
@@ -55,7 +65,7 @@ module.exports = async function palette(interaction, url) {
 			if (!a) continue;
 
 			let hex = rgbToHex(r, g, b);
-			if (!(hex in allColors)) allColors[hex] = { hex: hex, opacity: [], rgb: [r, g, b], count: 0 };
+			if (!(hex in allColors)) allColors[hex] = { hex, opacity: [], rgb: [r, g, b], count: 0 };
 
 			++allColors[hex].count;
 			allColors[hex].opacity.push(a);
@@ -63,7 +73,7 @@ module.exports = async function palette(interaction, url) {
 	}
 
 	// convert back to array
-	let colors = Object.values(allColors)
+	const colors = Object.values(allColors)
 		.sort((a, b) => b.count - a.count)
 		.slice(0, COLORS_TOP)
 		.map((el) => el.hex);
@@ -77,19 +87,17 @@ module.exports = async function palette(interaction, url) {
 	const fieldGroups = [];
 	let group;
 	for (let i = 0; i < colors.length; ++i) {
-		// create 9 group
+		// create 9 groups
 		if (i % COLORS_PER_PALETTE === 0) {
 			fieldGroups.push([]);
 			group = 0;
 		}
 
 		// each groups has 3 lines
-		if (group % COLORS_PER_PALETTE_LINE === 0) fieldGroups[fieldGroups.length - 1].push([]);
+		if (group % COLORS_PER_PALETTE_LINE === 0) fieldGroups.at(-1).push([]);
 
 		// add color to latest group latest line
-		fieldGroups[fieldGroups.length - 1][fieldGroups[fieldGroups.length - 1].length - 1].push(
-			colors[i],
-		);
+		fieldGroups.at(-1)[fieldGroups[fieldGroups.length - 1].length - 1].push(colors[i]);
 		++group;
 	}
 
@@ -156,17 +164,17 @@ module.exports = async function palette(interaction, url) {
 		});
 
 	const canvasWidth = bandWidth * allColorsSorted.length;
-	const colorCanvas = createCanvas(canvasWidth, GRADIENT_HEIGHT);
-	const ctx = colorCanvas.getContext("2d");
+	const output = createCanvas(canvasWidth, GRADIENT_HEIGHT);
+	const outCtx = output.getContext("2d");
 
 	allColorsSorted.forEach((color, index) => {
-		ctx.fillStyle = color.hex;
-		ctx.globalAlpha = color.opacity.reduce((a, v, i) => (a * i + v) / (i + 1)); // average alpha
-		ctx.fillRect(bandWidth * index, 0, bandWidth, GRADIENT_HEIGHT);
+		outCtx.fillStyle = color.hex;
+		outCtx.globalAlpha = color.opacity.reduce((a, v, i) => (a * i + v) / (i + 1)); // average alpha
+		outCtx.fillRect(bandWidth * index, 0, bandWidth, GRADIENT_HEIGHT);
 	});
 
 	// create the attachement
-	const colorImageAttachment = new AttachmentBuilder(colorCanvas.toBuffer("image/png"), {
+	const colorImageAttachment = new AttachmentBuilder(output.toBuffer("image/png"), {
 		name: "colors.png",
 	});
 
@@ -192,10 +200,10 @@ function rgbToHex(r, g, b) {
  * Assumes r, g, and b are contained in the set [0, 255] and
  * returns h, s, and v in the set [0, 1].
  *
- * @param {Number} r The red color value
- * @param {Number} g The green color value
- * @param {Number} b The blue color value
- * @return {Number[]} The HSL representation
+ * @param {number} r The red color value
+ * @param {number} g The green color value
+ * @param {number} b The blue color value
+ * @return {number[]} The HSL representation
  */
 function rgbToHsl(r, g, b) {
 	(r /= 255), (g /= 255), (b /= 255);

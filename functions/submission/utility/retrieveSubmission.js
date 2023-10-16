@@ -15,8 +15,8 @@ const getMessages = require("@helpers/getMessages");
  * Filter submissions from a given date and split by vote counts
  * @author Juknum
  * @param {import("discord.js").Client} client
- * @param {String} channelID where to retrieve from
- * @param {Number} delay delay in days from day of retrieval
+ * @param {string} channelID where to retrieve from
+ * @param {number} delay delay in days from day of retrieval
  * @returns {Promise<{messagesUpvoted: MappedMessage[], messagesDownvoted: MappedMessage[]}>}
  */
 module.exports = async function retrieveSubmission(client, channelID, delay) {

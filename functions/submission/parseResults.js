@@ -10,17 +10,17 @@ const { default: axios } = require("axios");
 
 /**
  * @typedef MappedTexture
- * @property {String} url texture image url
- * @property {String[]} authors array of author's discord ids
- * @property {Number} date
- * @property {String} id texture id
+ * @property {string} url texture image url
+ * @property {string[]} authors array of author's discord ids
+ * @property {number} date
+ * @property {string} id texture id
  */
 
 /**
  * Download passed submissions and add contributions/roles
  * @author Juknum, Evorp
  * @param {import("discord.js").Client} client
- * @param {String} channelResultID result channel to download from
+ * @param {string} channelResultID result channel to download from
  */
 async function downloadResults(client, channelResultID) {
 	const packName = getPackByChannel(channelResultID, "results");
@@ -64,7 +64,7 @@ async function downloadResults(client, channelResultID) {
  * @author Juknum, Evorp
  * @param {MappedTexture} texture message and texture info
  * @param {import("@helpers/jsdoc").Pack} packName which pack to download it to
- * @param {String} baseFolder where to download the texture to
+ * @param {string} baseFolder where to download the texture to
  * @returns {Promise<import("@helpers/jsdoc").Texture>} info
  */
 async function downloadTexture(texture, packName, baseFolder) {
@@ -107,8 +107,8 @@ async function downloadTexture(texture, packName, baseFolder) {
  * @author Evorp
  * @param {import("discord.js").Client} client
  * @param {import("@helpers/jsdoc").Pack} packName which pack to check role
- * @param {String} guildID guild id to add roles to
- * @param {String[]} authors which authors to add roles to
+ * @param {string} guildID guild id to add roles to
+ * @param {string[]} authors which authors to add roles to
  */
 async function addContributorRole(client, packName, guildID, authors) {
 	const guild = client.guilds.cache.get(guildID);

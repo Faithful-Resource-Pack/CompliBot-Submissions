@@ -65,8 +65,8 @@ async function feedbackSuggestion(interaction) {
  * Create GitHub issue with specified title and description
  * @author Evorp
  * @param {import("discord.js").ModalSubmitInteraction} interaction
- * @param {String} title
- * @param {String} description
+ * @param {string} title
+ * @param {string} description
  */
 async function feedbackSend(interaction, title, description) {
 	try {

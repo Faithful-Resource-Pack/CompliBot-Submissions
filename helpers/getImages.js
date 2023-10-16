@@ -5,7 +5,7 @@ const settings = require("@resources/settings.json");
  * @author RobertR11, Evorp
  * @param {import("discord.js").Client} client
  * @param {import("discord.js").AttachmentBuilder[]} fileArray files to commit
- * @returns {Promise<String[]>} array of image urls from #submission-spam
+ * @returns {Promise<string[]>} array of image urls from #submission-spam
  */
 module.exports = async function getImages(client, ...fileArray) {
 	/** @type {import("discord.js").Message} */

@@ -8,7 +8,7 @@ const { PermissionFlagsBits } = require("discord.js");
  * @author Evorp
  * @param {import("discord.js").GuildMember} member member to check
  * @param {"administrator" | "council" | "any"} type what type of role to check for
- * @returns {Boolean} whether the member has the permissions
+ * @returns {boolean} whether the member has the permissions
  */
 function hasPermission(member, type = "any") {
 	const hasAdmin = member.permissions.has(PermissionFlagsBits.Administrator);

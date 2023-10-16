@@ -9,9 +9,9 @@ const DEBUG = process.env.DEBUG.toLowerCase() == "true";
 /**
  * Push textures to all versions of a given pack
  * @author Juknum, Evorp
- * @param {String} basePath no trailing slash
+ * @param {string} basePath no trailing slash
  * @param {import("@helpers/jsdoc").Pack} pack pack to push
- * @param {String} commitMessage commit message
+ * @param {string} commitMessage commit message
  */
 module.exports = async function pushTextures(
 	basePath,

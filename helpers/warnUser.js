@@ -8,8 +8,8 @@ const addDeleteButton = require("./addDeleteButton");
  * Generic error message for both interactions and messages
  * @author Juknum, Evorp
  * @param {import("discord.js").ChatInputCommandInteraction | Message} interaction valid message/interaction object
- * @param {String} text
- * @param {Boolean} deferred whether to reply directly or to edit the deferred reply
+ * @param {string} text
+ * @param {boolean} deferred whether to reply directly or to edit the deferred reply
  * @returns {Promise<Message>} warn message
  */
 module.exports = async function warnUser(interaction, text = strings.bot.error, deferred = false) {

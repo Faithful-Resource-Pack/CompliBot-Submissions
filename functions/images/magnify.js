@@ -6,8 +6,8 @@ const { AttachmentBuilder } = require("discord.js");
  * The actual magnification function
  * @author Juknum, Evorp
  * @param {string | URL | Buffer | ArrayBufferLike | Uint8Array | Image | import("stream").Readable} origin any loadable image
- * @param {Boolean} isAnimation whether to magnify the image as a tilesheet
- * @returns {Promise<{ magnified: Buffer, width: Number, height: Number, factor: Number }>} buffer for magnified image
+ * @param {boolean} isAnimation whether to magnify the image as a tilesheet
+ * @returns {Promise<{ magnified: Buffer, width: number, height: number, factor: number }>} buffer for magnified image
  */
 async function magnify(origin, isAnimation = false) {
 	const input = await loadImage(origin).catch((err) => Promise.reject(err));
@@ -37,15 +37,15 @@ async function magnify(origin, isAnimation = false) {
  * Returns discord attachment
  * @author Juknum
  * @param {string | URL | Buffer | ArrayBufferLike | Uint8Array | Image | import("stream").Readable} origin any loadable image
- * @param {String} name name, defaults to "magnified.png"
+ * @param {string} name name, defaults to "magnified.png"
  * @returns {Promise<AttachmentBuilder>} magnified file
  */
-async function magnifyAttachment(origin, name = "magnified.png") {
+async function magnifyToAttachment(origin, name = "magnified.png") {
 	const { magnified } = await magnify(origin);
 	return new AttachmentBuilder(magnified, { name });
 }
 
 module.exports = {
 	magnify,
-	magnifyAttachment,
+	magnifyToAttachment,
 };

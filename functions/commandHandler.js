@@ -36,7 +36,7 @@ async function loadCommands(client) {
 /**
  * Delete all slash commands from either a guild or globally
  * @author Evorp
- * @param {String | "global"} guildID
+ * @param {string | "global"} guildID
  */
 async function deleteCommands(client, guildID) {
 	const rest = new REST({ version: "10" }).setToken(process.env.CLIENT_TOKEN);

@@ -5,11 +5,11 @@ const GIFEncoder = require("@images/GIFEncoder");
  * @typedef MCMETA
  * @property {Animation} animation
  * @typedef Animation literally all the properties here are optional
- * @property {Number} [frametime]
- * @property {Boolean} [interpolate]
- * @property {(Number | { index?: Number, time?: Number })[]} [frames] thank you mojang very cool
- * @property {Number} [height]
- * @property {Number} [width]
+ * @property {number} [frametime]
+ * @property {boolean} [interpolate]
+ * @property {(number | { index?: number, time?: number })[]} [frames] thank you mojang very cool
+ * @property {number} [height]
+ * @property {number} [width]
  */
 
 /**
@@ -30,7 +30,7 @@ module.exports = async function animate(baseCanvas, mcmeta) {
 	let frametime = mcmeta.animation?.frametime || 1;
 	if (frametime > 15) frametime = 15;
 
-	/** @type {({index: Number, duration: Number})[]} */
+	/** @type {({index: number, duration: number})[]} */
 	const frames = [];
 	if (mcmeta.animation.frames?.length) {
 		// add frames in specified order if possible
@@ -51,29 +51,28 @@ module.exports = async function animate(baseCanvas, mcmeta) {
 		}
 	} else {
 		// just animate directly downwards if nothing specified
-		for (let i = 0; i < baseCanvas.height / mcmeta.animation.height; ++i) {
+		for (let i = 0; i < baseCanvas.height / mcmeta.animation.height; ++i)
 			frames.push({ index: i, duration: frametime });
-		}
 	}
 
 	// initialize gif encoder and final canvas
 	const canvas = createCanvas(mcmeta.animation.width, mcmeta.animation.height);
-	const context = canvas.getContext("2d");
-	context.imageSmoothingEnabled = false;
+	const ctx = canvas.getContext("2d");
+	ctx.imageSmoothingEnabled = false;
 	const encoder = new GIFEncoder(mcmeta.animation.width, mcmeta.animation.height);
 	encoder.start();
 	encoder.setTransparent(true);
-	context.globalCompositeOperation = "copy";
+	ctx.globalCompositeOperation = "copy";
 
 	if (mcmeta.animation.interpolate) {
 		for (let i = 0; i < frames.length; ++i) {
 			for (let y = 1; y <= frametime; ++y) {
-				context.clearRect(0, 0, mcmeta.animation.width, mcmeta.animation.height);
-				context.globalAlpha = 1;
-				context.globalCompositeOperation = "copy";
+				ctx.clearRect(0, 0, mcmeta.animation.width, mcmeta.animation.height);
+				ctx.globalAlpha = 1;
+				ctx.globalCompositeOperation = "copy";
 
 				// frame i (always 100% opacity)
-				context.drawImage(
+				ctx.drawImage(
 					baseCanvas, // image
 					0,
 					mcmeta.animation.height * frames[i].index, // sx, sy
@@ -85,11 +84,11 @@ module.exports = async function animate(baseCanvas, mcmeta) {
 					mcmeta.animation.height, // dWidth, dHeight
 				);
 
-				context.globalAlpha = ((100 / frametime) * y) / 100;
-				context.globalCompositeOperation = "source-atop";
+				ctx.globalAlpha = ((100 / frametime) * y) / 100;
+				ctx.globalCompositeOperation = "source-atop";
 
 				// frame i + 1 (transition)
-				context.drawImage(
+				ctx.drawImage(
 					baseCanvas, // image
 					0,
 					mcmeta.animation.height * frames[(i + 1) % frames.length].index, // sx, sy
@@ -100,16 +99,16 @@ module.exports = async function animate(baseCanvas, mcmeta) {
 					mcmeta.animation.width,
 					mcmeta.animation.height, // dWidth, dHeight
 				);
-				encoder.addFrame(context);
+				encoder.addFrame(ctx);
 			}
 		}
 	} else {
 		for (let i = 0; i < frames.length; ++i) {
-			context.clearRect(0, 0, mcmeta.animation.width, mcmeta.animation.height);
-			context.globalAlpha = 1;
+			ctx.clearRect(0, 0, mcmeta.animation.width, mcmeta.animation.height);
+			ctx.globalAlpha = 1;
 
 			// see: https://mdn.dev/archives/media/attachments/2012/07/09/225/46ffb06174df7c077c89ff3055e6e524/Canvas_drawimage.jpg
-			context.drawImage(
+			ctx.drawImage(
 				baseCanvas, // image
 				0,
 				mcmeta.animation.height * frames[i].index, // sx, sy
@@ -122,7 +121,7 @@ module.exports = async function animate(baseCanvas, mcmeta) {
 			);
 
 			encoder.setDelay(50 * frames[i].duration);
-			encoder.addFrame(context);
+			encoder.addFrame(ctx);
 		}
 	}
 

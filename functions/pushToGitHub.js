@@ -12,11 +12,11 @@ const { readFileSync } = require("fs");
 
 /**
  * Premade function for pushing directly to GitHub
- * @param {String} org GitHub organization name
- * @param {String} repo Github repository name
- * @param {String} branch branch name
- * @param {String} commitMessage
- * @param {String} localPath
+ * @param {string} org GitHub organization name
+ * @param {string} repo Github repository name
+ * @param {string} branch branch name
+ * @param {string} commitMessage
+ * @param {string} localPath
  */
 module.exports = async function pushToGitHub(org, repo, branch, commitMessage, localPath) {
 	const octo = new Octokit({
@@ -30,11 +30,11 @@ module.exports = async function pushToGitHub(org, repo, branch, commitMessage, l
 /**
  * Upload files to repository
  * @param {Octokit} octo
- * @param {String} coursePath path from where file are uploaded
- * @param {String} org GitHub organisation
- * @param {String} repo GitHub repository of the organisation
- * @param {String} branch GitHub branch of the repository
- * @param {String} commitMessage Message of commit
+ * @param {string} coursePath path from where file are uploaded
+ * @param {string} org GitHub organisation
+ * @param {string} repo GitHub repository of the organisation
+ * @param {string} branch GitHub branch of the repository
+ * @param {string} commitMessage Message of commit
  */
 const uploadToRepo = async (octo, coursePath, org, repo, branch, commitMessage) => {
 	const currentCommit = await getCurrentCommit(octo, org, repo, branch);
@@ -68,10 +68,10 @@ const uploadToRepo = async (octo, coursePath, org, repo, branch, commitMessage) 
 /**
  * Get current commit of a branch from a repository
  * @param {Octokit} octo
- * @param {String} org GitHub organisation
- * @param {String} repo GitHub repository of the organisation
- * @param {String} branch GitHub branch of the repository
- * @returns {Promise<{commitSha: String, treeSha: String}>}
+ * @param {string} org GitHub organisation
+ * @param {string} repo GitHub repository of the organisation
+ * @param {string} branch GitHub branch of the repository
+ * @returns {Promise<{commitSha: string, treeSha: string}>}
  */
 const getCurrentCommit = async (octo, org, repo, branch) => {
 	const { data: refData } = await octo.git.getRef({
@@ -94,14 +94,14 @@ const getCurrentCommit = async (octo, org, repo, branch) => {
 /**
  * Get file as utf8 file
  * Notice that readFile's UTF8 is typed differently from Github's UTF-8
- * @param {String} filePath
+ * @param {string} filePath
  * @returns an utf8 file
  */
 const getFileAsUTF8 = (filePath) => readFileSync(filePath, { encoding: "utf-8" });
 
 /**
  * Get file as binary file (used for .png files)
- * @param {String} filePath
+ * @param {string} filePath
  * @returns a base64 file
  */
 const getFileAsBinary = (filePath) => readFileSync(filePath, { encoding: "base64" });
@@ -109,8 +109,8 @@ const getFileAsBinary = (filePath) => readFileSync(filePath, { encoding: "base64
 /**
  * Create blob for a file
  * @param {Octokit} octo
- * @param {String} org Github organisation
- * @param {String} repo Github repository of the organisation
+ * @param {string} org Github organisation
+ * @param {string} repo Github repository of the organisation
  * @returns data of the blob
  */
 const createBlobForFile = (octo, org, repo) => async (filePath) => {
@@ -145,11 +145,11 @@ const createBlobForFile = (octo, org, repo) => async (filePath) => {
 
 /**
  * @param {Octokit} octo
- * @param {String} owner GitHub organisation
- * @param {String} repo GitHub repository of the organisation
+ * @param {string} owner GitHub organisation
+ * @param {string} repo GitHub repository of the organisation
  * @param {Blob} blobs
- * @param {String[]} paths
- * @param {String} parentTreeSha
+ * @param {string[]} paths
+ * @param {string} parentTreeSha
  * @returns data : {owner, repo, tree, base_tree: parentTreeSha }
  */
 const createNewTree = async (
@@ -179,11 +179,11 @@ const createNewTree = async (
 /**
  * Create a new commit
  * @param {Octokit} octo
- * @param {String} org GitHub organisation
- * @param {String} repo GitHub repository of the organisation
- * @param {String} message Commit message
- * @param {String} currentTreeSha
- * @param {String} currentCommitSha
+ * @param {string} org GitHub organisation
+ * @param {string} repo GitHub repository of the organisation
+ * @param {string} message Commit message
+ * @param {string} currentTreeSha
+ * @param {string} currentCommitSha
  */
 const createNewCommit = async (octo, org, repo, message, currentTreeSha, currentCommitSha) =>
 	(
@@ -199,10 +199,10 @@ const createNewCommit = async (octo, org, repo, message, currentTreeSha, current
 /**
  * Set branch to commit
  * @param {Octokit} octo
- * @param {String} org GitHub organisation
- * @param {String} repo GitHub repository of the organisation
- * @param {String} branch GitHub branch of the repository
- * @param {String} commitSha
+ * @param {string} org GitHub organisation
+ * @param {string} repo GitHub repository of the organisation
+ * @param {string} branch GitHub branch of the repository
+ * @param {string} commitSha
  */
 const setBranchToCommit = (octo, org, repo, branch, commitSha) =>
 	octo.git.updateRef({
