@@ -1,6 +1,6 @@
 const strings = require("@resources/strings.json");
 
-const { SlashCommandBuilder } = require("discord.js");
+const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
 
 /** @type {import("@helpers/jsdoc").Command} */
 module.exports = {
@@ -9,7 +9,8 @@ module.exports = {
 		.setDescription(strings.command.description.behave)
 		.addStringOption((option) =>
 			option.setName("message").setDescription("Message ID to reply to").setRequired(false),
-		),
+		)
+		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 	async execute(interaction) {
 		if (!process.env.DEVELOPERS.includes(interaction.user.id))
 			return await interaction.reply({ content: "lol no" });

@@ -1,13 +1,14 @@
 const settings = require("@resources/settings.json");
 const strings = require("@resources/strings.json");
 
-const { EmbedBuilder, SlashCommandBuilder } = require("discord.js");
+const { EmbedBuilder, SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
 
 /** @type {import("@helpers/jsdoc").Command} */
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("shutdown")
-		.setDescription(strings.command.description.shutdown),
+		.setDescription(strings.command.description.shutdown)
+		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 	async execute(interaction) {
 		if (process.env.DEVELOPERS.includes(interaction.user.id)) {
 			await interaction.reply({
