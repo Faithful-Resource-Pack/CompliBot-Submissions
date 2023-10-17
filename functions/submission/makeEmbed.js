@@ -4,13 +4,12 @@ const DEBUG = process.env.DEBUG.toLowerCase() == "true";
 
 const minecraftSorter = require("@helpers/minecraftSorter");
 const getPackByChannel = require("@submission/utility/getPackByChannel");
-const getDimensions = require("@images/getDimensions");
 const getImages = require("@helpers/getImages");
 const generateComparison = require("@submission/utility/generateComparison");
-const { imageButtons, submissionButtons } = require("@helpers/interactions");
+const { imageButtons, submissionButtons, submissionReactions } = require("@helpers/interactions");
 
 const { EmbedBuilder, AttachmentBuilder } = require("discord.js");
-const { submissionReactions } = require("@helpers/interactions");
+const { loadImage } = require("@napi-rs/canvas");
 
 /**
  * Make a submission embed for a given texture and image
@@ -56,10 +55,10 @@ module.exports = async function makeEmbed(message, texture, attachment, params =
 
 	// load raw image to pull from
 	const rawImage = new AttachmentBuilder(attachment.url, { name: `${texture.name}.png` });
-	const dimension = await getDimensions(attachment.url);
+	const image = await loadImage(attachment.url);
 
 	// generate comparison image if possible
-	if (dimension.width * dimension.height <= 262144) {
+	if (image.width * image.height <= 262144) {
 		if (DEBUG) console.log(`Generating comparison image for texture: ${texture.name}`);
 
 		const { comparisonImage, hasReference, mcmeta } = await generateComparison(

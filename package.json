@@ -27,7 +27,6 @@
     "dotenv": "^16.3.1",
     "gif-encoder-2": "^1.0.5",
     "globby": "^11.1.0",
-    "image-size": "^1.0.2",
     "module-alias": "^2.2.3",
     "nodemon": "^3.0.1",
     "prettier": "^3.0.3"
