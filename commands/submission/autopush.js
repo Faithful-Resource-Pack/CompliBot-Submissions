@@ -59,7 +59,7 @@ module.exports = {
 			await pushTextures(
 				"./downloadedTextures",
 				pack,
-				`Manual push executed by ${interaction.user.username} on ${formattedDate()}`,
+				`Manual push executed by ${interaction.user.displayName} on ${formattedDate()}`,
 			);
 
 		await interaction.editReply({

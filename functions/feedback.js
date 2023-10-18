@@ -78,7 +78,7 @@ async function feedbackSend(interaction, title, description) {
 			owner: "Faithful-Resource-Pack",
 			repo: "CompliBot-Submissions",
 			title,
-			body: `*Issue originally created by \`${interaction.user.username}\` on Discord*\n\n${description}`,
+			body: `*Issue originally created by \`${interaction.user.displayName}\` on Discord*\n\n${description}`,
 		});
 	} catch (err) {
 		interaction.followUp({

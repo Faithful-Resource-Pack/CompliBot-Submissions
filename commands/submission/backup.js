@@ -20,7 +20,7 @@ module.exports = {
 
 		const succeeded = await saveDB(
 			interaction.client,
-			`Manual backup executed by: ${interaction.user.username}`,
+			`Manual backup executed by: ${interaction.user.displayName}`,
 		);
 
 		if (!succeeded) return warnUser(interaction, strings.command.backup_failed, true);
