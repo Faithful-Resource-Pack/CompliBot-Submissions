@@ -70,7 +70,7 @@ module.exports = {
 		),
 	async execute(interaction) {
 		const type = interaction.options.getString("type");
-		const modal = new ModalBuilder().setCustomId(`${type}Ticket`).setTitle(`New ${type} Issue`);
+		const modal = new ModalBuilder().setCustomId(`${type}Ticket`).setTitle(`New ${type} issue`);
 
 		modal.addComponents(
 			// every modal input needs to be in a new action row (blame djs)

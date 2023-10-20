@@ -32,12 +32,14 @@ const deleteButton = new ButtonBuilder()
 	.setEmoji(settings.emojis.delete)
 	.setCustomId("deleteButton");
 
+/** @type {ActionRowBuilder<ButtonBuilder>} */
 const imageButtons = new ActionRowBuilder().addComponents([
 	magnifyButton,
 	tileButton,
 	paletteButton,
 ]);
 
+/** @type {ActionRowBuilder<ButtonBuilder>} */
 const submissionButtons = new ActionRowBuilder().addComponents([
 	...imageButtons.components,
 	diffButton,
