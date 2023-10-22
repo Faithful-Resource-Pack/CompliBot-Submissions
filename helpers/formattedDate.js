@@ -1,9 +1,10 @@
 /**
- * Get today's date as a string
+ * Get today's date as a formatted string
  * @author Juknum, Evorp
- * @param {"ymd" | "dmy" | "mdy"} format format to send date as
+ * @param {"ymd" | "dmy" | "mdy"} format format to get date as
+ * @returns {string} formatted date
  */
-module.exports = function formattedDate(format = "dmy") {
+module.exports = function formattedDate(format = "ymd") {
 	const today = new Date();
 	const dd = String(today.getDate()).padStart(2, "0");
 	// adding one since it starts at zero
@@ -16,6 +17,7 @@ module.exports = function formattedDate(format = "dmy") {
 		case "mdy":
 			return `${mm}/${dd}/${yyyy}`;
 		case "ymd":
-			return `${yyyy}/${mm}/${dd}`;
+			// https://en.wikipedia.org/wiki/ISO_8601
+			return `${yyyy}-${mm}-${dd}`;
 	}
 };

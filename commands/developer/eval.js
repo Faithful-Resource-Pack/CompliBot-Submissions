@@ -45,9 +45,9 @@ module.exports = {
 		interaction.reply({
 			ephemeral: true,
 			embeds: [
-				new EmbedBuilder().setColor(settings.colors.blue).setDescription(
-					`\`\`\`js\n${(await clean(evaluated)).slice(0, 4085)}\`\`\``,
-				),
+				new EmbedBuilder()
+					.setColor(settings.colors.blue)
+					.setDescription(`\`\`\`js\n${(await clean(evaluated)).slice(0, 4085)}\`\`\``),
 			],
 		});
 	},
