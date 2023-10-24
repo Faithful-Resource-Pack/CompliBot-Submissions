@@ -29,7 +29,7 @@ module.exports = {
 			embeds: [
 				new EmbedBuilder()
 					.setTitle("Database successfully backed up!")
-					.setUrl(
+					.setURL(
 						`https://github.com/${settings.backup.git.org}/${settings.backup.git.repo}/tree/${settings.backup.git.branch}`,
 					)
 					.setColor(settings.colors.blue),
