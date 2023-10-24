@@ -28,7 +28,7 @@ module.exports = {
 		return await interaction.editReply({
 			embeds: [
 				new EmbedBuilder()
-					.setName("Database successfully backed up!")
+					.setTitle("Database successfully backed up!")
 					.setUrl(
 						`https://github.com/${settings.backup.git.org}/${settings.backup.git.repo}/tree/${settings.backup.git.branch}`,
 					)
