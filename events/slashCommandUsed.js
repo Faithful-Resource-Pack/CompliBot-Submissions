@@ -25,7 +25,9 @@ module.exports = {
 		} catch (error) {
 			if (DEBUG) console.trace(error);
 			if (!DEV)
-				devLogger(interaction.client, error?.stack ?? error ?? "A command failed to run!", { codeBlocks: "" });
+				devLogger(interaction.client, error?.stack ?? error ?? "A command failed to run!", {
+					codeBlocks: "",
+				});
 
 			const embed = new EmbedBuilder()
 				.setColor(settings.colors.red)

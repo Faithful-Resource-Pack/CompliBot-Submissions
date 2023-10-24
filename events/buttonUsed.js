@@ -3,7 +3,7 @@ const tile = require("@images/tile");
 const palette = require("@images/palette");
 const difference = require("@images/difference");
 
-const { EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, PermissionFlagsBits } = require("discord.js");
 
 const strings = require("@resources/strings.json");
 const settings = require("@resources/settings.json");
@@ -74,20 +74,30 @@ module.exports = {
 				});
 
 			case "deleteButton":
-				let original;
-				if (message?.reference && message.deletable) {
+				let original = interaction.message.interaction?.user;
+
+				// no interaction found, try replies instead
+				if (message?.reference && !original) {
 					try {
-						original = await message.channel.messages.fetch(message.reference.messageId);
+						original = (await message.channel.messages.fetch(message.reference.messageId))?.author;
 					} catch {
 						// message deleted
 					}
 				}
 
 				// if there's no way to determine the author we can assume anyone can delete it
-				if ((!original || original.author.id == interaction.user.id) && message.deletable)
+				if (
+					message.deletable &&
+					(!original ||
+						interaction.member.permissions.has(PermissionFlagsBits.ManageMessages) ||
+						original.id == interaction.user.id)
+				)
 					return await message.delete();
+
+				const user = original?.id ? `<@${original.id}>` : "another user";
+
 				return await interaction.reply({
-					content: "Only the person who interacted can delete this message!",
+					content: `This interaction is reserved for ${user}!`,
 					ephemeral: true,
 				});
 			default:
