@@ -5,12 +5,12 @@ const { AttachmentBuilder } = require("discord.js");
 /**
  * The actual magnification function
  * @author Juknum, Evorp
- * @param {string | URL | Buffer | ArrayBufferLike | Uint8Array | Image | import("stream").Readable} origin any loadable image
+ * @param {import("@helpers/jsdoc").ImageSource} origin any loadable image
  * @param {boolean} isAnimation whether to magnify the image as a tilesheet
  * @returns {Promise<{ magnified: Buffer, width: number, height: number, factor: number }>} buffer for magnified image
  */
 async function magnify(origin, isAnimation = false) {
-	const input = await loadImage(origin).catch((err) => Promise.reject(err));
+	const input = await loadImage(origin);
 
 	// ignore height if tilesheet, otherwise it's not scaled as much
 	const surface = isAnimation ? input.width * 16 : input.width * input.height;
@@ -36,7 +36,7 @@ async function magnify(origin, isAnimation = false) {
 /**
  * Returns discord attachment
  * @author Juknum
- * @param {string | URL | Buffer | ArrayBufferLike | Uint8Array | Image | import("stream").Readable} origin any loadable image
+ * @param {import("@helpers/jsdoc").ImageSource} origin any loadable image
  * @param {string} name name, defaults to "magnified.png"
  * @returns {Promise<AttachmentBuilder>} magnified file
  */

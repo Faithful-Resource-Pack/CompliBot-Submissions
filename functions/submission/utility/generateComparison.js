@@ -131,7 +131,7 @@ module.exports = async function generateComparison(pack, attachment, info) {
 		mcmeta.animation.height = mcmeta.animation.height
 			? mcmeta.animation.height * factor
 			: (width - totalGaps * factor) / images.length; // get height of a single frame
-		const animated = await animate(await loadImage(magnified), mcmeta);
+		const animated = await animate(magnified, mcmeta);
 
 		return {
 			comparisonImage: new AttachmentBuilder(animated, { name: "compared.gif" }),

@@ -33,10 +33,10 @@ const GRADIENT_HEIGHT = 50;
  * Sends an ephemeral message with the palette of a given image url
  * @author Juknum, Evorp
  * @param {import("discord.js").MessageComponentInteraction} interaction discord interaction to respond to
- * @param {string | URL | Buffer | ArrayBufferLike | Uint8Array | Image | import("stream").Readable} origin Image URL
+ * @param {import("@helpers/jsdoc").ImageSource} origin Image URL
  */
 module.exports = async function palette(interaction, origin) {
-	const input = await loadImage(origin).catch((err) => Promise.reject(err));
+	const input = await loadImage(origin);
 
 	if (input.width * input.height > 262144)
 		return await interaction.reply({

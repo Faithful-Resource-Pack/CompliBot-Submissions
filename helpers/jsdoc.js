@@ -57,6 +57,8 @@
  * @property {boolean} [once] only happens once (e.g. on ready)
  * @property {Function} execute
  *
+ * @typedef {string | URL | Buffer | ArrayBufferLike | Uint8Array | import("@napi-rs/canvas").Image | import("stream").Readable} ImageSource
+ *
  * SETTINGS:
  *
  * @typedef SubmissionPack

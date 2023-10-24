@@ -7,12 +7,12 @@ const strings = require("@resources/strings.json");
  * Tile an image
  * @author Juknum
  * @param {import("discord.js").MessageComponentInteraction} interaction
- * @param {string | URL | Buffer | ArrayBufferLike | Uint8Array | Image | import("stream").Readable} origin image url
+ * @param {import("@helpers/jsdoc").ImageSource} origin image url
  * @param {string} type tiling type
  * @returns {Promise<Buffer>} tiled image as a buffer
  */
 module.exports = async function tile(interaction, origin) {
-	const input = await loadImage(origin).catch((err) => Promise.reject(err));
+	const input = await loadImage(origin);
 
 	if (input.width * input.height * 3 > 262144) {
 		interaction.reply({
