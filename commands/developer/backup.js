@@ -33,9 +33,7 @@ module.exports = {
 					.setTitle("Database backed up!")
 					.setURL(url)
 					.setDescription(
-						failedPushes.length
-							? "*Check developer logs for potential failure reasons!*"
-							: undefined,
+						failedPushes.length ? "*Check developer logs for potential failure reasons!*" : "",
 					)
 					.addFields(
 						{ name: "Successful", value: successfulPushes.join("\n"), inline: true },

@@ -1,44 +1,36 @@
 {
-  "name": "complibot-submissions",
-  "version": "1.0.0",
-  "description": "Fully automated texture pushing and submission system for the Faithful Discord servers.",
-  "main": "index.js",
-  "scripts": {
-    "start": "node --use_strict --trace-warnings index.js",
-    "prettier": "prettier \"{*.js,!(node*)**/*.js}\" --config .prettierrc --write",
-    "dev": "nodemon --ignore resources/ --ignore json/"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Faithful-Resource-Pack/CompliBot-Submissions.git"
-  },
-  "keywords": [],
-  "author": "Faithful Resource Pack",
-  "bugs": {
-    "url": "https://github.com/Faithful-Resource-Pack/CompliBot-Submissions/issues"
-  },
-  "homepage": "https://github.com/Faithful-Resource-Pack/CompliBot-Submissions#readme",
-  "dependencies": {
-    "@napi-rs/canvas": "^0.1.44",
-    "@octokit/rest": "^20.0.2",
-    "axios": "^1.5.1",
-    "cron": "^3.1.1",
-    "discord.js": "^14.13.0",
-    "dotenv": "^16.3.1",
-    "gif-encoder-2": "^1.0.5",
-    "globby": "^11.1.0",
-    "module-alias": "^2.2.3",
-    "nodemon": "^3.0.1",
-    "prettier": "^3.0.3"
-  },
-  "_moduleAliases": {
-    "@functions": "./functions",
-    "@helpers": "./helpers",
-    "@commands": "./commands",
-    "@events": "./events",
-    "@submission": "./functions/submission",
-    "@images": "./functions/images",
-    "@resources": "./resources",
-    "@index": "./index.js"
-  }
+    "name": "complibot-submissions",
+    "version": "1.0.0",
+    "description": "Fully automated texture pushing and submission system for the Faithful Discord servers.",
+    "main": "index.js",
+    "scripts": {
+        "start": "node --use_strict --trace-warnings index.js",
+        "dev": "nodemon --ignore resources/ --ignore json/",
+        "prettier": "prettier \"{*.js,!(node*)**/*.js}\" --config .prettierrc --write"
+    },
+    "devDependencies": {
+        "nodemon": "^3.0.1",
+        "prettier": "^3.0.3"
+    },
+    "dependencies": {
+        "@napi-rs/canvas": "^0.1.44",
+        "@octokit/rest": "^20.0.2",
+        "axios": "^1.5.1",
+        "cron": "^3.1.1",
+        "discord.js": "^14.13.0",
+        "dotenv": "^16.3.1",
+        "gif-encoder-2": "^1.0.5",
+        "globby": "^11.1.0",
+        "module-alias": "^2.2.3"
+    },
+    "_moduleAliases": {
+        "@functions": "./functions",
+        "@helpers": "./helpers",
+        "@commands": "./commands",
+        "@events": "./events",
+        "@submission": "./functions/submission",
+        "@images": "./functions/images",
+        "@resources": "./resources",
+        "@index": "./index.js"
+    }
 }
