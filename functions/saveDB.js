@@ -63,13 +63,14 @@ module.exports = async function saveDB(client, commitMessage = "Daily Backup", p
 		params.branch,
 		commitMessage,
 		"./json/",
-	).catch(() => {
+	).catch((err) => {
 		if (DEBUG) console.log(`Branch ${params.branch} doesn't exist for repository ${params.repo}!`);
+		if (!DEV)
+			devLogger(client, err, {
+				codeBlocks: "",
+				title: `Could not commit backup to ${params.org}/[${params.repo}:${params.branch}]`,
+			});
 	});
 
-	return {
-		successfulPushes,
-		failedPushes,
-		commit,
-	};
+	return { successfulPushes, failedPushes, commit };
 };

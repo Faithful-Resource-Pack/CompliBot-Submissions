@@ -27,24 +27,28 @@ module.exports = {
 			commit ? `commit/${commit}` : `tree/${settings.backup.git.branch}`
 		}`;
 
+		const embed = new EmbedBuilder()
+			.setTitle(commit ? "Database backed up!" : "Database could not be backed up.")
+			.setURL(url)
+			.addFields(
+				{
+					name: "Successful",
+					value: successfulPushes.join("\n") || "*None*",
+					inline: true,
+				},
+				{
+					name: "Failed",
+					value: failedPushes.join("\n") || "*None*",
+					inline: true,
+				},
+			)
+			.setColor(commit ? settings.colors.blue : settings.colors.red);
+
+		if (!commit || failedPushes.length)
+			embed.setDescription("*Check developer logs for potential failure reasons!*");
+
 		return await interaction.editReply({
-			embeds: [
-				new EmbedBuilder()
-					.setTitle("Database backed up!")
-					.setURL(url)
-					.setDescription(
-						failedPushes.length ? "*Check developer logs for potential failure reasons!*" : "",
-					)
-					.addFields(
-						{ name: "Successful", value: successfulPushes.join("\n"), inline: true },
-						{ name: "Failed", value: failedPushes.join("\n"), inline: true },
-					)
-					.setColor(
-						successfulPushes.length > failedPushes.length
-							? settings.colors.blue
-							: settings.colors.red,
-					),
-			],
+			embeds: [embed],
 		});
 	},
 };
