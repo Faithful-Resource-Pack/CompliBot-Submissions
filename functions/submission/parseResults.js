@@ -6,7 +6,7 @@ const devLogger = require("@helpers/devLogger");
 const getPackByChannel = require("@submission/utility/getPackByChannel");
 
 const { mkdirSync, writeFile } = require("fs");
-const { default: axios } = require("axios");
+const axios = require("axios").default;
 
 /**
  * @typedef MappedTexture

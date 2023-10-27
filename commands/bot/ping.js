@@ -2,7 +2,7 @@ const addDeleteButton = require("@helpers/addDeleteButton");
 const settings = require("@resources/settings.json");
 const strings = require("@resources/strings.json");
 
-const { default: axios } = require("axios");
+const axios = require("axios").default;
 
 const { EmbedBuilder, SlashCommandBuilder } = require("discord.js");
 

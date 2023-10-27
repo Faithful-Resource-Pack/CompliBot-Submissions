@@ -9,7 +9,7 @@ const cancelSubmission = require("@submission/utility/cancelSubmission");
 const getAuthors = require("@submission/utility/getAuthors");
 const minecraftSorter = require("@helpers/minecraftSorter");
 
-const { default: axios } = require("axios");
+const axios = require("axios").default;
 
 /**
  * Get submission information and create embed

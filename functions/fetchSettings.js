@@ -1,7 +1,7 @@
 const { writeFile } = require("fs/promises");
 const { join } = require("path");
 const FETCH_SETTINGS = process.env.FETCH_SETTINGS.toLowerCase() == "true";
-const { default: axios } = require("axios");
+const axios = require("axios").default;
 
 /**
  * Download and apply remote settings file

@@ -18,21 +18,34 @@ module.exports = {
 
 		await interaction.deferReply({ ephemeral: true });
 
-		const succeeded = await saveDB(
+		const { successfulPushes, failedPushes, commit } = await saveDB(
 			interaction.client,
 			`Manual backup executed by: ${interaction.user.displayName}`,
 		);
 
-		if (!succeeded) return warnUser(interaction, strings.command.backup_failed, true);
+		const url = `https://github.com/${settings.backup.git.org}/${settings.backup.git.repo}/${
+			commit ? `commit/${commit}` : `tree/${settings.backup.git.branch}`
+		}`;
 
 		return await interaction.editReply({
 			embeds: [
 				new EmbedBuilder()
-					.setTitle("Database successfully backed up!")
-					.setURL(
-						`https://github.com/${settings.backup.git.org}/${settings.backup.git.repo}/tree/${settings.backup.git.branch}`,
+					.setTitle("Database backed up!")
+					.setURL(url)
+					.setDescription(
+						failedPushes.length
+							? "*Check developer logs for potential failure reasons!*"
+							: undefined,
 					)
-					.setColor(settings.colors.blue),
+					.addFields(
+						{ name: "Successful", value: successfulPushes.join("\n"), inline: true },
+						{ name: "Failed", value: failedPushes.join("\n"), inline: true },
+					)
+					.setColor(
+						successfulPushes.length > failedPushes.length
+							? settings.colors.blue
+							: settings.colors.red,
+					),
 			],
 		});
 	},

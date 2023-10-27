@@ -11,7 +11,7 @@ const {
 	StringSelectMenuBuilder,
 	SelectMenuInteraction,
 } = require("discord.js");
-const { default: axios } = require("axios");
+const axios = require("axios").default;
 
 const DEBUG = process.env.DEBUG.toLowerCase() == "true";
 

@@ -1,4 +1,4 @@
-const { default: axios } = require("axios");
+const axios = require("axios").default;
 
 /**
  * Detects co-authors from pings and curly bracket syntax in a given message

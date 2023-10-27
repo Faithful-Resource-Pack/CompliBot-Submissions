@@ -1,21 +1,22 @@
 const settings = require("@resources/settings.json");
 
+const DEV = process.env.DEV.toLowerCase() == "true";
 const DEBUG = process.env.DEBUG.toLowerCase() == "true";
 
 const { mkdirSync, writeFileSync } = require("fs");
 
 const pushToGitHub = require("@functions/pushToGitHub");
 const { join } = require("path");
-const { default: axios } = require("axios");
+const axios = require("axios").default;
 const devLogger = require("@helpers/devLogger");
 
 /**
- * push all raw api collections to github
+ * Push all raw api collections to github
  * @author Evorp, Juknum
  * @param {import("discord.js").Client} client
  * @param {string} commitMessage
  * @param {{org?: string, repo?: string, branch?: string}} params configure where to backup to
- * @returns {Promise<boolean>} if every collection could be backed up
+ * @returns {Promise<{ successfulPushes: string[], failedPushes: string[], commit?: string }>}
  */
 module.exports = async function saveDB(client, commitMessage = "Daily Backup", params = {}) {
 	if (!params.org) params.org = settings.backup.git.org;
@@ -25,7 +26,8 @@ module.exports = async function saveDB(client, commitMessage = "Daily Backup", p
 	const folderPath = join(process.cwd(), "json", "database");
 	mkdirSync(folderPath, { recursive: true });
 
-	let successfulPushes = [];
+	const successfulPushes = [];
+	const failedPushes = [];
 	for (const [filename, url] of Object.entries(settings.backup.urls)) {
 		try {
 			const fetched = (
@@ -44,8 +46,9 @@ module.exports = async function saveDB(client, commitMessage = "Daily Backup", p
 
 			successfulPushes.push(filename);
 		} catch (err) {
+			failedPushes.push(filename);
 			if (DEBUG) console.error(err?.response?.data ?? err);
-			else
+			if (!DEV)
 				devLogger(client, JSON.stringify(err?.response?.data ?? err), {
 					codeBlocks: "json",
 					title: `Failed to backup collection "${filename}"`,
@@ -54,11 +57,19 @@ module.exports = async function saveDB(client, commitMessage = "Daily Backup", p
 	}
 
 	if (DEBUG) console.log(`Downloaded database files: ${successfulPushes}`);
-	try {
-		await pushToGitHub(params.org, params.repo, params.branch, commitMessage, "./json/");
-	} catch {
+	const commit = await pushToGitHub(
+		params.org,
+		params.repo,
+		params.branch,
+		commitMessage,
+		"./json/",
+	).catch(() => {
 		if (DEBUG) console.log(`Branch ${params.branch} doesn't exist for repository ${params.repo}!`);
-	}
+	});
 
-	return successfulPushes.length >= Object.keys(settings.backup.urls).length;
+	return {
+		successfulPushes,
+		failedPushes,
+		commit,
+	};
 };
