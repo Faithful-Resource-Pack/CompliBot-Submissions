@@ -9,7 +9,7 @@ const { mkdirSync, writeFile } = require("fs");
 const axios = require("axios").default;
 
 /**
- * @typedef MappedTexture
+ * @typedef MappedMessage
  * @property {string} url texture image url
  * @property {string[]} authors array of author's discord ids
  * @property {number} date
@@ -45,7 +45,7 @@ async function downloadResults(client, channelResultID) {
 	for (const texture of messages.map(mapMessage)) {
 		await downloadTexture(texture, packName, "./downloadedTextures");
 
-		allContribution.push(mapContribution(texture, packName));
+		allContribution.push(generateContributionData(texture, packName));
 
 		addContributorRole(
 			client,
@@ -56,13 +56,13 @@ async function downloadResults(client, channelResultID) {
 	}
 
 	// post all contributions at once (saves on requests)
-	if (allContribution.length) return await postContributions(allContribution);
+	if (allContribution.length) return await postContributions(...allContribution);
 }
 
 /**
  * Download a single texture to all its paths locally
  * @author Juknum, Evorp
- * @param {MappedTexture} texture message and texture info
+ * @param {MappedMessage} texture message and texture info
  * @param {import("@helpers/jsdoc").Pack} packName which pack to download it to
  * @param {string} baseFolder where to download the texture to
  * @returns {Promise<import("@helpers/jsdoc").Texture>} info
@@ -87,11 +87,11 @@ async function downloadTexture(texture, packName, baseFolder) {
 			console.log(`GitHub repository not found for pack and edition: ${packName} ${edition}`);
 
 		for (const path of paths) {
-			// for each version of each path
+			// write file to every version of a path
 			for (const version of path.versions) {
 				const fullPath = `${baseFolder}/${packFolder}/${version}/${path.name}`;
 
-				// write file to every version
+				// trim last bit to get folder tree
 				mkdirSync(fullPath.substring(0, fullPath.lastIndexOf("/")), { recursive: true });
 				writeFile(fullPath, Buffer.from(imageFile), (err) => {
 					if (DEBUG) return console.log(err ?? `Added texture to path: ${fullPath}`);
@@ -131,49 +131,45 @@ async function addContributorRole(client, packName, guildID, authors) {
  * Map a texture to a downloadable format
  * @author Juknum
  * @param {import("discord.js").Message} message
- * @returns {MappedTexture}
+ * @returns {MappedMessage}
  */
-const mapMessage = (message) => {
-	return {
-		url: message.embeds[0].thumbnail.url,
-		authors: message.embeds[0].fields[0].value.split("\n").map((auth) => auth.match(/\d+/g)?.[0]),
-		date: message.createdTimestamp,
-		id: message.embeds[0].title.match(/(?<=\[\#)(.*?)(?=\])/)?.[0],
-	};
-};
+const mapMessage = (message) => ({
+	url: message.embeds[0].thumbnail.url,
+	authors: message.embeds[0].fields[0].value.split("\n").map((auth) => auth.match(/\d+/g)?.[0]),
+	date: message.createdTimestamp,
+	id: message.embeds[0].title.match(/(?<=\[\#)(.*?)(?=\])/)?.[0],
+});
 
 /**
  * Converts a mapped message to a contribution
  * @author Juknum
- * @param {MappedTexture} texture
+ * @param {MappedMessage} texture
  * @param {import("@helpers/jsdoc").Pack} packName
  * @returns {import("@helpers/jsdoc").Contribution}
  */
-const mapContribution = (texture, packName) => {
-	return {
-		date: texture.date,
-		resolution: Number(packName.match(/\d+/)?.[0] ?? 32), // stupid workaround but it works
-		pack: packName,
-		texture: texture.id,
-		authors: texture.authors,
-	};
-};
+const generateContributionData = (texture, packName) => ({
+	date: texture.date,
+	resolution: Number(packName.match(/\d+/)?.[0] ?? 32), // stupid workaround but it works
+	pack: packName,
+	texture: texture.id,
+	authors: texture.authors,
+});
 
 /**
  * Post contribution(s) to database
  * @author Evorp
- * @param {import("@helpers/jsdoc").Contribution | import("@helpers/jsdoc").Contribution[]} contribution
+ * @param {import("@helpers/jsdoc").Contribution[]} contributions
  */
-async function postContributions(contribution) {
+async function postContributions(...contributions) {
 	try {
-		await axios.post(`${process.env.API_URL}contributions`, contribution, {
+		await axios.post(`${process.env.API_URL}contributions`, contributions, {
 			headers: {
 				bot: process.env.API_TOKEN,
 			},
 		});
-		if (DEBUG) console.log(`Added contribution(s): ${contribution}`);
+		if (DEBUG) console.log(`Added contribution(s): ${contributions}`);
 	} catch (err) {
-		const pack = contribution.pack ?? contribution[0]?.pack;
+		const pack = contributions[0]?.pack;
 		if (DEBUG) console.error(`Couldn't add contribution(s) for pack: ${pack}`);
 		else
 			devLogger(client, JSON.stringify(err?.response?.data ?? err), {
@@ -188,6 +184,6 @@ module.exports = {
 	downloadTexture,
 	addContributorRole,
 	mapMessage,
-	mapContribution,
+	generateContributionData,
 	postContributions,
 };

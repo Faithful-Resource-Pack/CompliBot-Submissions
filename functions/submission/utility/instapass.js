@@ -8,7 +8,7 @@ const {
 	postContributions,
 	addContributorRole,
 	downloadTexture,
-	mapContribution,
+	generateContributionData,
 } = require("@submission/parseResults");
 const pushTextures = require("@submission/pushTextures");
 const getPackByChannel = require("@submission/utility/getPackByChannel");
@@ -49,13 +49,12 @@ module.exports = async function instapass(message, member) {
 		}),
 	);
 
-	// probably overkill but this eliminates any chance of weird stuff happening
+	// random folder name so multiple textures can be instapassed at once
 	const basePath = `./instapassedTextures/${randomBytes(6).toString("hex")}`;
 
-	// download the single texture to all its paths
 	const textureInfo = await downloadTexture(texture, packName, basePath);
 
-	await postContributions(mapContribution(texture, packName));
+	await postContributions(generateContributionData(texture, packName));
 	await addContributorRole(message.client, packName, message.channel.guildId, texture.authors);
 	await pushTextures(basePath, packName, `Instapassed ${textureInfo.name} from ${formattedDate()}`);
 
