@@ -36,15 +36,13 @@ module.exports = async function retrieveSubmission(client, channelID, delay) {
 	});
 
 	/** @type {MappedMessage[]} */
-	const mappedMessages = messages.map((message) => {
-		return {
-			upvote: message.reactions.cache.get(settings.emojis.upvote),
-			downvote: message.reactions.cache.get(settings.emojis.downvote),
-			embed: message.embeds[0],
-			components: [...message.components],
-			message: message,
-		};
-	});
+	const mappedMessages = messages.map((message) => ({
+		upvote: message.reactions.cache.get(settings.emojis.upvote),
+		downvote: message.reactions.cache.get(settings.emojis.downvote),
+		embed: message.embeds[0],
+		components: [...message.components],
+		message: message,
+	}));
 
 	const messagesUpvoted = mappedMessages.filter((message) => {
 		// set to one because bot reaction (0 can never be reached)

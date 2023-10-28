@@ -17,9 +17,7 @@ module.exports = {
 				.addChoices(
 					...Object.values(ActivityType)
 						.filter((x) => typeof x == "string")
-						.map((i) => {
-							return { name: i, value: i };
-						}),
+						.map((i) => ({ name: i, value: i })),
 				)
 				.setRequired(true),
 		)

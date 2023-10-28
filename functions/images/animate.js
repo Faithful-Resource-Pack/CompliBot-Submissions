@@ -1,4 +1,4 @@
-const { createCanvas } = require("@napi-rs/canvas");
+const { createCanvas, loadImage } = require("@napi-rs/canvas");
 const GIFEncoder = require("@images/GIFEncoder");
 
 /**
