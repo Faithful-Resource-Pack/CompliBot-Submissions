@@ -10,7 +10,8 @@ module.exports = {
 		.addStringOption((option) =>
 			option.setName("message").setDescription("Message ID to reply to").setRequired(false),
 		)
-		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+		.setDMPermission(false),
 	async execute(interaction) {
 		if (!process.env.DEVELOPERS.includes(interaction.user.id))
 			return await interaction.reply({ content: "lol no" });

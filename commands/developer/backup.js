@@ -11,7 +11,8 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("backup")
 		.setDescription(strings.command.description.backup)
-		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+		.setDMPermission(false),
 	async execute(interaction) {
 		if (!process.env.DEVELOPERS.includes(interaction.user.id))
 			return await warnUser(interaction, strings.command.no_permission);

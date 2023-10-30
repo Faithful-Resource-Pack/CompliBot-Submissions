@@ -25,7 +25,8 @@ module.exports = {
 				)
 				.setRequired(true),
 		)
-		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+		.setDMPermission(false),
 	async execute(interaction) {
 		const choice = interaction.options.getString("pack", true);
 		if (choice == "all" && !process.env.DEVELOPERS.includes(interaction.user.id))

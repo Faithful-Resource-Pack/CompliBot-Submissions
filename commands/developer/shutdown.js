@@ -8,7 +8,8 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName("shutdown")
 		.setDescription(strings.command.description.shutdown)
-		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+		.setDMPermission(false),
 	async execute(interaction) {
 		if (process.env.DEVELOPERS.includes(interaction.user.id)) {
 			await interaction.reply({

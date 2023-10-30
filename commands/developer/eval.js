@@ -1,6 +1,8 @@
 const settings = require("@resources/settings.json");
 const strings = require("@resources/strings.json");
 
+const warnUser = require("@helpers/warnUser");
+
 const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require("discord.js");
 
 /** @type {import("@helpers/jsdoc").Command} */
@@ -11,7 +13,8 @@ module.exports = {
 		.addStringOption((option) =>
 			option.setName("code").setDescription("The code to evaluate.").setRequired(true),
 		)
-		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+		.setDMPermission(false),
 	async execute(interaction) {
 		// remove this line to instantly die
 		if (!process.env.DEVELOPERS.includes(interaction.user.id))
