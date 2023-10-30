@@ -19,6 +19,7 @@ module.exports = {
 		// remove this line to instantly die
 		if (!process.env.DEVELOPERS.includes(interaction.user.id))
 			return warnUser(interaction, strings.command.no_permission);
+		await interaction.deferReply({ ephemeral: true });
 
 		const clean = async (text) => {
 			if (text && text.constructor.name === "Promise") text = await text;
@@ -47,8 +48,7 @@ module.exports = {
 			}})() } catch (e) { return e } })()`,
 		);
 
-		interaction.reply({
-			ephemeral: true,
+		interaction.editReply({
 			embeds: [
 				new EmbedBuilder()
 					.setColor(settings.colors.blue)
