@@ -45,26 +45,24 @@ module.exports = async function palette(interaction, origin) {
 		});
 
 	const ctx = createCanvas(input.width, input.height).getContext("2d");
+	ctx.drawImage(input, 0, 0);
 
 	/** @type {AllColors} */
 	const allColors = {};
-
-	ctx.drawImage(input, 0, 0);
 
 	const imageData = ctx.getImageData(0, 0, input.width, input.height).data;
 
 	for (let x = 0; x < input.width; ++x) {
 		for (let y = 0; y < input.height; ++y) {
-			let index = (y * input.width + x) * 4;
-			let r = imageData[index];
-			let g = imageData[index + 1];
-			let b = imageData[index + 2];
-			let a = imageData[index + 3] / 255;
+			const index = (y * input.width + x) * 4;
+			const r = imageData[index];
+			const g = imageData[index + 1];
+			const b = imageData[index + 2];
+			const a = imageData[index + 3] / 255;
 
 			// avoid transparent colors
 			if (!a) continue;
-
-			let hex = rgbToHex(r, g, b);
+			const hex = rgbToHex(r, g, b);
 			if (!(hex in allColors)) allColors[hex] = { hex, opacity: [], rgb: [r, g, b], count: 0 };
 
 			++allColors[hex].count;
@@ -80,10 +78,10 @@ module.exports = async function palette(interaction, origin) {
 
 	const embed = new EmbedBuilder()
 		.setTitle("Palette results")
-		.setColor(settings.colors.blue)
-		.setDescription(`List of colors:\n`)
-		.setFooter({ text: `Total: ${Object.values(allColors).length}` });
+		.setDescription(`Total: ${Object.keys(allColors).length}`)
+		.setColor(settings.colors.blue);
 
+	/** @type {string[][][]} */
 	const fieldGroups = [];
 	let group;
 	for (let i = 0; i < colors.length; ++i) {
@@ -107,6 +105,7 @@ module.exports = async function palette(interaction, origin) {
 				line.map((color) => `[\`${color}\`](${COOLORS_URL}${color.replace("#", "")})`).join(" "),
 			)
 			.join(" ");
+
 		embed.addFields({
 			name: "Hex" + (fieldGroups.length > 1 ? ` part ${index + 1}` : "") + ": ",
 			value: groupValue,
@@ -119,12 +118,12 @@ module.exports = async function palette(interaction, origin) {
 	const paletteGroups = [];
 	for (let i = 0; i < colors.length; ++i) {
 		if (i % COLORS_PER_PALETTE === 0) paletteGroups.push([]);
-		paletteGroups[paletteGroups.length - 1].push(colors[i].replace("#", ""));
+		paletteGroups.at(-1).push(colors[i].replace("#", ""));
 	}
 
-	// create urls
+	/** @type {string[]} create urls */
 	const paletteUrls = [];
-	let descriptionLength = embed.data.description.length;
+	let groupLength = 0;
 
 	for (let i = 0; i < paletteGroups.length; ++i) {
 		const link = `**[Palette${
@@ -132,14 +131,18 @@ module.exports = async function palette(interaction, origin) {
 		}](${COOLORS_URL}${paletteGroups[i].join("-")})** `;
 
 		// too long
-		if (descriptionLength + link.length + 3 > 1024) break;
+		if (groupLength + link.length + 3 > 1024) break;
 
 		paletteUrls.push(link);
-		descriptionLength += link.length;
+		groupLength += link.length;
 	}
 
-	// append palette links to existing description
-	embed.setDescription(embed.data.description + paletteUrls.join(" - "));
+	// add field at top
+	embed.spliceFields(0, 0, {
+		name: "List of colors:",
+		value: paletteUrls.join(" - "),
+		inline: false,
+	});
 
 	// create gradient canvas for top GRADIENT_TOP colors
 	const bandWidth =
@@ -152,19 +155,19 @@ module.exports = async function palette(interaction, origin) {
 		.sort((a, b) => b.count - a.count)
 		.slice(0, GRADIENT_TOP)
 		.sort((a, b) => {
-			let [ha, sa, la] = rgbToHsl(a.rgb[0], a.rgb[1], a.rgb[2]);
-			let [hb, sb, lb] = rgbToHsl(b.rgb[0], b.rgb[1], b.rgb[2]);
+			const [ha, sa, la] = rgbToHSL(a.rgb[0], a.rgb[1], a.rgb[2]);
+			const [hb, sb, lb] = rgbToHSL(b.rgb[0], b.rgb[1], b.rgb[2]);
 
 			if (sa <= GRADIENT_SAT_THRESHOLD && sb > GRADIENT_SAT_THRESHOLD) return -1;
 			else if (sa > GRADIENT_SAT_THRESHOLD && sb <= GRADIENT_SAT_THRESHOLD) return 1;
 			else if (sa <= GRADIENT_SAT_THRESHOLD && sb <= GRADIENT_SAT_THRESHOLD) {
 				return la > lb ? 1 : -(la < lb);
 			} else if (Math.abs(ha - hb) > GRADIENT_HUE_DIFF) return ha > hb ? 1 : -(ha < hb);
+
 			return la > lb ? 1 : -(la < lb);
 		});
 
-	const canvasWidth = bandWidth * allColorsSorted.length;
-	const output = createCanvas(canvasWidth, GRADIENT_HEIGHT);
+	const output = createCanvas(bandWidth * allColorsSorted.length, GRADIENT_HEIGHT);
 	const outCtx = output.getContext("2d");
 
 	allColorsSorted.forEach((color, index) => {
@@ -205,7 +208,7 @@ function rgbToHex(r, g, b) {
  * @param {number} b The blue color value
  * @return {number[]} The HSL representation
  */
-function rgbToHsl(r, g, b) {
+function rgbToHSL(r, g, b) {
 	(r /= 255), (g /= 255), (b /= 255);
 
 	const max = Math.max(r, g, b);
