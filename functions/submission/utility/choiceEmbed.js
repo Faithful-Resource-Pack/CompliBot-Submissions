@@ -27,7 +27,7 @@ module.exports = async function choiceEmbed(message, choices) {
 	const choicesLength = choices.length; // we're modifying choices directly so it needs to be saved first
 
 	const maxRows = 4; // actually 5 but - 1 because we are adding a delete button to it (the 5th one)
-	for (let currentRow = 0; currentRow <= maxRows && choices.length; ++currentRow) {
+	for (let currentRow = 0; currentRow < maxRows && choices.length; ++currentRow) {
 		/** @type {import("discord.js").SelectMenuComponentOptionData[]} */
 		const options = [];
 		for (let i = 0; i < emojis.length; ++i) {
