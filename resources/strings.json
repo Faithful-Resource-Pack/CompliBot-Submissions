@@ -31,8 +31,8 @@
 		}
 	},
 	"submission": {
-		"autoreact": {
-			"error_title": "Auto Reaction Failed",
+		"cancelled": {
+			"error_title": "Submission Cancelled",
 			"error_footer": "This message will self-destruct in 30 seconds, please re-submit!"
 		},
 		"choice_embed": {

@@ -11,7 +11,7 @@ const DEBUG = process.env.DEBUG.toLowerCase() == "true";
  * Logic for handling an invalid submission
  * @author Juknum
  * @param {import("discord.js").Message} message message to check permissions of
- * @param {string} error optional error message
+ * @param {string} [error] error message
  */
 module.exports = async function cancelSubmission(message, error = "No error given!") {
 	// allow managers and council to talk in submit channels
@@ -26,11 +26,11 @@ module.exports = async function cancelSubmission(message, error = "No error give
 
 	const embed = new EmbedBuilder()
 		.setColor(settings.colors.red)
-		.setTitle(strings.submission.autoreact.error_title)
+		.setTitle(strings.submission.cancelled.error_title)
 		.setThumbnail(settings.images.warning)
 		.setDescription(error)
 		.setFooter({
-			text: strings.submission.autoreact.error_footer,
+			text: strings.submission.cancelled.error_footer,
 			iconURL: message.client.user.displayAvatarURL(),
 		});
 
