@@ -62,6 +62,7 @@
  * SETTINGS:
  *
  * @typedef SubmissionPack
+ * @property {string} display_name
  * @property {SubmissionChannels} channels
  * @property {boolean} council_enabled
  * @property {number} [time_to_council]
