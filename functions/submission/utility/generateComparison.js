@@ -58,17 +58,13 @@ module.exports = async function generateComparison(pack, attachment, info) {
 	const images = [];
 
 	try {
-		images.push(
-			await loadImage(`${referenceRepo[info.edition.toLowerCase()]}${info.version}/${info.path}`),
-		);
+		images.push(await loadImage(`${referenceRepo[info.edition]}${info.version}/${info.path}`));
 	} catch {
 		// reference texture doesn't exist so we use the default repo
 		try {
 			images.push(
 				await loadImage(
-					`${settings.repositories.raw.default[info.edition.toLowerCase()]}${info.version}/${
-						info.path
-					}`,
+					`${settings.repositories.raw.default[info.edition]}${info.version}/${info.path}`,
 				),
 			);
 		} catch {
@@ -82,9 +78,7 @@ module.exports = async function generateComparison(pack, attachment, info) {
 	try {
 		images.push(
 			await loadImage(
-				`${settings.repositories.raw[pack][info.edition.toLowerCase()]}${info.version}/${
-					info.path
-				}`,
+				`${settings.repositories.raw[pack][info.edition]}${info.version}/${info.path}`,
 			),
 		);
 	} catch {

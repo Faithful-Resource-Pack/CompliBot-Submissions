@@ -81,7 +81,7 @@ async function downloadTexture(texture, packName, baseFolder) {
 	// add the image to all its versions and paths
 	for (const use of textureInfo.uses) {
 		const paths = textureInfo.paths.filter((path) => path.use == use.id);
-		const edition = use.edition.toLowerCase();
+		const edition = use.edition;
 		const packFolder = settings.submission.packs[packName].github[edition]?.repo;
 		if (!packFolder && DEBUG)
 			console.log(`GitHub repository not found for pack and edition: ${packName} ${edition}`);

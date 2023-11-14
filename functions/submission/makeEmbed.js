@@ -67,7 +67,7 @@ module.exports = async function makeEmbed(message, texture, attachment, params =
 			{
 				path: texture.paths[0].name,
 				version: texture.paths[0].versions.sort(minecraftSorter).reverse()[0],
-				edition: texture.uses[0].edition.toLowerCase(),
+				edition: texture.uses[0].edition,
 				animation: texture.paths.filter((p) => p.mcmeta === true)?.[0],
 			},
 		);
