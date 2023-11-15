@@ -12,7 +12,7 @@ module.exports = {
 		.addStringOption((option) =>
 			option
 				.setName("pack")
-				.setDescription("Pack to delete. This action cannot easily be undone!")
+				.setDescription("Pack to delete.")
 				.addChoices(
 					...Object.entries(settings.submission.packs).map(([key, val]) => ({
 						name: val.display_name,
@@ -28,15 +28,15 @@ module.exports = {
 		const choice = interaction.options.getString("pack", true);
 
 		const packs = structuredClone(settings.submission.packs);
-		const display = packs[choice].display_name;
+		const removedData = packs[choice];
 		delete packs[choice];
 		await writeSubmissionChanges(interaction.client, packs);
 
 		return await interaction.editReply({
 			embeds: [
 				new EmbedBuilder()
-					.setTitle(`Pack "${display}" removed from submissions!`)
-					.setDescription(`Use \`/register\` to create a new pack.`)
+					.setTitle(`Pack "${removedData.display_name}" removed from submissions!`)
+					.setDescription(`Removed data:\`\`\`json\n${JSON.stringify(removedData, null, 4)}\`\`\``)
 					.setColor(settings.colors.red),
 			],
 		});

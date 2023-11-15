@@ -44,6 +44,9 @@ module.exports = {
 
 		const packs = structuredClone(settings.submission.packs);
 
+		const oldChannelID = settings.submission.packs[choice].channels[phase];
+		const original = oldChannelID ? `<#${oldChannelID}>` : "*None*";
+
 		packs[choice].channels[phase] = interaction.channel.id;
 
 		await writeSubmissionChanges(interaction.client, packs);
@@ -53,8 +56,9 @@ module.exports = {
 				new EmbedBuilder()
 					.setTitle(`Channel registered for pack "${packs[choice].display_name}"!`)
 					.setDescription(
-						`<#${interaction.channel.id}> can now be used for ${phases[phase].toLowerCase()}.`,
+						`<#${interaction.channel.id}> has been set up for ${phases[phase].toLowerCase()}.`,
 					)
+					.addFields({ name: "Previous Channel", value: original })
 					.setColor(settings.colors.green),
 			],
 		});
