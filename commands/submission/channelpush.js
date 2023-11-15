@@ -37,7 +37,7 @@ module.exports = {
 				? Object.values(settings.submission.packs)
 				: [settings.submission.packs[choice]];
 
-		await interaction.deferReply({ ephemeral: true });
+		await interaction.deferReply();
 
 		for (const pack of packs) {
 			await sendToResults(interaction.client, pack);
@@ -48,7 +48,7 @@ module.exports = {
 			embeds: [
 				new EmbedBuilder()
 					.setTitle("Successfully pushed all textures")
-					.setColor(settings.colors.blue),
+					.setColor(settings.colors.green),
 			],
 		});
 	},
