@@ -17,7 +17,7 @@ module.exports = {
 		if (!process.env.DEVELOPERS.includes(interaction.user.id))
 			return await warnUser(interaction, strings.command.no_permission);
 
-		await interaction.deferReply({ ephemeral: true });
+		await interaction.deferReply();
 
 		const { successfulPushes, failedPushes, commit } = await saveDB(
 			interaction.client,

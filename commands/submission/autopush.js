@@ -46,13 +46,12 @@ module.exports = {
 
 		await interaction.reply({
 			embeds: [infoEmbed.setTitle("Downloading textures...")],
-			ephemeral: true,
 		});
+
 		for (const pack of packs) await downloadResults(interaction.client, pack.channels.results);
 
 		await interaction.editReply({
 			embeds: [infoEmbed.setTitle("Pushing textures...")],
-			ephemeral: true,
 		});
 
 		for (const pack of Object.keys(settings.submission.packs))
@@ -65,10 +64,9 @@ module.exports = {
 		await interaction.editReply({
 			embeds: [
 				new EmbedBuilder()
-					.setTitle("Successfully pushed all textures")
-					.setColor(settings.colors.blue),
+					.setTitle("Successfully pushed all textures!")
+					.setColor(settings.colors.green),
 			],
-			ephemeral: true,
 		});
 	},
 };
