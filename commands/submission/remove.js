@@ -1,3 +1,4 @@
+const addDeleteButton = require("@helpers/addDeleteButton");
 const { writeSubmissionChanges } = require("@helpers/submissionConfig");
 const settings = require("@resources/settings.json");
 const strings = require("@resources/strings.json");
@@ -32,13 +33,17 @@ module.exports = {
 		delete packs[choice];
 		await writeSubmissionChanges(interaction.client, packs);
 
-		return await interaction.editReply({
-			embeds: [
-				new EmbedBuilder()
-					.setTitle(`Pack "${removedData.display_name}" removed from submissions!`)
-					.setDescription(`Removed data:\`\`\`json\n${JSON.stringify(removedData, null, 4)}\`\`\``)
-					.setColor(settings.colors.red),
-			],
-		});
+		await interaction
+			.editReply({
+				embeds: [
+					new EmbedBuilder()
+						.setTitle(`Pack "${removedData.display_name}" removed from submissions!`)
+						.setDescription(
+							`Removed data:\`\`\`json\n${JSON.stringify(removedData, null, 4)}\`\`\``,
+						)
+						.setColor(settings.colors.red),
+				],
+			})
+			.then(addDeleteButton);
 	},
 };

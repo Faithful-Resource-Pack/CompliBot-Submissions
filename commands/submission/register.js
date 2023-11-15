@@ -3,6 +3,7 @@ const strings = require("@resources/strings.json");
 const { createPackID, writeSubmissionChanges } = require("@helpers/submissionConfig");
 
 const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require("discord.js");
+const addDeleteButton = require("@helpers/addDeleteButton");
 
 /** @type {import("@helpers/jsdoc").Command} */
 module.exports = {
@@ -19,6 +20,7 @@ module.exports = {
 		const choice = interaction.options.getString("pack", true);
 		const packs = structuredClone(settings.submission.packs);
 		const id = createPackID(choice);
+
 		packs[id] = {
 			display_name: choice,
 			channels: {},
@@ -27,13 +29,15 @@ module.exports = {
 
 		await writeSubmissionChanges(interaction.client, packs);
 
-		return await interaction.editReply({
-			embeds: [
-				new EmbedBuilder()
-					.setTitle(`New pack "${choice}" registered!`)
-					.setDescription(`Pack ID configured as \`${id}\`.`)
-					.setColor(settings.colors.green),
-			],
-		});
+		return await interaction
+			.editReply({
+				embeds: [
+					new EmbedBuilder()
+						.setTitle(`New pack "${choice}" registered!`)
+						.setDescription(`Pack ID configured as \`${id}\`.`)
+						.setColor(settings.colors.green),
+				],
+			})
+			.then(addDeleteButton);
 	},
 };

@@ -1,3 +1,4 @@
+const addDeleteButton = require("@helpers/addDeleteButton");
 const { writeSubmissionChanges } = require("@helpers/submissionConfig");
 const settings = require("@resources/settings.json");
 const strings = require("@resources/strings.json");
@@ -51,16 +52,18 @@ module.exports = {
 
 		await writeSubmissionChanges(interaction.client, packs);
 
-		await interaction.editReply({
-			embeds: [
-				new EmbedBuilder()
-					.setTitle(`Channel registered for pack "${packs[choice].display_name}"!`)
-					.setDescription(
-						`<#${interaction.channel.id}> has been set up for ${phases[phase].toLowerCase()}.`,
-					)
-					.addFields({ name: "Previous Channel", value: original })
-					.setColor(settings.colors.green),
-			],
-		});
+		await interaction
+			.editReply({
+				embeds: [
+					new EmbedBuilder()
+						.setTitle(`Channel registered for pack "${packs[choice].display_name}"!`)
+						.setDescription(
+							`<#${interaction.channel.id}> has been set up for ${phases[phase].toLowerCase()}.`,
+						)
+						.addFields({ name: "Previous Channel", value: original })
+						.setColor(settings.colors.green),
+				],
+			})
+			.then(addDeleteButton);
 	},
 };
