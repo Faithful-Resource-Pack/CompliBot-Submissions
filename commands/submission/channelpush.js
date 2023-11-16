@@ -47,7 +47,7 @@ module.exports = {
 		await interaction.editReply({
 			embeds: [
 				new EmbedBuilder()
-					.setTitle("Successfully pushed all textures")
+					.setTitle("Successfully sent all submissions!")
 					.setColor(settings.colors.green),
 			],
 		});
