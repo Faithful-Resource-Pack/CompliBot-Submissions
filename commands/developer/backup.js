@@ -43,7 +43,7 @@ module.exports = {
 					inline: true,
 				},
 			)
-			.setColor(commit ? settings.colors.blue : settings.colors.red);
+			.setColor(commit ? settings.colors.green : settings.colors.red);
 
 		if (!commit || failedPushes.length)
 			embed.setDescription("*Check developer logs for potential failure reasons!*");

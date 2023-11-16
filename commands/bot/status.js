@@ -62,9 +62,8 @@ module.exports = {
 			embeds: [
 				new EmbedBuilder()
 					.setTitle("Bot status successfully changed!")
-					.setColor(settings.colors.blue),
+					.setColor(settings.colors.green),
 			],
-			ephemeral: true,
 		});
 	},
 };
