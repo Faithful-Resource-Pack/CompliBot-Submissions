@@ -47,7 +47,7 @@ module.exports = {
 		await interaction.editReply({
 			embeds: [
 				new EmbedBuilder()
-					.setTitle("Successfully sent all messages!")
+					.setTitle("Successfully sent all submissions!")
 					.setColor(settings.colors.green),
 			],
 		});
