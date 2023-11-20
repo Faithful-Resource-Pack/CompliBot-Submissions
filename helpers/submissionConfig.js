@@ -15,9 +15,10 @@ const createPackID = (pack) =>
 	pack
 		.toLowerCase()
 		.trim()
-		.replace(/jappa/g, "")
-		.replace(/programmer art/g, "progart")
-		.replace(/ /g, "_");
+		.replace(/ /g, "_")
+		.replace(/\W/g, "") // remove special characters
+		.replace(/jappa/g, "") // backwards compatibility
+		.replace(/programmer art/g, "progart");
 
 /**
  * Write submission changes either locally or to the API

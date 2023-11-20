@@ -31,7 +31,6 @@ module.exports = {
 		const packs = structuredClone(settings.submission.packs);
 		const removedData = packs[choice];
 		delete packs[choice];
-		await writeSubmissionChanges(interaction.client, packs);
 
 		await interaction
 			.editReply({
@@ -45,5 +44,7 @@ module.exports = {
 				],
 			})
 			.then(addDeleteButton);
+
+		await writeSubmissionChanges(interaction.client, packs);
 	},
 };

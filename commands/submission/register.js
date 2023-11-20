@@ -25,11 +25,10 @@ module.exports = {
 			display_name: choice,
 			channels: {},
 			github: {},
+			time_to_results: 2, // defaults
 		};
 
-		await writeSubmissionChanges(interaction.client, packs);
-
-		return await interaction
+		await interaction
 			.editReply({
 				embeds: [
 					new EmbedBuilder()
@@ -39,5 +38,7 @@ module.exports = {
 				],
 			})
 			.then(addDeleteButton);
+
+		await writeSubmissionChanges(interaction.client, packs);
 	},
 };

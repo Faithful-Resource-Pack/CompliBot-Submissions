@@ -5,21 +5,15 @@ const strings = require("@resources/strings.json");
 
 const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require("discord.js");
 
-const phases = {
-	submit: "Texture Submission",
-	council: "Council Voting",
-	results: "Posting Results",
-};
-
 /** @type {import("@helpers/jsdoc").Command} */
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName("setchannel")
+		.setName("votetime")
 		.setDescription(strings.command.description.setchannel)
 		.addStringOption((option) =>
 			option
 				.setName("pack")
-				.setDescription("Which pack to set a channel as.")
+				.setDescription("Which pack to set the voting time for.")
 				.addChoices(
 					...Object.entries(settings.submission.packs).map(([key, val]) => ({
 						name: val.display_name,
@@ -31,8 +25,18 @@ module.exports = {
 		.addStringOption((option) =>
 			option
 				.setName("phase")
-				.setDescription("Which purpose the channel should serve.")
-				.addChoices(...Object.entries(phases).map(([key, val]) => ({ name: val, value: key })))
+				.setDescription("Which phase the new vote time should be for.")
+				.addChoices(
+					{ name: "Community Voting", value: "results" },
+					{ name: "Council Voting", value: "council" },
+				)
+				.setRequired(true),
+		)
+		.addNumberOption((option) =>
+			option
+				.setName("time")
+				.setDescription("Time in days for the specified voting period to last.")
+				.setMinValue(1)
 				.setRequired(true),
 		)
 		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
@@ -42,26 +46,29 @@ module.exports = {
 
 		const choice = interaction.options.getString("pack", true);
 		const phase = interaction.options.getString("phase", true);
+		const time = interaction.options.getNumber("time", true);
 
 		const packs = structuredClone(settings.submission.packs);
 
-		const oldChannelID = settings.submission.packs[choice].channels[phase];
-		const original = oldChannelID ? `<#${oldChannelID}>` : "*None*";
+		const oldDelay = packs[choice][`time_to_${phase}`];
+		const original = oldDelay ? `${oldDelay} days` : "*None*";
 
-		packs[choice].channels[phase] = interaction.channel.id;
+		packs[choice][`time_to_${phase}`] = time;
 
-		// if you're setting a council channel council should be enabled (obviously)
+		// if you're setting a council phase council should be enabled (obviously)
 		if (phase == "council") packs[choice].council_enabled = true;
 
 		await interaction
 			.editReply({
 				embeds: [
 					new EmbedBuilder()
-						.setTitle(`Channel registered for pack "${packs[choice].display_name}"!`)
-						.setDescription(
-							`<#${interaction.channel.id}> has been set up for ${phases[phase].toLowerCase()}.`,
+						.setTitle(
+							`Time to ${phase} has been changed to ${time} days for pack "${packs[choice].display_name}"!`,
 						)
-						.addFields({ name: "Previous Channel", value: original })
+						.setDescription(
+							`*Note: If council voting is not enabled, the community voting time will serve as the total time to results.*`,
+						)
+						.addFields({ name: "Previous Delay", value: original })
 						.setColor(settings.colors.green),
 				],
 			})
