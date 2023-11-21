@@ -68,7 +68,13 @@ module.exports = async function submitTexture(message) {
 		}
 
 		/** @type {import("@helpers/jsdoc").Texture[]} */
-		let results = (await axios.get(`${process.env.API_URL}textures/${search}/all`)).data;
+		let results = [];
+		try {
+			results = (await axios.get(`${process.env.API_URL}textures/${search}/all`)).data;
+		} catch {
+			await cancelSubmission(message, strings.submission.does_not_exist + "\n" + search);
+			continue;
+		}
 
 		// if using texture id
 		if (!Array.isArray(results)) results = [results];
