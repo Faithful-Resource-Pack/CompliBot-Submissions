@@ -34,6 +34,7 @@
  * @property {Use[]} uses
  * @property {Path[]} paths paths and their attached uses
  * @property {Contribution[]} [contributions]
+ * @property {import("@functions/images/animate").MCMETA} [mcmeta]
  *
  * @typedef User
  * @property {string} id
