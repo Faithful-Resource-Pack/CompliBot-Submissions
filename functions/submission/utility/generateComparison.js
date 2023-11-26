@@ -1,49 +1,40 @@
-const settings = require("@resources/settings.json");
-const stitch = require("@images/stitch");
 const { magnifyToAttachment, magnify } = require("@images/magnify");
-const { loadImage } = require("@napi-rs/canvas");
-const axios = require("axios").default;
-const minecraftSorter = require("@helpers/minecraftSorter");
 const animate = require("@images/animate");
+const stitch = require("@images/stitch");
+
+const { loadImage } = require("@napi-rs/canvas");
 const { AttachmentBuilder } = require("discord.js");
 
 /**
- * @typedef TextureInfo
- * @property {string} path
- * @property {string} version
- * @property {string} edition
- * @property {import("@helpers/jsdoc").Path} [animation]
- */
-
-/**
  * @typedef ReturnParams
- * @property {AttachmentBuilder} comparisonImage
- * @property {boolean} hasReference
- * @property {import("@images/animate").MCMETA} [mcmeta]
+ * @property {AttachmentBuilder} comparisonImage image for embed
+ * @property {boolean} hasReference what to display in the footer
+ * @property {import("@images/animate").MCMETA} [mcmeta] display mcmeta if applicable
  */
 
 /**
  * Generate a submission comparison for a given texture, pack, and image
  * @author Evorp
- * @param {string} pack pack to compare against (e.g. faithful_32x, classic_faithful_64x)
+ * @param {import("@helpers/jsdoc").Pack} pack pack to compare against (e.g. faithful_32x, classic_faithful_64x)
  * @param {import("discord.js").Attachment} attachment raw texture being submitted
- * @param {TextureInfo} info used for searching for references/current
+ * @param {import("@helpers/jsdoc").Texture} texture texture data
  * @returns {Promise<ReturnParams>} compared texture and info
  */
-module.exports = async function generateComparison(pack, attachment, info) {
-	let referenceRepo;
+module.exports = async function generateComparison(pack, attachment, texture) {
+	const baseURL = `${process.env.API_URL}textures/${texture.id}/url/`;
+	let reference;
 	switch (pack) {
 		case "faithful_64x":
-			referenceRepo = settings.repositories.raw.faithful_32x;
+			reference = "faithful_32x";
 			break;
 		case "classic_faithful_64x":
-			referenceRepo = settings.repositories.raw.classic_faithful_32x;
+			reference = "classic_faithful_32x";
 			break;
 		case "classic_faithful_32x_progart":
-			referenceRepo = settings.repositories.raw.progart;
+			reference = "progart";
 			break;
 		default:
-			referenceRepo = settings.repositories.raw.default;
+			reference = "default";
 			break;
 	}
 
@@ -58,15 +49,11 @@ module.exports = async function generateComparison(pack, attachment, info) {
 	const images = [];
 
 	try {
-		images.push(await loadImage(`${referenceRepo[info.edition]}${info.version}/${info.path}`));
+		images.push(await loadImage(`${baseURL}${reference}/latest`));
 	} catch {
 		// reference texture doesn't exist so we use the default repo
 		try {
-			images.push(
-				await loadImage(
-					`${settings.repositories.raw.default[info.edition]}${info.version}/${info.path}`,
-				),
-			);
+			images.push(await loadImage(`${baseURL}default/latest`));
 		} catch {
 			// default texture doesn't exist either
 		}
@@ -76,66 +63,46 @@ module.exports = async function generateComparison(pack, attachment, info) {
 	images.push(newImage);
 
 	try {
-		images.push(
-			await loadImage(
-				`${settings.repositories.raw[pack][info.edition]}${info.version}/${info.path}`,
-			),
-		);
+		images.push(await loadImage(`${baseURL}${pack}/latest`));
 	} catch {
 		// texture being submitted is a new texture, so there's nothing to compare against
 	}
 
 	// return early if the reference texture couldn't be fetched
 	if (images.length == 1) {
-		const img = await loadImage(images[0]);
 		return {
-			comparisonImage: await magnifyToAttachment(img, "magnified.png"),
+			comparisonImage: await magnifyToAttachment(images[0], "magnified.png"),
 			hasReference: false,
 		};
 	}
 
 	const [stitched, totalGaps] = await stitch(images);
 
-	if (info.animation) {
-		/** @type {import("@images/animate").MCMETA} */
-		let mcmeta = { animation: {} };
-		const path = `${info.animation.versions.sort(minecraftSorter).reverse()[0]}/${
-			info.animation.name
-		}.mcmeta`;
-		try {
-			// try to get mcmeta from repo (can be different for height/width properties)
-			mcmeta = (await axios.get(`${settings.repositories.raw[pack].java}${path}`)).data;
-		} catch {
-			// try getting it from the default repo (not in pack yet)
-			try {
-				mcmeta = (await axios.get(`${settings.repositories.raw.default.java}${path}`)).data;
-			} catch {
-				// mcmeta doesn't exist so we assume default settings
-			}
-		}
-
-		// otherwise ugly width and height properties are always shown
-		const displayedMcmeta = structuredClone(mcmeta);
-
-		const { magnified, width, factor } = await magnify(stitched, true);
-
-		mcmeta.animation.width = mcmeta.animation.width
-			? (mcmeta.animation.width * images.length + totalGaps) * factor
-			: width;
-		mcmeta.animation.height = mcmeta.animation.height
-			? mcmeta.animation.height * factor
-			: (width - totalGaps * factor) / images.length; // get height of a single frame
-		const animated = await animate(magnified, mcmeta);
-
+	if (!Object.keys(texture.mcmeta).length)
 		return {
-			comparisonImage: new AttachmentBuilder(animated, { name: "compared.gif" }),
+			comparisonImage: await magnifyToAttachment(stitched, "compared.png"),
 			hasReference: images.length == 3,
-			mcmeta: displayedMcmeta,
 		};
-	}
+
+	const { mcmeta } = texture;
+
+	// otherwise ugly width and height properties are always shown
+	const displayedMcmeta = structuredClone(mcmeta);
+
+	const { magnified, width, factor } = await magnify(stitched, true);
+
+	mcmeta.animation.width = mcmeta.animation.width
+		? (mcmeta.animation.width * images.length + totalGaps) * factor
+		: width;
+	mcmeta.animation.height = mcmeta.animation.height
+		? mcmeta.animation.height * factor
+		: (width - totalGaps * factor) / images.length; // get height of a single frame
+
+	const animated = await animate(magnified, mcmeta);
 
 	return {
-		comparisonImage: await magnifyToAttachment(stitched, "compared.png"),
+		comparisonImage: new AttachmentBuilder(animated, { name: "compared.gif" }),
 		hasReference: images.length == 3,
+		mcmeta: displayedMcmeta,
 	};
 };

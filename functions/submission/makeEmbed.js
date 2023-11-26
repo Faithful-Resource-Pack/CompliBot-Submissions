@@ -64,12 +64,7 @@ module.exports = async function makeEmbed(message, texture, attachment, params =
 		const { comparisonImage, hasReference, mcmeta } = await generateComparison(
 			packName,
 			attachment,
-			{
-				path: texture.paths[0].name,
-				version: texture.paths[0].versions.sort(minecraftSorter).reverse()[0],
-				edition: texture.uses[0].edition,
-				animation: texture.paths.filter((p) => p.mcmeta === true)?.[0],
-			},
+			texture,
 		);
 
 		// send to #submission-spam for permanent urls

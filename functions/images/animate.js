@@ -100,6 +100,7 @@ module.exports = async function animate(origin, mcmeta) {
 					mcmeta.animation.width,
 					mcmeta.animation.height, // dWidth, dHeight
 				);
+
 				encoder.addFrame(ctx);
 			}
 		}
