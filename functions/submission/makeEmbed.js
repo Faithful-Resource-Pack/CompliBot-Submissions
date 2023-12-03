@@ -99,12 +99,7 @@ module.exports = async function makeEmbed(message, texture, attachment, params =
 	}
 
 	if (params.description) embed.setDescription(params.description);
-	if (params.authors.length > 1) {
-		// plural authors
-		const authorField = embed.data.fields[0];
-		authorField.name += "s";
-		embed.spliceFields(0, 1, authorField);
-	}
+	if (params.authors.length > 1) embed.data.fields[0].name += "s";
 
 	const msg = await message.channel.send({
 		embeds: [embed],
