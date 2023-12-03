@@ -32,7 +32,7 @@ module.exports = async function choiceEmbed(message, choices) {
 		const options = [];
 		for (let i = 0; i < emojis.length; ++i) {
 			if (choices[0] !== undefined) {
-				let choice = choices.shift();
+				const choice = choices.shift();
 				choice.emoji = emojis[i % emojis.length];
 				options.push(choice);
 			}
