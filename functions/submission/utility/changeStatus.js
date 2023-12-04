@@ -10,12 +10,8 @@ const { EmbedBuilder } = require("discord.js");
  */
 async function changeStatus(message, status, color, components) {
 	const embed = EmbedBuilder.from(message.embeds[0]);
-
 	// fields[1] is always the status field in submissions
-	const field = message.embeds[0].fields[1];
-	field.value = status;
-
-	embed.spliceFields(1, 1, field);
+	embed.data.fields[1].value = status;
 
 	if (color) embed.setColor(color);
 	if (!components) components = [...message.components];
