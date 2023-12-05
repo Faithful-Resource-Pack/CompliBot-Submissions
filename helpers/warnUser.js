@@ -20,8 +20,8 @@ module.exports = async function warnUser(interaction, text = strings.bot.error, 
 		.setDescription(text);
 
 	if (interaction instanceof Message)
-		return await interaction.reply({ embeds: [embed] }).then(addDeleteButton);
+		return interaction.reply({ embeds: [embed] }).then(addDeleteButton);
 
-	if (deferred) return await interaction.editReply({ embeds: [embed], ephemeral: true });
-	return await interaction.reply({ embeds: [embed], ephemeral: true, fetchReply: true });
+	if (deferred) return interaction.editReply({ embeds: [embed], ephemeral: true });
+	return interaction.reply({ embeds: [embed], ephemeral: true, fetchReply: true });
 };

@@ -82,7 +82,7 @@ module.exports = async function choiceEmbed(message, choices) {
 		const texture = (await axios.get(`${process.env.API_URL}textures/${id}/all`)).data;
 		if (choiceMessage.deletable) await choiceMessage.delete();
 
-		return await makeEmbed(message, texture, attachments[index], param);
+		return makeEmbed(message, texture, attachments[index], param);
 	});
 
 	collector.once("end", async () => {

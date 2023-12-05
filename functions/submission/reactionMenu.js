@@ -61,7 +61,7 @@ module.exports = async function reactionMenu(openReaction, user) {
 		(reactor.id === submissionAuthorID || hasPermission(member, "administrator")) &&
 		message.deletable
 	)
-		return await message.delete();
+		return message.delete();
 
 	// already confirmed it's the same user reacting
 	if (hasPermission(member, "any")) {

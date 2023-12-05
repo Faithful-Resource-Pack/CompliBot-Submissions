@@ -39,7 +39,7 @@ module.exports = async function palette(interaction, origin) {
 	const input = await loadImage(origin);
 
 	if (input.width * input.height > 262144)
-		return await interaction.reply({
+		return interaction.reply({
 			content: strings.command.image.input_too_big,
 			ephemeral: true,
 		});
@@ -181,7 +181,7 @@ module.exports = async function palette(interaction, origin) {
 		name: "colors.png",
 	});
 
-	return await interaction.reply({
+	return interaction.reply({
 		embeds: [embed],
 		files: [colorImageAttachment],
 		ephemeral: true,

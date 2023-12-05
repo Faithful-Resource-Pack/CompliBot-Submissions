@@ -45,7 +45,7 @@ async function changeOriginalStatus(message, status, color, components) {
 		const channel = await message.client.channels.fetch(channelID);
 		const originalMessage = await channel.messages.fetch(messageID);
 
-		return await changeStatus(originalMessage, status, color, components);
+		return changeStatus(originalMessage, status, color, components);
 	} catch {
 		// message deleted or something
 	}

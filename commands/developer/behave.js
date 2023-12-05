@@ -14,20 +14,20 @@ module.exports = {
 		.setDMPermission(false),
 	async execute(interaction) {
 		if (!process.env.DEVELOPERS.includes(interaction.user.id))
-			return await interaction.reply({ content: "lol no" });
+			return interaction.reply({ content: "lol no" });
 
 		const msgID = interaction.options.getString("message");
 
-		if (!msgID) return await interaction.reply({ content: strings.command.behave });
+		if (!msgID) return interaction.reply({ content: strings.command.behave });
 
 		try {
 			const message = await interaction.channel.messages.fetch(msgID);
 			const msg = await interaction.reply({ content: "** **", fetchReply: true });
 			msg.delete();
 
-			return await message.reply({ content: strings.command.behave });
+			return message.reply({ content: strings.command.behave });
 		} catch {
-			return await interaction.reply({ content: strings.command.behave });
+			return interaction.reply({ content: strings.command.behave });
 		}
 	},
 };

@@ -45,7 +45,7 @@ module.exports = {
 				msgEmbed = await interaction.followUp({ embeds: [embed], fetchReply: true });
 			}
 
-			return await addDeleteButton(msgEmbed);
+			return addDeleteButton(msgEmbed);
 		}
 	},
 };

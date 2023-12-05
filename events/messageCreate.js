@@ -26,7 +26,7 @@ module.exports = {
 		 */
 		if (settings.submission.autoreact.includes(message.channel.id)) {
 			if (!message.attachments.size)
-				return await cancelSubmission(message, strings.submission.image_not_attached);
+				return cancelSubmission(message, strings.submission.image_not_attached);
 
 			await message.react(settings.emojis.upvote);
 			await message.react(settings.emojis.downvote);

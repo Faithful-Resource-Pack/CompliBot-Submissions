@@ -56,7 +56,7 @@ async function downloadResults(client, channelResultID) {
 	}
 
 	// post all contributions at once (saves on requests)
-	if (allContribution.length) return await postContributions(...allContribution);
+	if (allContribution.length) return postContributions(...allContribution);
 }
 
 /**

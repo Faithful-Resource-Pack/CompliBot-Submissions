@@ -15,7 +15,7 @@ module.exports = {
 		.setDMPermission(false),
 	async execute(interaction) {
 		if (!process.env.DEVELOPERS.includes(interaction.user.id))
-			return await warnUser(interaction, strings.command.no_permission);
+			return warnUser(interaction, strings.command.no_permission);
 
 		await interaction.deferReply();
 
@@ -48,7 +48,7 @@ module.exports = {
 		if (!commit || failedPushes.length)
 			embed.setDescription("*Check developer logs for potential failure reasons!*");
 
-		return await interaction.editReply({
+		return interaction.editReply({
 			embeds: [embed],
 		});
 	},

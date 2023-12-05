@@ -10,9 +10,9 @@ module.exports = {
 	async execute(interaction) {
 		switch (interaction.customId) {
 			case "bugTicket":
-				return await feedbackBug(interaction, "bug");
+				return feedbackBug(interaction, "bug");
 			case "suggestionTicket":
-				return await feedbackSuggestion(interaction, "suggestion");
+				return feedbackSuggestion(interaction, "suggestion");
 		}
 	},
 };

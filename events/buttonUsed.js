@@ -25,7 +25,7 @@ module.exports = {
 
 		switch (interaction.customId) {
 			case "magnifyButton":
-				return await interaction.reply({
+				return interaction.reply({
 					files: [await magnifyToAttachment(image)],
 					ephemeral: true,
 				});
@@ -33,7 +33,7 @@ module.exports = {
 				// tile + magnify
 				const tileBuffer = await tile(interaction, image);
 				if (!tileBuffer) return;
-				return await interaction.reply({
+				return interaction.reply({
 					files: [await magnifyToAttachment(tileBuffer)],
 					ephemeral: true,
 				});
@@ -53,13 +53,13 @@ module.exports = {
 
 				const diff = await difference(currentUrl, proposedUrl);
 				if (!diff || !proposedUrl) {
-					return await warnUser(
+					return warnUser(
 						interaction,
 						"There is no existing texture to find the difference of!",
 						true,
 					);
 				}
-				return await interaction.editReply({
+				return interaction.editReply({
 					embeds: [
 						new EmbedBuilder()
 							.setTitle("Image Difference")
@@ -92,16 +92,16 @@ module.exports = {
 						interaction.member.permissions.has(PermissionFlagsBits.ManageMessages) ||
 						original.id == interaction.user.id)
 				)
-					return await message.delete();
+					return message.delete();
 
 				const user = original?.id ? `<@${original.id}>` : "another user";
 
-				return await interaction.reply({
+				return interaction.reply({
 					content: `This interaction is reserved for ${user}!`,
 					ephemeral: true,
 				});
 			default:
-				return await warnUser(
+				return warnUser(
 					interaction,
 					strings.bot.missing_interaction.replace("%INTERACTION%", "button"),
 				);
