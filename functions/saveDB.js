@@ -23,7 +23,7 @@ module.exports = async function saveDB(client, commitMessage = "Daily Backup", p
 	if (!params.repo) params.repo = settings.backup.git.repo;
 	if (!params.branch) params.branch = settings.backup.git.branch;
 
-	const folderPath = join(process.cwd(), "json", settings.backup.git.folder);
+	const folderPath = join(process.cwd(), "backups", settings.backup.git.folder);
 	mkdirSync(folderPath, { recursive: true });
 
 	const successfulPushes = [];
@@ -62,7 +62,7 @@ module.exports = async function saveDB(client, commitMessage = "Daily Backup", p
 		params.repo,
 		params.branch,
 		commitMessage,
-		"./json/",
+		"./backups/",
 	).catch((err) => {
 		if (DEBUG) console.log(`Branch ${params.branch} doesn't exist for repository ${params.repo}!`);
 		if (!DEV)

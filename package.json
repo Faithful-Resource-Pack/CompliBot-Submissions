@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "start": "node --use_strict --trace-warnings index.js",
-        "dev": "nodemon --ignore resources/ --ignore json/",
+        "dev": "nodemon --ignore resources/ --ignore backups/",
         "prettier": "prettier \"{*.js,!(node*)**/*.js}\" --config .prettierrc --write"
     },
     "devDependencies": {
