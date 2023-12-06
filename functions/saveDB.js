@@ -23,7 +23,7 @@ module.exports = async function saveDB(client, commitMessage = "Daily Backup", p
 	if (!params.repo) params.repo = settings.backup.git.repo;
 	if (!params.branch) params.branch = settings.backup.git.branch;
 
-	const folderPath = join(process.cwd(), "json", "database");
+	const folderPath = join(process.cwd(), "json", settings.backup.git.folder);
 	mkdirSync(folderPath, { recursive: true });
 
 	const successfulPushes = [];
