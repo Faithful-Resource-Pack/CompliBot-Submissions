@@ -11,7 +11,7 @@ const DEV = process.env.DEV.toLowerCase() == "true";
  * @param {"Unhandled Rejection" | "Uncaught Exception"} type type of error
  */
 module.exports = function handleErrors(client, error, type) {
-	if (DEV) return console.trace(error?.stack ?? error);
+	if (DEV) return console.error(error?.stack ?? error);
 
 	let eprotoError = false;
 	let description = error.stack;
