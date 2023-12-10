@@ -206,7 +206,7 @@ function rgbToHex(r, g, b) {
  * @param {number} r The red color value
  * @param {number} g The green color value
  * @param {number} b The blue color value
- * @return {number[]} The HSL representation
+ * @returns {number[]} The HSL representation
  */
 function rgbToHSL(r, g, b) {
 	(r /= 255), (g /= 255), (b /= 255);

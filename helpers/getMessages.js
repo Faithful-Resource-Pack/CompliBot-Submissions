@@ -28,7 +28,7 @@ module.exports = async function getMessages(client, channelID, filter) {
 		const out = [...messages.values()].filter(filter);
 
 		// nothing met criteria
-		if (!out.length) return fetchedMessages.reverse(); // upload from oldest -> newest
+		if (!out.length) return fetchedMessages.reverse(); // return from oldest -> newest
 
 		fetchedMessages.push(...out);
 

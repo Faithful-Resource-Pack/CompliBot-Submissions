@@ -90,7 +90,7 @@ module.exports = async function submitTexture(message) {
 		if (DEBUG) console.log(`Generating choice embed for texture search: ${search}`);
 		ongoingMenu = true;
 		const mappedResults = results.map((result) => {
-			const version = result.paths[0].versions.sort(minecraftSorter).reverse()[0];
+			const version = result.paths[0].versions.sort(minecraftSorter).at(-1);
 			return {
 				label: `[#${result.id}] (${version}) ${result.name}`,
 				description: result.paths[0].name,
