@@ -19,6 +19,10 @@ module.exports = async function reactionMenu(openReaction, user) {
 	];
 
 	const message = await openReaction.message.fetch();
+
+	// not a submission
+	if (!message.author.bot) return;
+
 	const member = message.guild.members.cache.get(user.id);
 
 	// first author in the author field is always the person who submitted
