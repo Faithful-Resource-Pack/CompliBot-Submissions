@@ -125,7 +125,7 @@ function addPathsToEmbed(texture) {
 			.forEach((p) => {
 				const versions = p.versions.sort(minecraftSorter);
 				const versionRange = `\`[${
-					versions.length > 1 ? `${versions[0]} — ${versions[versions.length - 1]}` : versions[0]
+					versions.length > 1 ? `${versions[0]} – ${versions[versions.length - 1]}` : versions[0]
 				}]\``;
 				const formatted = `${versionRange} ${p.name}`;
 				if (tmp[use.edition]) tmp[use.edition].push(formatted);
