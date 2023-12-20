@@ -73,14 +73,16 @@ module.exports = async function reactionMenu(openReaction, user) {
 			// flush votes and reaction menu
 			case settings.emojis.instapass:
 				message.reactions.removeAll();
-				return instapass(message, member);
+				instapass(message, member);
+				break;
 			case settings.emojis.invalid:
 				message.reactions.removeAll();
-				return invalidate(message, member);
+				invalidate(message, member);
+				break;
 		}
 	}
 
-	// nothing happened
+	// reset after reaction chosen if possible
 	return closeTray(message, trayReactions);
 };
 
@@ -98,14 +100,16 @@ function canOpenTray(message, openReaction, member, submissionAuthorID) {
 	if (openReaction.emoji.id !== settings.emojis.see_more || !message.embeds[0]?.fields?.length)
 		return false;
 
-	// user doesn't have permission or the submission isn't pending
+	// user doesn't have permission or the submission already finished
 	if (
 		(!hasPermission(member, "any") && submissionAuthorID !== member.id) ||
-		!message.embeds[0].fields[1].value.includes(settings.emojis.pending)
+		!message.embeds[0].fields[1].value.includes(settings.emojis.pending) ||
+		!message.embeds[0].fields[1].value.includes(settings.emojis.invalid)
 	) {
 		openReaction.users.remove(member.id).catch((err) => {
 			if (DEBUG) console.error(err);
 		});
+
 		return false;
 	}
 
@@ -130,7 +134,10 @@ function loadReactions(message, member, allReactions) {
 		allReactions = allReactions.filter((emoji) => emoji !== settings.emojis.delete);
 
 	// remove instapass/invalid if just the author is reacting
-	if (!hasPermission(member, "any"))
+	if (
+		!hasPermission(member, "any") ||
+		!message.embeds[0].fields[1].value.includes(settings.emojis.pending)
+	)
 		allReactions = allReactions.filter(
 			(emoji) => emoji !== settings.emojis.instapass && emoji !== settings.emojis.invalid,
 		);
