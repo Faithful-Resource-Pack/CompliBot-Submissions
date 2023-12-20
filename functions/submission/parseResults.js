@@ -34,7 +34,7 @@ async function downloadResults(client, channelResultID) {
 			messageDate.getDate() == delayedDate.getDate() &&
 			messageDate.getMonth() == delayedDate.getMonth() &&
 			messageDate.getFullYear() == delayedDate.getFullYear() &&
-			// is an accepted submission
+			// is a submission
 			message.embeds?.[0]?.fields?.[1]?.value?.includes(settings.emojis.upvote)
 		);
 	});
