@@ -45,7 +45,7 @@ async function deleteCommands(client, guildID) {
 		guildID == "global"
 			? await rest.get(Routes.applicationCommands(client.user.id))
 			: // get all command ids
-			  await rest.get(Routes.applicationGuildCommands(client.user.id, guildID));
+				await rest.get(Routes.applicationGuildCommands(client.user.id, guildID));
 	for (const command of data) {
 		const deleteUrl =
 			guildID == "global"
