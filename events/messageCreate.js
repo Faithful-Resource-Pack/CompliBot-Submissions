@@ -15,11 +15,12 @@ module.exports = {
 		/**
 		 * TEXTURE SUBMISSION
 		 */
-		const submissionChannels = Object.values(settings.submission.packs).map(
-			(pack) => pack.channels.submit,
-		);
-
-		if (submissionChannels.includes(message.channel.id)) return submitTexture(message);
+		if (
+			Object.values(settings.submission.packs).some(
+				(pack) => pack.channels.submit == message.channel.id,
+			)
+		)
+			return submitTexture(message);
 
 		/**
 		 * BASIC AUTOREACT
