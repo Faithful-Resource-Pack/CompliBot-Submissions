@@ -2,7 +2,7 @@ const settings = require("@resources/settings.json");
 
 const DEBUG = process.env.DEBUG.toLowerCase() == "true";
 
-const { changeStatus, changeOriginalStatus } = require("@submission/utility/changeStatus");
+const changeStatus = require("@submission/utility/changeStatus");
 
 /**
  * Invalidate a given texture embed
@@ -14,6 +14,5 @@ module.exports = async function invalidate(message, member) {
 	if (DEBUG) console.log(`Texture invalidated: ${message.embeds[0].title}`);
 	const status = `<:invalid:${settings.emojis.invalid}> Invalidated by <@${member.id}>`;
 
-	await changeStatus(message, status, settings.colors.red);
-	await changeOriginalStatus(message, status, settings.colors.red);
+	await changeStatus(message, { status, color: settings.colors.red, editOriginal: true });
 };

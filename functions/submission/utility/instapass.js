@@ -12,7 +12,7 @@ const {
 } = require("@submission/parseResults");
 const pushTextures = require("@submission/pushTextures");
 const getPackByChannel = require("@submission/utility/getPackByChannel");
-const { changeStatus, changeOriginalStatus } = require("@submission/utility/changeStatus");
+const changeStatus = require("@submission/utility/changeStatus");
 
 const { imageButtons } = require("@helpers/interactions");
 const formattedDate = require("@helpers/formattedDate");
@@ -30,8 +30,12 @@ module.exports = async function instapass(message, member) {
 	const channelOutID = settings.submission.packs[packName].channels.results;
 	const status = `<:instapass:${settings.emojis.instapass}> Instapassed by <@${member.id}>`;
 
-	await changeStatus(message, status, settings.colors.yellow, [imageButtons]);
-	await changeOriginalStatus(message, status, settings.colors.yellow, [imageButtons]);
+	await changeStatus(message, {
+		status,
+		color: settings.colors.yellow,
+		components: [imageButtons],
+		editOriginal: true,
+	});
 
 	/** @type {import("discord.js").TextChannel} */
 	const channelOut = await message.client.channels.fetch(channelOutID);

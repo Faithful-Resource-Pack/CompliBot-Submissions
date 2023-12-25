@@ -1,7 +1,7 @@
 const settings = require("@resources/settings.json");
 
 const retrieveSubmission = require("@submission/utility/retrieveSubmission");
-const { changeStatus } = require("@submission/utility/changeStatus");
+const changeStatus = require("@submission/utility/changeStatus");
 const { imageButtons, submissionReactions } = require("@helpers/interactions");
 
 const { EmbedBuilder } = require("discord.js");
@@ -41,20 +41,18 @@ async function sendToCouncil(client, pack) {
 
 		for (const emoji of submissionReactions) await sentMessage.react(emoji);
 
-		changeStatus(
-			message.message,
-			`<:upvote:${settings.emojis.upvote}> Sent to council!`,
-			settings.colors.green,
-		);
+		changeStatus(message.message, {
+			status: `<:upvote:${settings.emojis.upvote}> Sent to council!`,
+			color: settings.colors.green,
+		});
 	}
 
 	for (const message of messagesDownvoted) {
 		// not sent anywhere, returned early instead
-		changeStatus(
-			message.message,
-			`<:downvote:${settings.emojis.downvote}> Not enough upvotes!`,
-			settings.colors.red,
-		);
+		changeStatus(message.message, {
+			status: `<:downvote:${settings.emojis.downvote}> Not enough upvotes!`,
+			color: settings.colors.red,
+		});
 	}
 }
 
@@ -95,54 +93,54 @@ async function sendToResults(client, pack) {
 
 		await channelOut.send({ embeds: [resultEmbed], components: [imageButtons] });
 
-		changeStatus(
-			message.message,
-			`<:upvote:${settings.emojis.upvote}> Sent to results!`,
-			settings.colors.green,
-		);
+		changeStatus(message.message, {
+			status: `<:upvote:${settings.emojis.upvote}> Sent to results!`,
+			color: settings.colors.green,
+		});
 	}
 
 	for (const message of messagesDownvoted) {
-		if (pack.council_enabled) {
-			const statusField = message.embed.fields[1];
-			statusField.value = `<:downvote:${
-				settings.emojis.downvote
-			}> This texture did not pass council voting and therefore will not be added. ${getPercentage(
-				message.upvote,
-				message.downvote,
-			)}`;
-
-			const resultEmbed = EmbedBuilder.from(message.embed)
-				.spliceFields(1, 1, statusField)
-				.setColor(settings.colors.red);
-
-			const users = await message.downvote.users.fetch();
-
-			// add council downvotes field between the status and path fields
-			resultEmbed.spliceFields(2, 0, {
-				name: "Council Downvotes",
-				value: `<@!${users
-					.filter((user) => !user.bot)
-					.map((user) => user.id)
-					.join(">\n<@!")
-					.toString()}>`,
-				inline: true,
+		// just send to results if council not enabled
+		if (!pack.council_enabled) {
+			changeStatus(message.message, {
+				status: `<:downvote:${settings.emojis.downvote}> Not enough upvotes!`,
+				color: settings.colors.red,
 			});
+			continue;
+		}
 
-			// no need to react because there's no more voting, the buttons are enough
-			await channelOut.send({ embeds: [resultEmbed], components: message.components });
+		const statusField = message.embed.fields[1];
+		statusField.value = `<:downvote:${
+			settings.emojis.downvote
+		}> This texture did not pass council voting and therefore will not be added. ${getPercentage(
+			message.upvote,
+			message.downvote,
+		)}`;
 
-			changeStatus(
-				message.message,
-				`<:downvote:${settings.emojis.downvote}> Sent to results!`,
-				settings.colors.red,
-			);
-		} else
-			changeStatus(
-				message.message,
-				`<:downvote:${settings.emojis.downvote}> Not enough upvotes!`,
-				settings.colors.red,
-			);
+		const resultEmbed = EmbedBuilder.from(message.embed)
+			.spliceFields(1, 1, statusField)
+			.setColor(settings.colors.red);
+
+		const users = await message.downvote.users.fetch();
+
+		// add council downvotes field between the status and path fields
+		resultEmbed.spliceFields(2, 0, {
+			name: "Council Downvotes",
+			value: `<@!${users
+				.filter((user) => !user.bot)
+				.map((user) => user.id)
+				.join(">\n<@!")
+				.toString()}>`,
+			inline: true,
+		});
+
+		// no need to react because there's no more voting, the buttons are enough
+		await channelOut.send({ embeds: [resultEmbed], components: message.components });
+
+		changeStatus(message.message, {
+			status: `<:downvote:${settings.emojis.downvote}> Sent to results!`,
+			color: settings.colors.red,
+		});
 	}
 }
 
