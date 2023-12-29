@@ -81,10 +81,12 @@ async function downloadTexture(texture, packName, baseFolder) {
 	// add the image to all its versions and paths
 	for (const use of textureInfo.uses) {
 		const paths = textureInfo.paths.filter((path) => path.use == use.id);
-		const edition = use.edition;
-		const packFolder = settings.submission.packs[packName].github[edition]?.repo;
+
+		// need to redefine pack folder every time since java/bedrock are different folders
+		const packFolder = settings.submission.packs[packName].github[use.edition]?.repo;
+
 		if (!packFolder && DEBUG)
-			console.log(`GitHub repository not found for pack and edition: ${packName} ${edition}`);
+			console.log(`GitHub repository not found for pack and edition: ${packName} ${use.edition}`);
 
 		for (const path of paths) {
 			// write file to every version of a path
@@ -93,6 +95,8 @@ async function downloadTexture(texture, packName, baseFolder) {
 
 				// trim last bit to get folder tree
 				mkdirSync(fullPath.substring(0, fullPath.lastIndexOf("/")), { recursive: true });
+
+				// better to use the callback version because .then and .catch are sent to the same output
 				writeFile(fullPath, Buffer.from(imageFile), (err) => {
 					if (DEBUG) return console.log(err ?? `Added texture to path: ${fullPath}`);
 				});
@@ -104,10 +108,11 @@ async function downloadTexture(texture, packName, baseFolder) {
 }
 
 /**
+ * Add a contributor role to users without one
  * @author Evorp
  * @param {import("discord.js").Client} client
- * @param {import("@helpers/jsdoc").Pack} packName which pack to check role
- * @param {string} guildID guild id to add roles to
+ * @param {import("@helpers/jsdoc").Pack} packName different packs have different roles
+ * @param {string} guildID where to add the role to
  * @param {string[]} authors which authors to add roles to
  */
 async function addContributorRole(client, packName, guildID, authors) {
@@ -135,7 +140,8 @@ async function addContributorRole(client, packName, guildID, authors) {
  */
 const mapMessage = (message) => ({
 	url: message.embeds[0].thumbnail.url,
-	authors: message.embeds[0].fields[0].value.split("\n").map((auth) => auth.match(/\d+/g)?.[0]),
+	// only get the numbers (discord id)
+	authors: message.embeds[0].fields[0].value.split("\n").map((author) => author.match(/\d+/g)?.[0]),
 	date: message.createdTimestamp,
 	id: message.embeds[0].title.match(/(?<=\[\#)(.*?)(?=\])/)?.[0],
 });
