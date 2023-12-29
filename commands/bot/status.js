@@ -4,6 +4,7 @@ const settings = require("@resources/settings.json");
 const warnUser = require("@helpers/warnUser");
 const { ActivityType, SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
 const { EmbedBuilder } = require("discord.js");
+const addDeleteButton = require("@helpers/addDeleteButton");
 
 /** @type {import("@helpers/jsdoc").Command} */
 module.exports = {
@@ -58,12 +59,15 @@ module.exports = {
 			status: presence,
 		});
 
-		await interaction.reply({
-			embeds: [
-				new EmbedBuilder()
-					.setTitle("Bot status successfully changed!")
-					.setColor(settings.colors.green),
-			],
-		});
+		await interaction
+			.reply({
+				embeds: [
+					new EmbedBuilder()
+						.setTitle("Bot status successfully changed!")
+						.setColor(settings.colors.green),
+				],
+				fetchReply: true,
+			})
+			.then(addDeleteButton);
 	},
 };
