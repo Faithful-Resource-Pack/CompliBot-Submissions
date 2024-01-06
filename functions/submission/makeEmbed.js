@@ -42,7 +42,7 @@ module.exports = async function makeEmbed(message, texture, attachment, params =
 		.setAuthor({ name: message.author.username, iconURL: message.author.displayAvatarURL() })
 		.setColor(settings.colors.blue)
 		.setTitle(`[#${texture.id}] ${texture.name}`)
-		.setURL(`https://webapp.faithfulpack.net/?#/gallery/java/${packName}/latest/all/?show=${texture.id}`)
+		.setURL(`https://webapp.faithfulpack.net/?#/gallery/${texture.uses[0].edition}/${packName}/latest/all/?show=${texture.id}`)
 		.addFields(
 			{
 				name: "Author",
