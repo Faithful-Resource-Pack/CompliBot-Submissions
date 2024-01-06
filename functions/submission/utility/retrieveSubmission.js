@@ -46,13 +46,13 @@ module.exports = async function retrieveSubmission(client, channelID, delay) {
 
 	const messagesUpvoted = mappedMessages.filter((message) => {
 		// set to one because bot reaction (0 can never be reached)
-		if (!message.upvote) message.upvote.count = 1;
-		if (!message.downvote) message.downvote.count = 1;
+		const upvoteCount = message.upvote?.count ?? 1;
+		const downvoteCount = message.downvote?.count ?? 1;
 
 		return (
-			message.upvote.count > message.downvote.count ||
+			upvoteCount > downvoteCount ||
 			// if nobody voted assume nobody cares
-			(message.upvote.count == 1 && message.downvote.count == 1)
+			(upvoteCount == 1 && downvoteCount == 1)
 		);
 	});
 
