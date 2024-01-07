@@ -13,8 +13,9 @@ const DEBUG = process.env.DEBUG.toLowerCase() == "true";
  * @author Evorp
  * @param {import("discord.js").Client} client
  * @param {import("@helpers/jsdoc").SubmissionPack} pack pack information
+ * @param {number} [delay] override delay
  */
-async function sendToCouncil(client, pack) {
+async function sendToCouncil(client, pack, delay = undefined) {
 	// pack improperly set up, send to results instead
 	if (!pack.channels.council) return;
 	const channelOut = client.channels.cache.get(pack.channels.council);
@@ -24,7 +25,7 @@ async function sendToCouncil(client, pack) {
 	const { messagesUpvoted, messagesDownvoted } = await retrieveSubmission(
 		client,
 		pack.channels.submit, // always fetching from submission channel
-		pack.time_to_council,
+		delay ?? pack.time_to_council,
 	);
 
 	for (const message of messagesUpvoted) {
@@ -61,8 +62,9 @@ async function sendToCouncil(client, pack) {
  * @author Evorp
  * @param {import("discord.js").Client} client
  * @param {import("@helpers/jsdoc").SubmissionPack} pack pack information
+ * @param {number} [delay] override delay
  */
-async function sendToResults(client, pack) {
+async function sendToResults(client, pack, delay = undefined) {
 	const channelOut = client.channels.cache.get(pack.channels.results);
 
 	if (DEBUG) console.log(`Sending textures to channel: #${channelOut.name}`);
@@ -73,7 +75,7 @@ async function sendToResults(client, pack) {
 			? pack.channels.council ?? pack.channels.submit // pack improperly set up, pull from submissions
 			: pack.channels.submit, // pull from submissions if council disabled
 		// with this delay format we can reuse it for both council enabled and disabled packs
-		pack.time_to_results,
+		delay ?? pack.time_to_results,
 	);
 
 	for (const message of messagesUpvoted) {

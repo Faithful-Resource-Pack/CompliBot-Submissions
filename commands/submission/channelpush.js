@@ -24,10 +24,16 @@ module.exports = {
 				)
 				.setRequired(true),
 		)
+		.addIntegerOption((option) =>
+			option
+				.setName("delay")
+				.setDescription("Manually override the pack submission delay.")
+		)
 		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
 		.setDMPermission(false),
 	async execute(interaction) {
 		const choice = interaction.options.getString("pack", true);
+		const delay = interaction.options.getInteger("delay", false);
 		if (choice == "all" && !process.env.DEVELOPERS.includes(interaction.user.id))
 			return warnUser(interaction, strings.command.no_permission);
 
@@ -40,8 +46,8 @@ module.exports = {
 		await interaction.deferReply();
 
 		for (const pack of packs) {
-			await sendToResults(interaction.client, pack);
-			if (pack.council_enabled) await sendToCouncil(interaction.client, pack);
+			await sendToResults(interaction.client, pack, delay);
+			if (pack.council_enabled) await sendToCouncil(interaction.client, pack, delay);
 		}
 
 		await interaction.editReply({
