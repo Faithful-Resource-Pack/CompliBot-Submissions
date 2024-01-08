@@ -5,6 +5,7 @@ const saveDB = require("@functions/saveDB");
 
 const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require("discord.js");
 const warnUser = require("@helpers/warnUser");
+const addDeleteButton = require("@helpers/addDeleteButton");
 
 /** @type {import("@helpers/jsdoc").Command} */
 module.exports = {
@@ -50,6 +51,6 @@ module.exports = {
 
 		return interaction.editReply({
 			embeds: [embed],
-		});
+		}).then(addDeleteButton);
 	},
 };
