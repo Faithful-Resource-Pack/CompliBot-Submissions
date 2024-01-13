@@ -25,9 +25,7 @@ module.exports = {
 				.setRequired(true),
 		)
 		.addIntegerOption((option) =>
-			option
-				.setName("delay")
-				.setDescription("Manually override the pack submission delay.")
+			option.setName("delay").setDescription("Manually override the pack submission delay."),
 		)
 		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
 		.setDMPermission(false),

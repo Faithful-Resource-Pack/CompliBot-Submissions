@@ -49,8 +49,10 @@ module.exports = {
 		if (!commit || failedPushes.length)
 			embed.setDescription("*Check developer logs for potential failure reasons!*");
 
-		return interaction.editReply({
-			embeds: [embed],
-		}).then(addDeleteButton);
+		return interaction
+			.editReply({
+				embeds: [embed],
+			})
+			.then(addDeleteButton);
 	},
 };
