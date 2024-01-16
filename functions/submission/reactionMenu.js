@@ -126,12 +126,10 @@ function canOpenTray(message, openReaction, member, submissionAuthorID) {
  * @returns {string[]}
  */
 function loadReactions(message, member, allReactions) {
-	// if the submission is in council remove delete reaction (avoid misclick)
-	const councilChannels = Object.values(settings.submission.packs).map(
-		(pack) => pack.channels.council,
-	);
+	const packs = require("@resources/packs.json");
 
-	if (councilChannels.includes(message.channel.id))
+	// if the submission is in council remove delete reaction (avoid misclick)
+	if (Object.values(packs).some((pack) => pack.submission.channels.council == message.channel.id))
 		allReactions = allReactions.filter((emoji) => emoji !== settings.emojis.delete);
 
 	// remove instapass/invalid if just the author is reacting or if submission is no longer pending

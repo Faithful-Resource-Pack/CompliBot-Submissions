@@ -12,7 +12,7 @@ const DEBUG = process.env.DEBUG.toLowerCase() == "true";
  * Send textures to a new channel following council rules
  * @author Evorp
  * @param {import("discord.js").Client} client
- * @param {import("@helpers/jsdoc").SubmissionPack} pack pack information
+ * @param {import("@helpers/jsdoc").Submission} pack pack information
  * @param {number} [delay] override delay
  */
 async function sendToCouncil(client, pack, delay = undefined) {
@@ -61,7 +61,7 @@ async function sendToCouncil(client, pack, delay = undefined) {
  * Send textures to a new channel following result-like rules
  * @author Evorp
  * @param {import("discord.js").Client} client
- * @param {import("@helpers/jsdoc").SubmissionPack} pack pack information
+ * @param {import("@helpers/jsdoc").Submission} pack pack information
  * @param {number} [delay] override delay
  */
 async function sendToResults(client, pack, delay = undefined) {

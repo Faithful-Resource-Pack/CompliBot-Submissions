@@ -48,8 +48,8 @@ module.exports = {
 
 		new CronJob("0 0 * * *", async () => {
 			for (const pack of Object.values(packs)) {
-				await sendToResults(client, pack);
-				if (pack.council_enabled) await sendToCouncil(client, pack);
+				await sendToResults(client, pack.submission);
+				if (pack.submission.council_enabled) await sendToCouncil(client, pack.submission);
 			}
 		}).start();
 
@@ -59,7 +59,7 @@ module.exports = {
 		 */
 		new CronJob("15 0 * * *", async () => {
 			for (const pack of Object.values(packs))
-				await downloadResults(client, pack.channels.results);
+				await downloadResults(client, pack.submission.channels.results);
 		}).start();
 
 		/**
@@ -67,8 +67,7 @@ module.exports = {
 		 * Runs each day at 12:30 AM
 		 */
 		new CronJob("30 0 * * *", async () => {
-			for (const pack of Object.keys(packs))
-				await pushTextures("./downloadedTextures", pack);
+			for (const pack of Object.keys(packs)) await pushTextures("./downloadedTextures", pack);
 
 			await saveDB(client);
 		}).start();

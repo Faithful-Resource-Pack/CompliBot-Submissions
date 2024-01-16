@@ -42,8 +42,9 @@ module.exports = {
 		await interaction.deferReply();
 
 		for (const pack of packs) {
-			await sendToResults(interaction.client, pack, delay);
-			if (pack.council_enabled) await sendToCouncil(interaction.client, pack, delay);
+			await sendToResults(interaction.client, pack.submission, delay);
+			if (pack.submission.council_enabled)
+				await sendToCouncil(interaction.client, pack.submission, delay);
 		}
 
 		await interaction.editReply({

@@ -21,22 +21,12 @@ async function fetchFile(url, path, format = false) {
 /**
  * Fetch required files for bot usage
  * @author Evorp
- * @param {boolean} [format] whether to format the downloaded file
  */
 async function fetchSettings() {
-	await fetchFile(
-		`${process.env.API_URL}settings/raw`,
-		"resources/settings.json",
-		process.env.DEV,
-	);
-
-	// you can run an instance of packs.json locally for hosting your own packs
+	// you can run an instance of packs.json and settings.json locally for hosting your own packs
 	if (!FETCH_SETTINGS) return;
-	await fetchFile(
-		`${process.env.API_URL}submissions/all`,
-		"resources/packs.json",
-		process.env.DEV,
-	);
+	await fetchFile(`${process.env.API_URL}settings/raw`, "resources/settings.json", process.env.DEV);
+	await fetchFile(`${process.env.API_URL}submissions/all`, "resources/packs.json", process.env.DEV);
 }
 
 module.exports = {

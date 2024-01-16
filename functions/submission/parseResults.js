@@ -68,6 +68,7 @@ async function downloadResults(client, channelResultID) {
  * @returns {Promise<import("@helpers/jsdoc").Texture>} info
  */
 async function downloadTexture(texture, packName, baseFolder) {
+	const packs = require("@resources/packs.json");
 	if (!texture.id || isNaN(Number(texture.id))) {
 		if (DEBUG) console.error(`Non-numerical texture ID found: ${texture.id}`);
 		return;
@@ -83,7 +84,7 @@ async function downloadTexture(texture, packName, baseFolder) {
 		const paths = textureInfo.paths.filter((path) => path.use == use.id);
 
 		// need to redefine pack folder every time since java/bedrock are different folders
-		const packFolder = settings.submission.packs[packName].github[use.edition]?.repo;
+		const packFolder = packs[packName].github[use.edition]?.repo;
 
 		if (!packFolder && DEBUG)
 			console.log(`GitHub repository not found for pack and edition: ${packName} ${use.edition}`);
@@ -116,8 +117,9 @@ async function downloadTexture(texture, packName, baseFolder) {
  * @param {string[]} authors which authors to add roles to
  */
 async function addContributorRole(client, packName, guildID, authors) {
+	const packs = require("@resources/packs.json");
 	const guild = client.guilds.cache.get(guildID);
-	const role = settings.submission.packs[packName].contributor_role;
+	const role = packs[packName].submission.contributor_role;
 
 	// if the pack doesn't have a designated role
 	if (!role) return;

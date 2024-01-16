@@ -27,7 +27,8 @@ const { EmbedBuilder } = require("discord.js");
  */
 module.exports = async function instapass(message, member) {
 	const packName = getPackByChannel(message.channel.id);
-	const channelOutID = settings.submission.packs[packName].channels.results;
+	const packs = require("@resources/packs.json");
+	const channelOutID = packs[packName].submission.channels.results;
 	const status = `<:instapass:${settings.emojis.instapass}> Instapassed by <@${member.id}>`;
 
 	await changeStatus(message, {

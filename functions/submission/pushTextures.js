@@ -1,6 +1,5 @@
 const { existsSync, rmSync } = require("fs");
 
-const settings = require("@resources/settings.json");
 const formattedDate = require("@helpers/formattedDate");
 
 const pushToGitHub = require("@functions/pushToGitHub");
@@ -18,9 +17,13 @@ module.exports = async function pushTextures(
 	pack,
 	commitMessage = `Autopush passed textures from ${formattedDate()}`,
 ) {
+	// declare settings inside so it gets refreshed if a version gets added (most other properties are static)
+	const settings = require("@resources/settings.json");
+
+	const packs = require("@resources/packs.json");
 	const editions = Object.keys(settings.versions).filter((k) => k != "id");
 	for (const edition of editions) {
-		const packGitHub = settings.submission.packs[pack].github[edition];
+		const packGitHub = packs[pack].github[edition];
 		if (!packGitHub) {
 			if (DEBUG) console.log(`${pack} doesn't support ${edition} yet!`);
 			continue;

@@ -54,4 +54,4 @@ This project is heavily developed around our public API. Check out our API docum
 - `resources/settings.json` for roles, channel ids, and colors
 - `resources/packs.json` for submission pack information
 
-Make sure to disable setting fetching in your `.env` file if you're editing `packs.json` locally!
+Make sure to disable settings fetching in your `.env` file if you're adding your own packs locally!

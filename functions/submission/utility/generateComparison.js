@@ -15,28 +15,14 @@ const { AttachmentBuilder } = require("discord.js");
 /**
  * Generate a submission comparison for a given texture, pack, and image
  * @author Evorp
- * @param {import("@helpers/jsdoc").Pack} pack pack to compare against (e.g. faithful_32x, classic_faithful_64x)
+ * @param {import("@helpers/jsdoc").Pack} pack base pack ID
  * @param {import("discord.js").Attachment} attachment raw texture being submitted
  * @param {import("@helpers/jsdoc").Texture} texture texture data
  * @returns {Promise<ReturnParams>} compared texture and info
  */
 module.exports = async function generateComparison(pack, attachment, texture) {
+	const reference = require("@resources/packs.json")[pack].reference ?? "default";
 	const baseURL = `${process.env.API_URL}textures/${texture.id}/url/`;
-	let reference;
-	switch (pack) {
-		case "faithful_64x":
-			reference = "faithful_32x";
-			break;
-		case "classic_faithful_64x":
-			reference = "classic_faithful_32x";
-			break;
-		case "classic_faithful_32x_progart":
-			reference = "progart";
-			break;
-		default:
-			reference = "default";
-			break;
-	}
 
 	const newImage = await loadImage(attachment.url);
 
