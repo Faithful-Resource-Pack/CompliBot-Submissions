@@ -19,9 +19,9 @@ module.exports = {
 				.setDescription("Which pack to push.")
 				.addChoices(
 					{ name: "All", value: "all" },
-					...Object.entries(settings.submission.packs).map(([key, val]) => ({
-						name: val.display_name,
-						value: key,
+					...Object.values(require("@resources/packs.json")).map((pack) => ({
+						name: pack.name,
+						value: pack.id,
 					})),
 				)
 				.setRequired(true),
@@ -29,15 +29,13 @@ module.exports = {
 		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
 		.setDMPermission(false),
 	async execute(interaction) {
+		const submissions = require("@resources/packs.json");
 		const choice = interaction.options.getString("pack", true);
 		if (choice == "all" && !process.env.DEVELOPERS.includes(interaction.user.id))
 			return warnUser(interaction, strings.command.no_permission);
 
-		/** @type {import("@helpers/jsdoc").SubmissionPack[]} */
-		const packs =
-			choice == "all"
-				? Object.values(settings.submission.packs)
-				: [settings.submission.packs[choice]];
+		/** @type {import("@helpers/jsdoc").Pack[]} */
+		const packs = choice == "all" ? Object.values(submissions) : [submissions[choice]];
 
 		const infoEmbed = new EmbedBuilder()
 			.setDescription("This can take some time, please wait...")
@@ -48,13 +46,14 @@ module.exports = {
 			embeds: [infoEmbed.setTitle("Downloading textures...")],
 		});
 
-		for (const pack of packs) await downloadResults(interaction.client, pack.channels.results);
+		for (const pack of packs)
+			await downloadResults(interaction.client, pack.submission.channels.results);
 
 		await interaction.editReply({
 			embeds: [infoEmbed.setTitle("Pushing textures...")],
 		});
 
-		for (const pack of Object.keys(settings.submission.packs))
+		for (const pack of Object.keys(submissions))
 			await pushTextures(
 				"./downloadedTextures",
 				pack,

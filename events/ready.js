@@ -1,9 +1,8 @@
-const settings = require("@resources/settings.json");
 const DEV = process.env.DEV.toLowerCase() == "true";
 const MAINTENANCE = process.env.MAINTENANCE.toLowerCase() == "true";
 
-const { loadCommands, deleteCommands } = require("@functions/commandHandler");
-const fetchSettings = require("@functions/fetchSettings");
+const { loadCommands } = require("@functions/commandHandler");
+const { fetchSettings } = require("@functions/fetchSettings");
 
 const { sendToCouncil, sendToResults } = require("@submission/sendToChannel");
 const { downloadResults } = require("@submission/parseResults");
@@ -33,24 +32,22 @@ module.exports = {
 			client.user.setPresence({ activities: [{ name: "maintenance" }], status: "dnd" });
 		else client.user.setActivity({ name: "for submissions", type: ActivityType.Watching });
 
-		if (DEV) {
-			return setInterval(() => {
-				// format the settings for easier viewing
-				fetchSettings(true);
-			}, 20000); // 20 seconds
-		}
+		if (DEV) return setInterval(fetchSettings, 20000); // 20 seconds
 
 		/**
 		 * TEXTURE SUBMISSION SCHEDULED FUNCTIONS
-		 * - see functions/submission for more information
+		 * @see @functions/submission for more information
 		 */
+
+		const packs = require("@resources/packs.json");
 
 		/**
 		 * Send submission messages to their respective channels
-		 * Runs each day at midnight CE(S)T
+		 * Runs each day at midnight
 		 */
+
 		new CronJob("0 0 * * *", async () => {
-			for (const pack of Object.values(settings.submission.packs)) {
+			for (const pack of Object.values(packs)) {
 				await sendToResults(client, pack);
 				if (pack.council_enabled) await sendToCouncil(client, pack);
 			}
@@ -58,19 +55,19 @@ module.exports = {
 
 		/**
 		 * Download passed textures
-		 * Runs each day at 12:15 AM CE(S)T
+		 * Runs each day at 12:15 AM
 		 */
 		new CronJob("15 0 * * *", async () => {
-			for (const pack of Object.values(settings.submission.packs))
+			for (const pack of Object.values(packs))
 				await downloadResults(client, pack.channels.results);
 		}).start();
 
 		/**
 		 * Push downloaded textures to GitHub, and back up database files
-		 * Runs each day at 12:30 AM CE(S)T
+		 * Runs each day at 12:30 AM
 		 */
 		new CronJob("30 0 * * *", async () => {
-			for (const pack of Object.keys(settings.submission.packs))
+			for (const pack of Object.keys(packs))
 				await pushTextures("./downloadedTextures", pack);
 
 			await saveDB(client);

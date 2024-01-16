@@ -62,14 +62,22 @@
  *
  * SETTINGS:
  *
- * @typedef SubmissionPack
- * @property {string} display_name
+ * @typedef Pack
+ * @property {string} id
+ * @property {string} name
+ * @property {string[]} tags
+ * @property {number} resolution
+ * @property {Record<string, { org: string, repo: string }>} github java and bedrock
+ * @property {Submission} submission
+ *
+ * @typedef Submission
+ * @property {string} id
+ * @property {string} reference
  * @property {SubmissionChannels} channels
  * @property {boolean} council_enabled
  * @property {number} [time_to_council]
  * @property {number} time_to_results
  * @property {string} [contributor_role]
- * @property {Object<string, { org: string, repo: string }>} github java and bedrock
  *
  * @typedef SubmissionChannels
  * @property {string} submit

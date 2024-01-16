@@ -1,6 +1,3 @@
-const settings = require("@resources/settings.json");
-const strings = require("@resources/strings.json");
-
 const { feedbackBug, feedbackSuggestion } = require("@functions/feedback");
 
 /** @type {import("@helpers/jsdoc").Event} */

@@ -26,7 +26,7 @@ const GRADIENT_HEIGHT = 50;
  */
 
 /**
- * @typedef {Object<string, ColorStorage>} AllColors
+ * @typedef {Record<string, ColorStorage>} AllColors
  */
 
 /**

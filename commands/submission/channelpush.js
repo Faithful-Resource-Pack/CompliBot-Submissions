@@ -17,9 +17,9 @@ module.exports = {
 				.setDescription("Which pack to push.")
 				.addChoices(
 					{ name: "All", value: "all" },
-					...Object.entries(settings.submission.packs).map(([key, val]) => ({
-						name: val.display_name,
-						value: key,
+					...Object.values(require("@resources/packs.json")).map((pack) => ({
+						name: pack.name,
+						value: pack.id,
 					})),
 				)
 				.setRequired(true),
@@ -30,16 +30,14 @@ module.exports = {
 		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
 		.setDMPermission(false),
 	async execute(interaction) {
+		const submissions = require("@resources/packs.json");
 		const choice = interaction.options.getString("pack", true);
 		const delay = interaction.options.getInteger("delay", false);
 		if (choice == "all" && !process.env.DEVELOPERS.includes(interaction.user.id))
 			return warnUser(interaction, strings.command.no_permission);
 
-		/** @type {import("@helpers/jsdoc").SubmissionPack[]} */
-		const packs =
-			choice == "all"
-				? Object.values(settings.submission.packs)
-				: [settings.submission.packs[choice]];
+		/** @type {import("@helpers/jsdoc").Pack[]} */
+		const packs = choice == "all" ? Object.values(submissions) : [submissions[choice]];
 
 		await interaction.deferReply();
 

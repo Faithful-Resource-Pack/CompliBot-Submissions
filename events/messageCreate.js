@@ -11,15 +11,12 @@ module.exports = {
 	async execute(message) {
 		// Ignore bot messages
 		if (message.author.bot) return;
+		const packs = require("@resources/packs.json");
 
 		/**
 		 * TEXTURE SUBMISSION
 		 */
-		if (
-			Object.values(settings.submission.packs).some(
-				(pack) => pack.channels.submit == message.channel.id,
-			)
-		)
+		if (Object.values(packs).some((pack) => pack.submission.channels.submit == message.channel.id))
 			return submitTexture(message);
 
 		/**

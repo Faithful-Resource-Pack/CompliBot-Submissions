@@ -11,13 +11,14 @@ require("dotenv").config();
 
 const { readdirSync } = require("fs");
 
-const fetchSettings = require("@functions/fetchSettings");
+const { fetchSettings } = require("@functions/fetchSettings");
 const handleErrors = require("@functions/handleErrors");
 const { Client, GatewayIntentBits, Partials } = require("discord.js");
 
 function startBot() {
 	const client = new Client({
-		allowedMentions: { parse: ["users", "roles"], repliedUser: false }, // remove this line to die instantly ~JackDotJS 2021
+		// remove this line to die instantly ~JackDotJS 2021
+		allowedMentions: { parse: ["users", "roles"], repliedUser: false },
 		restTimeOffset: 0,
 		partials: [
 			Partials.Channel,

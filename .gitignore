@@ -6,3 +6,4 @@ desktop.ini
 .DS_Store
 .env
 resources/settings.json
+resources/packs.json

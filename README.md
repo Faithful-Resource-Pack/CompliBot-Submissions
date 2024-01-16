@@ -42,7 +42,7 @@ pnpm dev
 - Go to the **Bot** tab, create a bot and copy its token.
 - Rename the **.env.example** file to **.env** and open it using any text editor.
 - Paste in your token after `CLIENT_TOKEN`.
-- Create a file in in `resources/` called `settings.json`, which can be just a set of curly brackets `{}`. This will be loaded dynamically later but needs to be created first because of GitHub limitations.
+- Create two files in `resources/` called `settings.json` and `packs.json`, both of which can be just a set of curly brackets `{}`. This will be loaded dynamically later but needs to be created first because of GitHub limitations.
 
 ## API Reference:
 
@@ -52,5 +52,6 @@ This project is heavily developed around our public API. Check out our API docum
 
 - `resources/strings.json` for all types of bot-related messages
 - `resources/settings.json` for roles, channel ids, and colors
+- `resources/packs.json` for submission pack information
 
-Make sure to disable setting fetching in your `.env` file if you're editing `settings.json` locally!
+Make sure to disable setting fetching in your `.env` file if you're editing `packs.json` locally!
