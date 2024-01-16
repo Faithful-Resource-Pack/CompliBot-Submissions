@@ -15,7 +15,7 @@ const { AttachmentBuilder } = require("discord.js");
 /**
  * Generate a submission comparison for a given texture, pack, and image
  * @author Evorp
- * @param {import("@helpers/jsdoc").Pack} pack base pack ID
+ * @param {import("@helpers/jsdoc").FaithfulPack} pack base pack ID
  * @param {import("discord.js").Attachment} attachment raw texture being submitted
  * @param {import("@helpers/jsdoc").Texture} texture texture data
  * @returns {Promise<ReturnParams>} compared texture and info

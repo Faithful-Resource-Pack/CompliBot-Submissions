@@ -4,7 +4,9 @@
  *
  * FIRESTORM:
  *
- * @typedef {"faithful 32x" | "faithful_64x" | "classic_faithful_32x" | "classic_faithful_64x" | "classic_faithful_32x_progart"} Pack
+ * @typedef {"faithful 32x" | "faithful_64x" | "classic_faithful_32x" | "classic_faithful_64x" | "classic_faithful_32x_progart"} FaithfulPack
+ * @typedef {"default" | "progart"} DefaultPack
+ * @typedef {FaithfulPack | DefaultPack} AnyPack
  *
  * @typedef Path
  * @property {string} id internal id
@@ -24,7 +26,7 @@
  * @property {number} date unix timestamp
  * @property {string} texture texture id
  * @property {8 | 16 | 32 | 64 | 128 | 256 | 512} resolution
- * @property {Pack} pack
+ * @property {FaithfulPack} pack
  * @property {string[]} authors
  *
  * @typedef Texture
@@ -63,7 +65,7 @@
  * SETTINGS:
  *
  * @typedef Pack
- * @property {string} id
+ * @property {AnyPack} id
  * @property {string} name
  * @property {string[]} tags
  * @property {number} resolution
@@ -71,7 +73,7 @@
  * @property {Submission} submission
  *
  * @typedef Submission
- * @property {string} id
+ * @property {FaithfulPack} id
  * @property {string} reference
  * @property {SubmissionChannels} channels
  * @property {boolean} council_enabled

@@ -63,7 +63,7 @@ async function downloadResults(client, channelResultID) {
  * Download a single texture to all its paths locally
  * @author Juknum, Evorp
  * @param {MappedMessage} texture message and texture info
- * @param {import("@helpers/jsdoc").Pack} packName which pack to download it to
+ * @param {import("@helpers/jsdoc").FaithfulPack} packName which pack to download it to
  * @param {string} baseFolder where to download the texture to
  * @returns {Promise<import("@helpers/jsdoc").Texture>} info
  */
@@ -112,7 +112,7 @@ async function downloadTexture(texture, packName, baseFolder) {
  * Add a contributor role to users without one
  * @author Evorp
  * @param {import("discord.js").Client} client
- * @param {import("@helpers/jsdoc").Pack} packName different packs have different roles
+ * @param {import("@helpers/jsdoc").FaithfulPack} packName different packs have different roles
  * @param {string} guildID where to add the role to
  * @param {string[]} authors which authors to add roles to
  */
@@ -152,11 +152,12 @@ const mapMessage = (message) => ({
  * Converts a mapped message to a contribution
  * @author Juknum
  * @param {MappedMessage} texture
- * @param {import("@helpers/jsdoc").Pack} packName
+ * @param {import("@helpers/jsdoc").FaithfulPack} packName
  * @returns {import("@helpers/jsdoc").Contribution}
  */
 const generateContributionData = (texture, packName) => ({
 	date: texture.date,
+	/** @todo switch this for resolution field in pack interface */
 	resolution: Number(packName.match(/\d+/)?.[0] ?? 32), // stupid workaround but it works
 	pack: packName,
 	texture: texture.id,
