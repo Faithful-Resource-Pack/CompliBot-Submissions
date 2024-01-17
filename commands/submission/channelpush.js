@@ -36,7 +36,7 @@ module.exports = {
 		if (choice == "all" && !process.env.DEVELOPERS.includes(interaction.user.id))
 			return warnUser(interaction, strings.command.no_permission);
 
-		/** @type {import("@helpers/jsdoc").FaithfulPack[]} */
+		/** @type {string[]} */
 		const packs = choice == "all" ? Object.values(submissions) : [submissions[choice]];
 
 		await interaction.deferReply();
