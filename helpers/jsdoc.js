@@ -68,6 +68,7 @@
  * @property {AnyPack} id
  * @property {string} name
  * @property {string[]} tags
+ * @property {string} logo
  * @property {number} resolution
  * @property {Record<string, { org: string, repo: string }>} github java and bedrock
  * @property {Submission} submission
