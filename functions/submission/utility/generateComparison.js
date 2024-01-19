@@ -21,7 +21,7 @@ const { AttachmentBuilder } = require("discord.js");
  * @returns {Promise<ReturnParams>} compared texture and info
  */
 module.exports = async function generateComparison(pack, attachment, texture) {
-	const reference = require("@resources/packs.json")[pack].reference ?? "default";
+	const reference = require("@resources/packs.json")[pack].submission.reference ?? "default";
 	const baseURL = `${process.env.API_URL}textures/${texture.id}/url/`;
 
 	const newImage = await loadImage(attachment.url);
