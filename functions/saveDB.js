@@ -1,5 +1,3 @@
-const settings = require("@resources/settings.json");
-
 const DEV = process.env.DEV.toLowerCase() == "true";
 const DEBUG = process.env.DEBUG.toLowerCase() == "true";
 
@@ -19,6 +17,7 @@ const devLogger = require("@helpers/devLogger");
  * @returns {Promise<{ successfulPushes: string[], failedPushes: string[], commit?: string }>}
  */
 module.exports = async function saveDB(client, commitMessage = "Daily Backup", params = {}) {
+	const settings = require("@resources/settings.json");
 	if (!params.org) params.org = settings.backup.git.org;
 	if (!params.repo) params.repo = settings.backup.git.repo;
 	if (!params.branch) params.branch = settings.backup.git.branch;
