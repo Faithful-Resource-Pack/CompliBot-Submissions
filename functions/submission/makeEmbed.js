@@ -138,7 +138,7 @@ function addPathsToEmbed(texture) {
 	});
 
 	return Object.entries(tmp).map(([edition, paths]) => ({
-		name: edition[0].toUpperCase + edition.slice(1),
+		name: edition[0].toUpperCase() + edition.slice(1),
 		value: paths.join("\n"),
 	}));
 }
