@@ -116,11 +116,13 @@ module.exports = async function makeEmbed(message, texture, attachment, params =
 /**
  * Return organized path data for a given texture
  * @author Juknum
- * @param {import("@helpers/jsdoc").Texture} texture
- * @returns {import("discord.js").APIEmbedField[]}
+ * @param {import("@helpers/jsdoc").Texture} texture texture to get paths and uses from
+ * @returns {import("discord.js").APIEmbedField[]} usable embed field data
  */
 function addPathsToEmbed(texture) {
+	/** @type {Record<import("@helpers/jsdoc").MinecraftEdition, string[]>} */
 	const tmp = {};
+
 	texture.uses.forEach((use) => {
 		texture.paths
 			.filter((el) => el.use === use.id)
@@ -135,12 +137,8 @@ function addPathsToEmbed(texture) {
 			});
 	});
 
-	return Object.keys(tmp).map((edition) => {
-		if (tmp[edition].length) {
-			return {
-				name: edition.charAt(0).toLocaleUpperCase() + edition.slice(1),
-				value: tmp[edition].join("\n"),
-			};
-		}
-	});
+	return Object.entries(tmp).map(([edition, paths]) => ({
+		name: edition[0].toUpperCase + edition.slice(1),
+		value: paths.join("\n"),
+	}));
 }

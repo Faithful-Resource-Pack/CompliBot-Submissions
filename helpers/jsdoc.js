@@ -4,6 +4,8 @@
  *
  * FIRESTORM:
  *
+ * @typedef {"java" | "bedrock"} MinecraftEdition
+ *
  * @typedef Path
  * @property {string} id internal id
  * @property {string} use use it's attached to
@@ -15,7 +17,7 @@
  * @property {string} id texture id + letter
  * @property {string} name use name (usually blank)
  * @property {number} texture texture id without letter
- * @property {"java" | "bedrock"} edition
+ * @property {MinecraftEdition} edition
  *
  * @typedef Contribution
  * @property {string} id internal id
@@ -66,7 +68,7 @@
  * @property {string[]} tags
  * @property {string} logo
  * @property {number} resolution
- * @property {Record<string, { org: string, repo: string }>} github java and bedrock
+ * @property {Record<MinecraftEdition, { org: string, repo: string }>} github java and bedrock
  * @property {Submission} submission
  *
  * @typedef Submission

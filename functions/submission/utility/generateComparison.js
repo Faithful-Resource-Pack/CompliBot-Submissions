@@ -64,7 +64,7 @@ module.exports = async function generateComparison(pack, attachment, texture) {
 
 	const [stitched, totalGaps] = await stitch(images);
 
-	if (!Object.keys(texture.mcmeta).length)
+	if (!texture.paths.some((p) => p.mcmeta === true))
 		return {
 			comparisonImage: await magnifyToAttachment(stitched, "compared.png"),
 			hasReference: images.length == 3,
@@ -77,6 +77,9 @@ module.exports = async function generateComparison(pack, attachment, texture) {
 
 	const { magnified, width, factor } = await magnify(stitched, true);
 
+	if (!mcmeta.animation) mcmeta.animation = {};
+
+	// scale mcmeta info for new resolution
 	mcmeta.animation.width = mcmeta.animation.width
 		? (mcmeta.animation.width * images.length + totalGaps) * factor
 		: width;

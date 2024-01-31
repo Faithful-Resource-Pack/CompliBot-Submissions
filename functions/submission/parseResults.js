@@ -95,7 +95,7 @@ async function downloadTexture(texture, packName, baseFolder) {
 				const fullPath = `${baseFolder}/${packFolder}/${version}/${path.name}`;
 
 				// trim last bit to get folder tree
-				mkdirSync(fullPath.substring(0, fullPath.lastIndexOf("/")), { recursive: true });
+				mkdirSync(fullPath.slice(0, fullPath.lastIndexOf("/")), { recursive: true });
 
 				// better to use the callback version because .then and .catch are sent to the same output
 				writeFile(fullPath, Buffer.from(imageFile), (err) => {
