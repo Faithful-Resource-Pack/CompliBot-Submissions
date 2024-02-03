@@ -1,5 +1,5 @@
 {
-	"exclude": ["node_modules", "json"],
+	"exclude": ["node_modules", "backups", "downloadedTextures", "instapassedTextures"],
 	"compilerOptions": {
 		"resolveJsonModule": true,
 		"baseUrl": ".",
