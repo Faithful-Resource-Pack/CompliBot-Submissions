@@ -1,7 +1,6 @@
 {
 	"bot": {
 		"error": "Action Failed",
-		"cant_dm": "I can't execute this command inside DMs!",
 		"missing_interaction": "This %INTERACTION% doesn't have an event set up yet!"
 	},
 	"command": {
