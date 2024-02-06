@@ -22,7 +22,7 @@ module.exports = {
 		/**
 		 * BASIC AUTOREACT
 		 */
-		if (settings.submission.autoreact.includes(message.channel.id)) {
+		if (settings.discord.channels.autoreact.includes(message.channel.id)) {
 			if (!message.attachments.size)
 				return cancelSubmission(message, strings.submission.image_not_attached);
 
