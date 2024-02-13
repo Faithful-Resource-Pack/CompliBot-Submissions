@@ -12,7 +12,7 @@ require("dotenv").config();
 const { readdirSync } = require("fs");
 
 const { fetchSettings } = require("@functions/fetchSettings");
-const handleErrors = require("@functions/handleErrors");
+const handleError = require("@functions/handleError");
 const { Client, GatewayIntentBits, Partials } = require("discord.js");
 
 function startBot() {
@@ -64,8 +64,8 @@ function startBot() {
 	/**
 	 * ERROR HANDLER
 	 */
-	process.on("unhandledRejection", (reason) => handleErrors(client, reason, "Unhandled Rejection"));
-	process.on("uncaughtException", (error) => handleErrors(client, error, "Uncaught Exception"));
+	process.on("unhandledRejection", (reason) => handleError(client, reason, "Unhandled Rejection"));
+	process.on("uncaughtException", (error) => handleError(client, error, "Uncaught Exception"));
 
 	client.login(process.env.CLIENT_TOKEN).catch(console.error);
 }
