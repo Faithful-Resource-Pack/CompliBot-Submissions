@@ -15,8 +15,8 @@ module.exports = async function devLogger(client, description, params = {}) {
 	const channel = client.channels.cache.get(process.env.LOG_CHANNEL);
 	if (!channel) return;
 
-	if (params.codeBlocks !== null && params.codeBlocks !== undefined)
-		description = `\`\`\`${params.codeBlocks}\n${description}\`\`\``;
+	// empty strings still enable codeblocks, just no highlighting
+	if (params.codeBlocks != null) description = `\`\`\`${params.codeBlocks}\n${description}\`\`\``;
 
 	const embed = new EmbedBuilder()
 		.setTitle(params.title ?? "Unhandled Rejection")
@@ -24,5 +24,5 @@ module.exports = async function devLogger(client, description, params = {}) {
 		.setColor(params.color ?? settings.colors.red)
 		.setTimestamp();
 
-	channel.send({ embeds: [embed] }).catch(console.error);
+	return channel.send({ embeds: [embed] }).catch(console.error);
 };

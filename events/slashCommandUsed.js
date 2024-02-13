@@ -3,7 +3,7 @@ const strings = require("@resources/strings.json");
 
 const addDeleteButton = require("@helpers/addDeleteButton");
 const { EmbedBuilder } = require("discord.js");
-const devLogger = require("@helpers/devLogger");
+const handleError = require("@functions/handleError");
 
 const DEBUG = process.env.DEBUG.toLowerCase() == "true";
 const DEV = process.env.DEV.toLowerCase() == "true";
@@ -24,10 +24,7 @@ module.exports = {
 			await command.execute(interaction);
 		} catch (error) {
 			if (DEBUG) console.trace(error);
-			if (!DEV)
-				devLogger(interaction.client, error?.stack ?? error ?? "A command failed to run!", {
-					codeBlocks: "",
-				});
+			if (!DEV) handleError(interaction.client, error, "A command failed to run!");
 
 			const embed = new EmbedBuilder()
 				.setColor(settings.colors.red)

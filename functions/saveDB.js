@@ -6,7 +6,7 @@ const { mkdirSync, writeFileSync } = require("fs");
 const pushToGitHub = require("@functions/pushToGitHub");
 const { join } = require("path");
 const axios = require("axios").default;
-const devLogger = require("@helpers/devLogger");
+const handleError = require("./handleError");
 
 /**
  * Push all raw api collections to github
@@ -47,11 +47,7 @@ module.exports = async function saveDB(client, commitMessage = "Daily Backup", p
 		} catch (err) {
 			failedPushes.push(filename);
 			if (DEBUG) console.error(err?.response?.data ?? err);
-			if (!DEV)
-				devLogger(client, JSON.stringify(err?.response?.data ?? err), {
-					codeBlocks: "json",
-					title: `Failed to backup collection "${filename}"`,
-				});
+			if (!DEV) handleError(client, err, `Failed to backup collection "${filename}"`);
 		}
 	}
 
@@ -65,10 +61,11 @@ module.exports = async function saveDB(client, commitMessage = "Daily Backup", p
 	).catch((err) => {
 		if (DEBUG) console.log(`Branch ${params.branch} doesn't exist for repository ${params.repo}!`);
 		if (!DEV)
-			devLogger(client, err, {
-				codeBlocks: "",
-				title: `Could not commit backup to ${params.org}/[${params.repo}:${params.branch}]`,
-			});
+			handleError(
+				client,
+				err,
+				`Could not commit backup to ${params.org}/[${params.repo}:${params.branch}]`,
+			);
 	});
 
 	return { successfulPushes, failedPushes, commit };

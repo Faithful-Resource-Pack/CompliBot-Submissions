@@ -2,7 +2,6 @@ const { Routes, REST, Collection } = require("discord.js");
 const { join } = require("path");
 
 const walkSync = require("@helpers/walkSync");
-const devLogger = require("@helpers/devLogger");
 
 /**
  * Load slash commands and add them to the client
@@ -22,15 +21,10 @@ async function loadCommands(client) {
 
 	const rest = new REST({ version: "10" }).setToken(process.env.CLIENT_TOKEN);
 
-	try {
-		// add to discord so they can be used in the slash command menu
-		rest.put(Routes.applicationCommands(client.user.id), {
-			body: commandPaths.map((path) => require(path).data.toJSON()),
-		});
-	} catch (err) {
-		devLogger(client, err, { title: "Slash Command Error" });
-		console.error(err);
-	}
+	// add to discord so they can be used in the slash command menu
+	rest.put(Routes.applicationCommands(client.user.id), {
+		body: commandPaths.map((path) => require(path).data.toJSON()),
+	});
 }
 
 /**

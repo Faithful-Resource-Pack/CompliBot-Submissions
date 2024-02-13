@@ -2,7 +2,7 @@ const settings = require("@resources/settings.json");
 const DEBUG = process.env.DEBUG.toLowerCase() == "true";
 
 const getMessages = require("@helpers/getMessages");
-const devLogger = require("@helpers/devLogger");
+const handleError = require("@functions/handleError");
 const getPackByChannel = require("@submission/utility/getPackByChannel");
 
 const { mkdirSync, writeFile } = require("fs");
@@ -180,11 +180,7 @@ async function postContributions(...contributions) {
 	} catch (err) {
 		const pack = contributions[0]?.pack;
 		if (DEBUG) console.error(`Couldn't add contribution(s) for pack: ${pack}`);
-		else
-			devLogger(client, JSON.stringify(err?.response?.data ?? err), {
-				title: "Contribution Error",
-				codeBlocks: "json",
-			});
+		else handleError(client, err, "Contribution Error");
 	}
 }
 
