@@ -123,15 +123,14 @@ async function addContributorRole(client, packName, guildID, authors) {
 
 	// if the pack doesn't have a designated role
 	if (!role) return;
-	for (const author of authors) {
-		try {
-			// fetch user with role info since you need it for adding roles
-			const user = guild.members.cache.get(author);
-			if (!user.roles.cache.has(role)) await user.roles.add(role);
-		} catch {
-			// contributor can't be found or role can't be added
-		}
-	}
+
+	// Promise.all is faster than awaiting separately + less error handling needed
+	return Promise.all(
+		authors
+			.map((author) => guild.members.cache.get(author))
+			.filter((user) => !user.roles.cache.has(role))
+			.map((user) => user.roles.add(role).catch(() => {})),
+	);
 }
 
 /**

@@ -16,18 +16,22 @@ const handleError = require("./handleError");
  * @param {{org?: string, repo?: string, branch?: string}} params configure where to backup to
  * @returns {Promise<{ successfulPushes: string[], failedPushes: string[], commit?: string }>}
  */
-module.exports = async function saveDB(client, commitMessage = "Daily Backup", params = {}) {
-	const settings = require("@resources/settings.json");
-	if (!params.org) params.org = settings.backup.git.org;
-	if (!params.repo) params.repo = settings.backup.git.repo;
-	if (!params.branch) params.branch = settings.backup.git.branch;
+module.exports = async function saveDB(
+	client,
+	commitMessage = "Daily Backup",
+	{ org, repo, branch },
+) {
+	const { backup } = require("@resources/settings.json");
+	org ||= backup.git.org;
+	repo ||= backup.git.repo;
+	branch ||= backup.git.branch;
 
-	const folderPath = join(process.cwd(), "backups", settings.backup.git.folder);
+	const folderPath = join(process.cwd(), "backups", backup.git.folder);
 	mkdirSync(folderPath, { recursive: true });
 
 	const successfulPushes = [];
 	const failedPushes = [];
-	for (const [filename, url] of Object.entries(settings.backup.urls)) {
+	for (const [filename, url] of Object.entries(backup.urls)) {
 		try {
 			const fetched = (
 				await axios.get(process.env.API_URL + url, {

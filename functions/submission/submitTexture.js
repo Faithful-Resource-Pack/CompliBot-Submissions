@@ -17,17 +17,12 @@ const axios = require("axios").default;
  * @param {import("discord.js").Message} message message to check and embed
  */
 module.exports = async function submitTexture(message) {
-	// break if no file is attached
 	if (!message.attachments.size)
 		return cancelSubmission(message, strings.submission.image_not_attached);
 
-	// needs to be set to -1 since we initialize it to zero directly after
-	let attachmentIndex = -1;
 	let ongoingMenu;
-	for (const attachment of message.attachments.values()) {
-		// need to update index here since it can skip loops early otherwise
-		++attachmentIndex;
-
+	// no forEach because it doesn't play well with async
+	for (const [attachmentIndex, attachment] of [...message.attachments.values()].entries()) {
 		if (DEBUG)
 			console.log(`Texture submitted: ${attachmentIndex + 1} of ${message.attachments.size}`);
 
@@ -82,7 +77,9 @@ module.exports = async function submitTexture(message) {
 		if (!results.length) {
 			await cancelSubmission(message, strings.submission.does_not_exist + "\n" + search);
 			continue;
-		} else if (results.length == 1) {
+		}
+
+		if (results.length == 1) {
 			await makeEmbed(message, results[0], attachment, param);
 			continue;
 		}
@@ -100,5 +97,6 @@ module.exports = async function submitTexture(message) {
 
 		await choiceEmbed(message, mappedResults);
 	}
+
 	if (!ongoingMenu && message.deletable) await message.delete();
 };
