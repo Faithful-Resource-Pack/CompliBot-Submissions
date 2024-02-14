@@ -128,7 +128,7 @@ async function addContributorRole(client, packName, guildID, authors) {
 	return Promise.all(
 		authors
 			.map((author) => guild.members.cache.get(author))
-			.filter((user) => !user.roles.cache.has(role))
+			.filter((user) => !user?.roles.cache.has(role))
 			.map((user) => user.roles.add(role).catch(() => {})),
 	);
 }
