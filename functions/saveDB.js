@@ -13,20 +13,21 @@ const handleError = require("./handleError");
  * @author Evorp, Juknum
  * @param {import("discord.js").Client} client
  * @param {string} commitMessage
- * @param {{org?: string, repo?: string, branch?: string}} params configure where to backup to
+ * @param {{ org?: string, repo?: string, branch?: string, folder?: string }} params configure where to backup to
  * @returns {Promise<{ successfulPushes: string[], failedPushes: string[], commit?: string }>}
  */
 module.exports = async function saveDB(
 	client,
 	commitMessage = "Daily Backup",
-	{ org, repo, branch },
+	{ org, repo, branch, folder },
 ) {
 	const { backup } = require("@resources/settings.json");
 	org ||= backup.git.org;
 	repo ||= backup.git.repo;
 	branch ||= backup.git.branch;
+	folder ||= backup.git.folder;
 
-	const folderPath = join(process.cwd(), "backups", backup.git.folder);
+	const folderPath = join(process.cwd(), "backups", folder);
 	mkdirSync(folderPath, { recursive: true });
 
 	const successfulPushes = [];
