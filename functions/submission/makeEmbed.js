@@ -19,7 +19,12 @@ const { loadImage } = require("@napi-rs/canvas");
  * @param {import("discord.js").Attachment} attachment raw texture to embed
  * @param {{ description?: string, authors: string[] }} params additional info (e.g. description, coauthors)
  */
-module.exports = async function makeEmbed(message, texture, attachment, { description, authors } = {}) {
+module.exports = async function makeEmbed(
+	message,
+	texture,
+	attachment,
+	{ description, authors } = {},
+) {
 	// so the user doesn't think the bot is dead when it's loading a huge comparison
 	message.channel.sendTyping();
 	const packName = getPackByChannel(message.channel.id, "submit");
@@ -27,11 +32,11 @@ module.exports = async function makeEmbed(message, texture, attachment, { descri
 
 	// load previous contributions if applicable
 	if (description.startsWith("+")) {
-		const allContributions = texture.contributions.filter(
-			(contribution) => contribution.pack == packName,
-		);
-		if (allContributions.length) {
-			const lastContribution = allContributions.sort((a, b) => (a.date > b.date ? -1 : 1))[0];
+		const lastContribution = texture.contributions
+			.filter((contribution) => contribution.pack === packName)
+			.sort((a, b) => (a.date > b.date ? -1 : 1))?.[0];
+
+		if (lastContribution) {
 			for (const author of lastContribution.authors)
 				if (!authors.includes(author)) authors.push(author);
 		}
