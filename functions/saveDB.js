@@ -19,7 +19,7 @@ const handleError = require("./handleError");
 module.exports = async function saveDB(
 	client,
 	commitMessage = "Daily Backup",
-	{ org, repo, branch, folder },
+	{ org, repo, branch, folder } = {},
 ) {
 	const { backup } = require("@resources/settings.json");
 	org ||= backup.git.org;
