@@ -7,21 +7,20 @@ const { EmbedBuilder } = require("discord.js");
  * @param {string} description what to log
  * @param {{ color?: string, title?: string, codeBlocks?: string }} params optional config
  */
-module.exports = async function devLogger(client, description, params = {}) {
-	// declared inside module body to stop init errors from unhandledRejection
+module.exports = async function devLogger(client, description, { color, title, codeBlocks } = {}) {
 	const settings = require("@resources/settings.json");
 
 	/** @type {import("discord.js").TextChannel} */
 	const channel = client.channels.cache.get(process.env.LOG_CHANNEL);
-	if (!channel) return;
+	if (!channel) return; // avoid infinite loop when crash is outside of client
 
 	// empty strings still enable codeblocks, just no highlighting
-	if (params.codeBlocks != null) description = `\`\`\`${params.codeBlocks}\n${description}\`\`\``;
+	if (codeBlocks != null) description = `\`\`\`${codeBlocks}\n${description}\`\`\``;
 
 	const embed = new EmbedBuilder()
-		.setTitle(params.title ?? "Unhandled Rejection")
+		.setTitle(title || "Unhandled Rejection")
 		.setDescription(description)
-		.setColor(params.color ?? settings.colors.red)
+		.setColor(color || settings.colors.red)
 		.setTimestamp();
 
 	return channel.send({ embeds: [embed] }).catch(console.error);

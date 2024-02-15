@@ -19,21 +19,21 @@ const { loadImage } = require("@napi-rs/canvas");
  * @param {import("discord.js").Attachment} attachment raw texture to embed
  * @param {{ description?: string, authors: string[] }} params additional info (e.g. description, coauthors)
  */
-module.exports = async function makeEmbed(message, texture, attachment, params = {}) {
+module.exports = async function makeEmbed(message, texture, attachment, { description, authors } = {}) {
 	// so the user doesn't think the bot is dead when it's loading a huge comparison
 	message.channel.sendTyping();
 	const packName = getPackByChannel(message.channel.id, "submit");
 	let imgButtons;
 
 	// load previous contributions if applicable
-	if (params.description.startsWith("+")) {
+	if (description.startsWith("+")) {
 		const allContributions = texture.contributions.filter(
 			(contribution) => contribution.pack == packName,
 		);
 		if (allContributions.length) {
 			const lastContribution = allContributions.sort((a, b) => (a.date > b.date ? -1 : 1))[0];
 			for (const author of lastContribution.authors)
-				if (!params.authors.includes(author)) params.authors.push(author);
+				if (!authors.includes(author)) authors.push(author);
 		}
 	}
 
@@ -48,7 +48,7 @@ module.exports = async function makeEmbed(message, texture, attachment, params =
 		.addFields(
 			{
 				name: "Author",
-				value: `<@!${params.authors.join(">\n<@!")}>`,
+				value: `<@!${authors.join(">\n<@!")}>`,
 				inline: true,
 			},
 			{ name: "Status", value: `<:pending:${settings.emojis.pending}> Pending...`, inline: true },
@@ -100,8 +100,8 @@ module.exports = async function makeEmbed(message, texture, attachment, params =
 		imgButtons = [imageButtons];
 	}
 
-	if (params.description) embed.setDescription(params.description);
-	if (params.authors.length > 1) embed.data.fields[0].name += "s";
+	if (description) embed.setDescription(description);
+	if (authors.length > 1) embed.data.fields[0].name += "s";
 
 	const msg = await message.channel.send({
 		embeds: [embed],
@@ -114,7 +114,7 @@ module.exports = async function makeEmbed(message, texture, attachment, params =
 };
 
 /**
- * Return organized path data for a given texture
+ * Generate embed fields for a given texture's paths
  * @author Juknum
  * @param {import("@helpers/jsdoc").Texture} texture texture to get paths and uses from
  * @returns {import("discord.js").APIEmbedField[]} usable embed field data
