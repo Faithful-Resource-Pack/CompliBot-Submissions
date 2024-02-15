@@ -57,20 +57,9 @@ module.exports = async function saveDB(
 	}
 
 	if (DEBUG) console.log(`Downloaded database files: ${successfulPushes}`);
-	const commit = await pushToGitHub(
-		params.org,
-		params.repo,
-		params.branch,
-		commitMessage,
-		"./backups/",
-	).catch((err) => {
-		if (DEBUG) console.log(`Branch ${params.branch} doesn't exist for repository ${params.repo}!`);
-		if (!DEV)
-			handleError(
-				client,
-				err,
-				`Could not commit backup to ${params.org}/[${params.repo}:${params.branch}]`,
-			);
+	const commit = await pushToGitHub(org, repo, branch, commitMessage, "./backups/").catch((err) => {
+		if (DEBUG) console.log(`Branch ${branch} doesn't exist for repository ${repo}!`);
+		if (!DEV) handleError(client, err, `Could not commit backup to ${org}/[${repo}:${branch}]`);
 	});
 
 	return { successfulPushes, failedPushes, commit };
