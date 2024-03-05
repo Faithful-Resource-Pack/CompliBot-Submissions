@@ -6,13 +6,13 @@
 
 /**
  * Fetch messages from a Discord channel
- * @author Juknum
+ * @author Juknum, Evorp
  * @param {import("discord.js").Client} client
  * @param {string} channelID channel where messages are fetched from
- * @param {MessageFilter} filter
- * @returns {Promise<import("discord.js").Message[]>} Returns an Array of all fetched messages
+ * @param {MessageFilter} [filter] filter incoming messages
+ * @returns {Promise<import("discord.js").Message[]>} fetched messages
  */
-module.exports = async function getMessages(client, channelID, filter) {
+module.exports = async function getMessages(client, channelID, filter = () => true) {
 	/** @type {import("discord.js").TextChannel} */
 	const channel = client.channels.cache.get(channelID);
 	if (!channel) return [];

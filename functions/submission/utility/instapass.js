@@ -26,9 +26,11 @@ const { EmbedBuilder } = require("discord.js");
  * @param {import("discord.js").User | import("discord.js").GuildMember} member who instapassed it
  */
 module.exports = async function instapass(message, member) {
-	const packName = getPackByChannel(message.channel.id);
 	const packs = require("@resources/packs.json");
-	const channelOutID = packs[packName].submission.channels.results;
+	/** @type {import("@helpers/jsdoc").Pack} */
+	const pack = packs[getPackByChannel(message.channel.id)];
+
+	const channelOutID = pack.submission.channels.results;
 	const status = `<:instapass:${settings.emojis.instapass}> Instapassed by <@${member.id}>`;
 
 	await changeStatus(message, {
@@ -57,11 +59,11 @@ module.exports = async function instapass(message, member) {
 	// random folder name so multiple textures can be instapassed at once
 	const basePath = `./instapassedTextures/${randomBytes(6).toString("hex")}`;
 
-	const textureInfo = await downloadTexture(texture, packName, basePath);
+	const textureInfo = await downloadTexture(texture, pack, basePath);
 
-	await postContributions(generateContributionData(texture, packName));
-	await addContributorRole(message.client, packName, message.channel.guildId, texture.authors);
-	await pushTextures(basePath, packName, `Instapassed ${textureInfo.name} from ${formattedDate()}`);
+	await postContributions(generateContributionData(texture, pack));
+	await addContributorRole(message.client, pack, message.channel.guildId, texture.authors);
+	await pushTextures(basePath, pack.id, `Instapassed ${textureInfo.name} from ${formattedDate()}`);
 
 	if (DEBUG) console.log(`Texture instapassed: ${message.embeds[0].title}`);
 };

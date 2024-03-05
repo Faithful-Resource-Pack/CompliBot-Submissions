@@ -23,7 +23,9 @@ const axios = require("axios").default;
  * @param {string} channelResultID result channel to download from
  */
 async function downloadResults(client, channelResultID) {
-	const packName = getPackByChannel(channelResultID, "results");
+	const packs = require("@resources/packs.json");
+	/** @type {import("@helpers/jsdoc").Pack} */
+	const pack = packs[getPackByChannel(channelResultID, "results")];
 
 	// get messages from the same day
 	const delayedDate = new Date();
@@ -43,13 +45,13 @@ async function downloadResults(client, channelResultID) {
 	const allContribution = [];
 
 	for (const texture of messages.map(mapMessage)) {
-		await downloadTexture(texture, packName, "./downloadedTextures");
+		await downloadTexture(texture, pack, "./downloadedTextures");
 
-		allContribution.push(generateContributionData(texture, packName));
+		allContribution.push(generateContributionData(texture, pack));
 
 		addContributorRole(
 			client,
-			packName,
+			pack,
 			client.channels.cache.get(channelResultID).guildId,
 			texture.authors,
 		);
@@ -63,12 +65,11 @@ async function downloadResults(client, channelResultID) {
  * Download a single texture to all its paths locally
  * @author Juknum, Evorp
  * @param {MappedMessage} texture message and texture info
- * @param {string} packName which pack to download it to
+ * @param {import("@helpers/jsdoc").Pack} pack which pack to download it to
  * @param {string} baseFolder where to download the texture to
  * @returns {Promise<import("@helpers/jsdoc").Texture>} info
  */
-async function downloadTexture(texture, packName, baseFolder) {
-	const packs = require("@resources/packs.json");
+async function downloadTexture(texture, pack, baseFolder) {
 	if (!texture.id || isNaN(Number(texture.id))) {
 		if (DEBUG) console.error(`Non-numerical texture ID found: ${texture.id}`);
 		return;
@@ -84,10 +85,10 @@ async function downloadTexture(texture, packName, baseFolder) {
 		const paths = textureInfo.paths.filter((path) => path.use == use.id);
 
 		// need to redefine pack folder every time since java/bedrock are different folders
-		const packFolder = packs[packName].github[use.edition]?.repo;
+		const packFolder = pack.github[use.edition]?.repo;
 
 		if (!packFolder && DEBUG)
-			console.log(`GitHub repository not found for pack and edition: ${packName} ${use.edition}`);
+			console.log(`GitHub repository not found for pack and edition: ${pack.name} ${use.edition}`);
 
 		for (const path of paths) {
 			// write file to every version of a path
@@ -112,14 +113,13 @@ async function downloadTexture(texture, packName, baseFolder) {
  * Add a contributor role to users without one
  * @author Evorp
  * @param {import("discord.js").Client} client
- * @param {string} packName different packs have different roles
+ * @param {import("@helpers/jsdoc").Pack} pack different packs have different roles
  * @param {string} guildID where to add the role to
  * @param {string[]} authors which authors to add roles to
  */
-async function addContributorRole(client, packName, guildID, authors) {
-	const packs = require("@resources/packs.json");
+async function addContributorRole(client, pack, guildID, authors) {
 	const guild = client.guilds.cache.get(guildID);
-	const role = packs[packName].submission.contributor_role;
+	const role = pack.submission.contributor_role;
 
 	// if the pack doesn't have a designated role
 	if (!role) return;
@@ -151,14 +151,13 @@ const mapMessage = (message) => ({
  * Converts a mapped message to a contribution
  * @author Juknum
  * @param {MappedMessage} texture
- * @param {string} packName
+ * @param {import("@helpers/jsdoc").Pack} pack
  * @returns {import("@helpers/jsdoc").Contribution}
  */
-const generateContributionData = (texture, packName) => ({
+const generateContributionData = (texture, pack) => ({
 	date: texture.date,
-	/** @todo switch this for resolution field in pack interface */
-	resolution: Number(packName.match(/\d+/)?.[0] ?? 32), // stupid workaround but it works
-	pack: packName,
+	resolution: pack.resolution,
+	pack: pack.id,
 	texture: texture.id,
 	authors: texture.authors,
 });
@@ -175,10 +174,13 @@ async function postContributions(...contributions) {
 				bot: process.env.API_TOKEN,
 			},
 		});
-		if (DEBUG) console.log(`Added contribution(s): ${contributions}`);
+		if (DEBUG) console.log(`Added contribution(s): ${JSON.stringify(contributions, null, 4)}`);
 	} catch (err) {
 		const pack = contributions[0]?.pack;
-		if (DEBUG) console.error(`Couldn't add contribution(s) for pack: ${pack}`);
+		if (DEBUG) {
+			console.error(`Failed to add contribution(s) for pack: ${pack}`);
+			console.error(JSON.stringify(contributions, null, 4));
+		}
 		else handleError(client, err, "Contribution Error");
 	}
 }
