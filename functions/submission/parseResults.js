@@ -180,8 +180,7 @@ async function postContributions(...contributions) {
 		if (DEBUG) {
 			console.error(`Failed to add contribution(s) for pack: ${pack}`);
 			console.error(JSON.stringify(contributions, null, 4));
-		}
-		else handleError(client, err, "Contribution Error");
+		} else handleError(client, err, "Contribution Error");
 	}
 }
 

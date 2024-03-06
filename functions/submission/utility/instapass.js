@@ -61,8 +61,9 @@ module.exports = async function instapass(message, member) {
 
 	const textureInfo = await downloadTexture(texture, pack, basePath);
 
-	await postContributions(generateContributionData(texture, pack));
-	await addContributorRole(message.client, pack, message.channel.guildId, texture.authors);
+	// not awaited since not timebound
+	postContributions(generateContributionData(texture, pack));
+	addContributorRole(message.client, pack, message.channel.guildId, texture.authors);
 	await pushTextures(basePath, pack.id, `Instapassed ${textureInfo.name} from ${formattedDate()}`);
 
 	if (DEBUG) console.log(`Texture instapassed: ${message.embeds[0].title}`);

@@ -9,7 +9,7 @@ const axios = require("axios").default;
 module.exports = async function getAuthors(message) {
 	const authors = [message.author.id];
 
-	// regex to detect text between curly brackets
+	// detect text between curly brackets
 	const names = message.content
 		.match(/(?<=\{)(.*?)(?=\})/g)
 		?.map((name) => name.toLowerCase().trim());

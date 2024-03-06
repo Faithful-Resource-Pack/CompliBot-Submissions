@@ -1,7 +1,7 @@
 const { magnifyToAttachment } = require("@images/magnify");
 const tile = require("@images/tile");
 const palette = require("@images/palette");
-const difference = require("@images/difference");
+const { difference } = require("@images/difference");
 
 const { EmbedBuilder, PermissionFlagsBits } = require("discord.js");
 

@@ -54,7 +54,7 @@ module.exports = async function submitTexture(message) {
 		}
 
 		// if there's no id, take image url to get name of texture
-		const search = attachment.url.split("?")[0].split("/").slice(-1)[0].replace(".png", "");
+		const search = attachment.url.split("?")[0].split("/").at(-1)[0].replace(".png", "");
 
 		// if there's no search and no id the submission can't be valid
 		if (!search) {

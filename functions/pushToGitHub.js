@@ -62,7 +62,7 @@ module.exports = async function pushToGitHub(org, repo, branch, commitMessage, l
  * @param {string} branch GitHub branch of the repository
  * @returns {Promise<{commitSha: string, treeSha: string}>}
  */
-const getCurrentCommit = async (octo, org, repo, branch) => {
+async function getCurrentCommit(octo, org, repo, branch) {
 	const { data: refData } = await octo.git.getRef({
 		owner: org,
 		repo,
@@ -78,7 +78,7 @@ const getCurrentCommit = async (octo, org, repo, branch) => {
 		commitSha,
 		treeSha: commitData.tree.sha,
 	};
-};
+}
 
 /**
  * Get file as utf8 file
@@ -89,7 +89,7 @@ const getCurrentCommit = async (octo, org, repo, branch) => {
 const getFileAsUTF8 = (filePath) => readFileSync(filePath, { encoding: "utf-8" });
 
 /**
- * Get file as binary file (used for .png files)
+ * Get file as binary (used for image files)
  * @param {string} filePath
  * @returns {string} a base64 file
  */
@@ -107,7 +107,7 @@ const createBlobForFile = (octo, org, repo) => async (filePath) => {
 	let content;
 	let encoding = "utf-8";
 
-	if (filePath.endsWith(".png")) {
+	if ([".png", ".tga"].some((ex) => filePath.endsWith(ex))) {
 		content = getFileAsBinary(filePath);
 		encoding = "base64";
 	} else content = getFileAsUTF8(filePath);
@@ -130,11 +130,11 @@ const createBlobForFile = (octo, org, repo) => async (filePath) => {
  * @param {string[]} paths
  * @param {string} parentTreeSha
  */
-const createNewTree = async (octo, owner, repo, blobs, paths, parentTreeSha) => {
+async function createNewTree(octo, owner, repo, blobs, paths, parentTreeSha) {
 	const tree = blobs.map(({ sha }, index) => ({
 		path: paths[index],
-		mode: `100644`,
-		type: `blob`,
+		mode: "100644",
+		type: "blob",
 		sha,
 	})); //as Octokit.GitCreateTreeParamsTree()
 	const { data } = await octo.git.createTree({
@@ -145,7 +145,7 @@ const createNewTree = async (octo, owner, repo, blobs, paths, parentTreeSha) => 
 	});
 
 	return data;
-};
+}
 
 /**
  * Create a new commit
