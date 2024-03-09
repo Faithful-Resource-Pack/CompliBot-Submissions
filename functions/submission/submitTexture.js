@@ -41,20 +41,8 @@ module.exports = async function submitTexture(message) {
 			authors: await getAuthors(message),
 		};
 
-		if (id) {
-			try {
-				/** @type {import("@helpers/jsdoc").Texture} */
-				const texture = (await axios.get(`${process.env.API_URL}textures/${id}/all`)).data;
-				await makeEmbed(message, texture, attachment, param);
-			} catch {
-				// texture id doesn't exist
-				await cancelSubmission(message, strings.submission.unknown_id + err);
-			}
-			continue;
-		}
-
 		// if there's no id, take image url to get name of texture
-		const search = attachment.url.split("?")[0].split("/").slice(-1)[0].replace(".png", "");
+		const search = id ?? attachment.url.split("?")[0].split("/").slice(-1)[0].replace(".png", "");
 
 		// if there's no search and no id the submission can't be valid
 		if (!search) {
