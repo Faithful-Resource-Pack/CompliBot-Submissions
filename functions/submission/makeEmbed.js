@@ -48,7 +48,7 @@ module.exports = async function makeEmbed(
 		.setColor(settings.colors.blue)
 		.setTitle(`[#${texture.id}] ${texture.name}`)
 		.setURL(
-			`https://webapp.faithfulpack.net/?#/gallery/${texture.uses[0].edition}/${packName}/latest/all/?show=${texture.id}`,
+			`https://webapp.faithfulpack.net/gallery/${texture.uses[0].edition}/${packName}/latest/all/?show=${texture.id}`,
 		)
 		.addFields(
 			{
