@@ -13,14 +13,14 @@
         "prettier": "^3.2.5"
     },
     "dependencies": {
-        "@napi-rs/canvas": "^0.1.49",
+        "@napi-rs/canvas": "^0.1.51",
         "@octokit/rest": "^20.0.2",
-        "axios": "^1.6.7",
+        "axios": "^1.6.8",
         "cron": "^3.1.6",
         "discord.js": "^14.14.1",
         "dotenv": "^16.4.5",
         "gif-encoder-2": "^1.0.5",
-        "globby": "^11.1.0",
+        "globby": "^14.0.1",
         "module-alias": "^2.2.3"
     },
     "_moduleAliases": {

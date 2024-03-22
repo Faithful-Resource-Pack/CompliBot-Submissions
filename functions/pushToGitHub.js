@@ -3,11 +3,12 @@
  * https://dev.to/lucis/how-to-push-files-programatically-to-a-repository-using-octokit-with-typescript-1nj0
  */
 
-const glob = require("globby");
+const { readFileSync } = require("fs");
 const { normalize, relative } = require("path");
 
 const { Octokit } = require("@octokit/rest");
-const { readFileSync } = require("fs");
+// workaround for pure ESM module (not sure if this even needed?)
+const glob = (path) => import("globby").then(({ globby }) => globby(path));
 
 /**
  * Premade function for pushing directly to GitHub
@@ -19,9 +20,7 @@ const { readFileSync } = require("fs");
  * @returns {Promise<string>} sent commit SHA
  */
 module.exports = async function pushToGitHub(org, repo, branch, commitMessage, localPath) {
-	const octo = new Octokit({
-		auth: process.env.GIT_TOKEN,
-	});
+	const octo = new Octokit({ auth: process.env.GIT_TOKEN });
 
 	const currentCommit = await getCurrentCommit(octo, org, repo, branch);
 	const filesPaths = await glob(localPath);
