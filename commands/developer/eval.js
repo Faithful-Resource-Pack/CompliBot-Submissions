@@ -33,11 +33,9 @@ module.exports = {
 				.replace(/@/g, "@" + String.fromCharCode(8203));
 		};
 		/**
-		 * VARIABLES USED IN eval()
+		 * VARIABLES USED IN eval
 		 */
-
-		const client = interaction.client;
-		const channel = interaction.channel;
+		const { client, channel, guild } = interaction;
 
 		// ----
 

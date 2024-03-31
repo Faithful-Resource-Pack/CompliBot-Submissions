@@ -5,7 +5,7 @@ const GIFEncoder = require("gif-encoder-2");
  * https://github.com/benjaminadk/gif-encoder-2/blob/master/src/GIFEncoder.js#L241
  */
 module.exports = class GIFEncoderFixed extends GIFEncoder {
-	findClosest(c) {
+	findClosest() {
 		return 0;
 	}
 };

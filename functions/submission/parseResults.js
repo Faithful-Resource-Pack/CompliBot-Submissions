@@ -2,7 +2,6 @@ const settings = require("@resources/settings.json");
 const DEBUG = process.env.DEBUG.toLowerCase() == "true";
 
 const getMessages = require("@helpers/getMessages");
-const handleError = require("@functions/handleError");
 const getPackByChannel = require("@submission/utility/getPackByChannel");
 
 const { mkdirSync, writeFile } = require("fs");
@@ -99,7 +98,7 @@ async function downloadTexture(texture, pack, baseFolder) {
 				mkdirSync(fullPath.slice(0, fullPath.lastIndexOf("/")), { recursive: true });
 
 				// better to use the callback version because .then and .catch are sent to the same output
-				writeFile(fullPath, Buffer.from(imageFile), (err) => {
+				writeFile(fullPath, imageFile, (err) => {
 					if (DEBUG) return console.log(err ?? `Added texture to path: ${fullPath}`);
 				});
 			}
@@ -144,7 +143,7 @@ const mapMessage = (message) => ({
 	// only get the numbers (discord id)
 	authors: message.embeds[0].fields[0].value.split("\n").map((author) => author.match(/\d+/g)?.[0]),
 	date: message.createdTimestamp,
-	id: message.embeds[0].title.match(/(?<=\[\#)(.*?)(?=\])/)?.[0],
+	id: message.embeds[0].title.match(/(?<=\[#)(.*?)(?=\])/)?.[0],
 });
 
 /**
@@ -176,11 +175,10 @@ async function postContributions(...contributions) {
 		});
 		if (DEBUG) console.log(`Added contribution(s): ${JSON.stringify(contributions, null, 4)}`);
 	} catch (err) {
-		const pack = contributions[0]?.pack;
 		if (DEBUG) {
-			console.error(`Failed to add contribution(s) for pack: ${pack}`);
+			console.error(`Failed to add contribution(s) for pack: ${contributions[0]?.pack}`);
 			console.error(JSON.stringify(contributions, null, 4));
-		} else handleError(client, err, "Contribution Error");
+		}
 	}
 }
 

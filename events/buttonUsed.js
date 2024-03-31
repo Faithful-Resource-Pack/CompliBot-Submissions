@@ -23,13 +23,15 @@ module.exports = {
 			interaction.message?.embeds[0]?.thumbnail?.url ??
 			interaction.message.attachments.first()?.url;
 
+		// curly brackets used to fix scoping issues
 		switch (interaction.customId) {
-			case "magnifyButton":
+			case "magnifyButton": {
 				return interaction.reply({
 					files: [await magnifyToAttachment(image)],
 					ephemeral: true,
 				});
-			case "tileButton":
+			}
+			case "tileButton": {
 				// tile + magnify
 				const tileBuffer = await tile(interaction, image);
 				if (!tileBuffer) return;
@@ -37,11 +39,13 @@ module.exports = {
 					files: [await magnifyToAttachment(tileBuffer)],
 					ephemeral: true,
 				});
-			case "paletteButton":
+			}
+			case "paletteButton": {
 				// since there's multiple components in palette it's easier to reply there
 				return palette(interaction, image);
+			}
 			case "viewRawButton": // compatibility with old submissions
-			case "diffButton":
+			case "diffButton": {
 				const packName = getPackByChannel(message.channel.id);
 
 				const id = message.embeds?.[0]?.title?.match(/(?<=\[#)(.*?)(?=\])/)?.[0];
@@ -72,8 +76,8 @@ module.exports = {
 					files: [diff],
 					ephemeral: true,
 				});
-
-			case "deleteButton":
+			}
+			case "deleteButton": {
 				let original = interaction.message.interaction?.user;
 
 				// no interaction found, try replies instead
@@ -100,11 +104,13 @@ module.exports = {
 					content: `This interaction is reserved for ${user}!`,
 					ephemeral: true,
 				});
-			default:
+			}
+			default: {
 				return warnUser(
 					interaction,
 					strings.bot.missing_interaction.replace("%INTERACTION%", "button"),
 				);
+			}
 		}
 	},
 };

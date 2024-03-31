@@ -9,7 +9,6 @@ const {
 	EmbedBuilder,
 	ActionRowBuilder,
 	StringSelectMenuBuilder,
-	SelectMenuInteraction,
 } = require("discord.js");
 const axios = require("axios").default;
 
@@ -54,7 +53,7 @@ module.exports = async function choiceEmbed(message, choices) {
 	const choiceMessage = await message.reply({ embeds: [embed], components: components });
 	await addDeleteButton(choiceMessage);
 
-	/** @param {SelectMenuInteraction} interaction */
+	/** @param {import("discord.js").SelectMenuInteraction} interaction */
 	const filter = (interaction) =>
 		interaction.customId.startsWith("choiceEmbed") && // format is choiceEmbed_<ROWNUMBER>
 		interaction.message.id == choiceMessage.id &&
