@@ -155,7 +155,8 @@ async function sendToResults(client, pack, delay = undefined) {
  */
 function getPercentage(upvotes, downvotes) {
 	const upvotePercentage =
-		((upvotes?.count - 1) * 100) / (upvotes?.count - 1 + (downvotes.count - 1));
+		((upvotes?.count - 1) * 100) / (upvotes?.count - 1 + (downvotes?.count - 1));
+	// handle undefined vote counts (probably discord api problem)
 	if (isNaN(upvotePercentage)) return "";
 	return `(${Number(upvotePercentage.toFixed(2))}% upvoted)`;
 }

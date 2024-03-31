@@ -45,7 +45,8 @@ module.exports = async function retrieveSubmission(client, channelID, delay) {
 	}));
 
 	const messagesUpvoted = mappedMessages.filter((message) => {
-		// set to one because bot reaction (0 can never be reached)
+		// handle undefined vote counts (probably discord api problem)
+		// fall back to one to account for bot reaction
 		const upvoteCount = message.upvote?.count ?? 1;
 		const downvoteCount = message.downvote?.count ?? 1;
 
