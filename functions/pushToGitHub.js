@@ -7,7 +7,7 @@ const { readFileSync } = require("fs");
 const { normalize, relative } = require("path");
 
 const { Octokit } = require("@octokit/rest");
-// workaround for pure ESM module (not sure if this even needed?)
+// globby is pure ESM and we're on CJS (not sure if it's even needed anymore)
 const glob = (path) => import("globby").then(({ globby }) => globby(path));
 
 /**

@@ -14,7 +14,7 @@
     },
     "dependencies": {
         "@napi-rs/canvas": "^0.1.51",
-        "@octokit/rest": "^20.0.2",
+        "@octokit/rest": "^20.1.0",
         "axios": "^1.6.8",
         "cron": "^3.1.6",
         "discord.js": "^14.14.1",
