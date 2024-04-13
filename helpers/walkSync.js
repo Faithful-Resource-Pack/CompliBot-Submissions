@@ -10,7 +10,7 @@ const { sep } = require("path");
  */
 module.exports = function walkSync(dir, filelist = []) {
 	// add trailing slash if not present
-	if (dir[dir.length - 1] != sep) dir += sep;
+	if (!dir.endsWith(sep)) dir += sep;
 	for (const file of readdirSync(dir)) {
 		if (statSync(dir + file).isDirectory())
 			// read directories inside directories recursively
