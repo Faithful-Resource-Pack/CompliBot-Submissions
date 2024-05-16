@@ -18,7 +18,7 @@ module.exports = async function cancelSubmission(message, error = "No error give
 	if (
 		hasPermission(message.member, "any") &&
 		// fix no error messages showing for council+
-		error == strings.submission.image_not_attached
+		error === strings.submission.image_not_attached
 	)
 		return;
 
