@@ -35,15 +35,16 @@ module.exports = async function cancelSubmission(message, error = "No error give
 		});
 
 	try {
-		const msg = message.deletable
+		const noticeMessage = message.deletable
 			? await message.reply({ embeds: [embed] })
 			: await message.channel.send({ embeds: [embed] });
 
-		if (msg.deletable) addDeleteButton(msg);
+		if (noticeMessage.deletable) addDeleteButton(noticeMessage);
 
 		setTimeout(() => {
-			if (msg.deletable) msg.delete();
-			if (message.deletable) message.delete();
+			// throws error if already deleted
+			noticeMessage.delete().catch(() => {});
+			message.delete().catch(() => {});
 		}, 30000);
 	} catch {
 		// message couldn't be deleted

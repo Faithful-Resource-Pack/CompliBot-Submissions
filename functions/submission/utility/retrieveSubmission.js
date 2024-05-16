@@ -40,7 +40,7 @@ module.exports = async function retrieveSubmission(client, channelID, delay) {
 		upvote: message.reactions.cache.get(settings.emojis.upvote),
 		downvote: message.reactions.cache.get(settings.emojis.downvote),
 		embed: message.embeds[0],
-		components: [...message.components],
+		components: Array.from(message.components),
 		message: message,
 	}));
 

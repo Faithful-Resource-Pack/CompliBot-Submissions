@@ -85,7 +85,7 @@ module.exports = async function choiceEmbed(message, choices) {
 	});
 
 	collector.once("end", async () => {
-		// throws error if already deleted, for some reason .deletable doesn't work?
+		// throws error if already deleted
 		message.delete().catch(() => {});
 		choiceMessage.delete().catch(() => {});
 	});

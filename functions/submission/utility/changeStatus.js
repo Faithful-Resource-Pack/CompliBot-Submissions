@@ -23,7 +23,7 @@ module.exports = async function changeStatus(
 	embed.data.fields[1].value = status;
 
 	if (color) embed.setColor(color);
-	if (!components) components = [...message.components];
+	if (!components) components = Array.from(message.components);
 	await message.edit({ embeds: [embed], components });
 
 	// no original post to edit

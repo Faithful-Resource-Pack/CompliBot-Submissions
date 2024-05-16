@@ -25,7 +25,7 @@ module.exports = async function getMessages(client, channelID, filter = () => tr
 
 	while (true) {
 		const messages = await channel.messages.fetch(options);
-		const out = [...messages.values()].filter(filter);
+		const out = Array.from(messages.values()).filter(filter);
 
 		// nothing met criteria
 		if (!out.length) return fetchedMessages.reverse(); // return from oldest -> newest

@@ -39,26 +39,27 @@ module.exports = async function reactionMenu(openReaction, user) {
 	if (DEBUG) console.log(`Reaction tray opened by: ${user.username}`);
 	for (const emoji of trayReactions) await message.react(emoji);
 
-	/**
-	 * @param {import("discord.js").MessageReaction} collectedReaction
-	 * @param {import("discord.js").User} collectedUser
-	 */
-	const filter = (collectedReaction, collectedUser) =>
-		trayReactions.includes(collectedReaction.emoji.id) && collectedUser.id === user.id;
-
 	/** @type {import("discord.js").MessageReaction} await reaction from user */
-	const actionReaction = (
-		await message.awaitReactions({ filter, max: 1, time: 30000, errors: ["time"] }).catch((err) => {
+	const actionReaction = await message
+		.awaitReactions({
+			filter: (collectedReaction, collectedUser) =>
+				trayReactions.includes(collectedReaction.emoji.id) && collectedUser.id === user.id,
+			max: 1,
+			time: 30000,
+			errors: ["time"],
+		})
+		// grab first person to react
+		.then((res) => res?.first())
+		.catch((err) => {
 			closeTray(message, allReactions);
 			console.error(err);
-		})
-	)?.first(); // first person to react
+		});
 
 	// if there's no reaction collected just reset the message and return early
 	if (!actionReaction) return closeTray(message, trayReactions);
 
 	/** @type {import("discord.js").User} used to check permissions */
-	const reactor = [...actionReaction.users.cache.values()].filter((user) => !user.bot)[0];
+	const reactor = Array.from(actionReaction.users.cache.values()).filter((user) => !user.bot)[0];
 
 	if (
 		actionReaction.emoji.id == settings.emojis.delete &&

@@ -22,7 +22,7 @@ module.exports = async function submitTexture(message) {
 
 	let ongoingMenu;
 	// no forEach because it doesn't play well with async
-	for (const [attachmentIndex, attachment] of [...message.attachments.values()].entries()) {
+	for (const [attachmentIndex, attachment] of Array.from(message.attachments.values()).entries()) {
 		if (DEBUG)
 			console.log(`Texture submitted: ${attachmentIndex + 1} of ${message.attachments.size}`);
 

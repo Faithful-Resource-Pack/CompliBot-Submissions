@@ -20,11 +20,11 @@ module.exports = async function tile(interaction, origin) {
 				new EmbedBuilder()
 					.setTitle(strings.command.image.output_too_big)
 					.setDescription(
-						`Maximum output allowed: 512x512px²\nYours is: ${input.width * 3}x ${
+						`Maximum output allowed: 512x512px²\nYours is: ${input.width * 3}x${
 							input.height * 3
 						}px²`,
 					)
-					.setColor(settings.colors.blue),
+					.setColor(settings.colors.red),
 			],
 			ephemeral: true,
 		});
