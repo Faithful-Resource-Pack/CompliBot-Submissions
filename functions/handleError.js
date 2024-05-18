@@ -11,19 +11,20 @@ const DEV = process.env.DEV.toLowerCase() == "true";
  * @param {string} type error title
  */
 module.exports = function handleError(client, error, type) {
-	if (DEV) return console.error(error?.stack ?? error);
+	const consoleDescription = `${type}\n${error.stack || error}`;
+	if (DEV) return console.error(consoleDescription);
 
-	const description = error.stack || JSON.stringify(error);
+	const embedDescription = error.stack || JSON.stringify(error);
 	// if there's no stack, interpret the error as json
 	const codeBlocks = error.stack ? "" : "json";
 
 	if (error instanceof DiscordAPIError)
 		// discord's problem (usually), not ours
-		return console.error(error, type, description);
+		return console.error(consoleDescription);
 
 	// silence EPROTO errors
-	if (error.code == "EPROTO") return console.error(error, type, description);
+	if (error.code == "EPROTO") return console.error(consoleDescription);
 
 	// DO NOT DELETE THIS CATCH, IT AVOIDS INFINITE LOOP IF THIS PROMISE REJECTS
-	devLogger(client, description, { title: type, codeBlocks }).catch(console.error);
+	devLogger(client, embedDescription, { title: type, codeBlocks }).catch(console.error);
 };

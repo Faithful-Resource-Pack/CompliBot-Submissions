@@ -1,12 +1,11 @@
 const DEV = process.env.DEV.toLowerCase() == "true";
 const DEBUG = process.env.DEBUG.toLowerCase() == "true";
 
-const { mkdirSync, writeFileSync } = require("fs");
-
 const pushToGitHub = require("@functions/pushToGitHub");
 const { join } = require("path");
 const axios = require("axios").default;
 const handleError = require("./handleError");
+const { writeFile, mkdir } = require("fs/promises");
 
 /**
  * Push all raw api collections to github
@@ -28,38 +27,40 @@ module.exports = async function saveDB(
 	folder ||= backup.git.folder;
 
 	const folderPath = join(process.cwd(), "backups", folder);
-	mkdirSync(folderPath, { recursive: true });
+	await mkdir(folderPath, { recursive: true });
 
 	const successfulPushes = [];
 	const failedPushes = [];
-	for (const [filename, url] of Object.entries(backup.urls)) {
-		try {
-			const fetched = (
-				await axios.get(process.env.API_URL + url, {
+
+	await Promise.all(
+		Object.entries(backup.urls).map(([filename, url]) =>
+			axios
+				.get(process.env.API_URL + url, {
 					headers: {
 						// for privileged collections like addons, ignored if not needed
 						bot: process.env.API_TOKEN,
 					},
 				})
-			).data;
-
-			writeFileSync(join(folderPath, `${filename}.json`), JSON.stringify(fetched), {
-				flag: "w+",
-				encoding: "utf-8",
-			});
-
-			successfulPushes.push(filename);
-		} catch (err) {
-			failedPushes.push(filename);
-			if (DEBUG) console.error(err?.response?.data ?? err);
-			if (!DEV) handleError(client, err, `Failed to backup collection "${filename}"`);
-		}
-	}
+				.then((fetched) => {
+					writeFile(join(folderPath, `${filename}.json`), JSON.stringify(fetched.data), {
+						flag: "w+",
+						encoding: "utf-8",
+					});
+				})
+				.then(() => successfulPushes.push(filename))
+				.catch((err) => {
+					failedPushes.push(filename);
+					handleError(client, err, `Failed to back up collection "${filename}"`);
+				}),
+		),
+	);
 
 	if (DEBUG) console.log(`Downloaded database files: ${successfulPushes}`);
 	const commit = await pushToGitHub(org, repo, branch, commitMessage, "./backups/").catch((err) => {
-		if (DEBUG) console.log(`Branch ${branch} doesn't exist for repository ${repo}!`);
-		if (!DEV) handleError(client, err, `Could not commit backup to ${org}/[${repo}:${branch}]`);
+		failedPushes.push(...successfulPushes);
+		// equivalent to resetting array
+		successfulPushes.length = 0;
+		handleError(client, err, `Could not commit backup to ${org}/${repo}:${branch}`);
 	});
 
 	return { successfulPushes, failedPushes, commit };

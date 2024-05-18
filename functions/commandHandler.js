@@ -40,13 +40,16 @@ async function deleteCommands(client, guildID) {
 			? await rest.get(Routes.applicationCommands(client.user.id))
 			: // get all command ids
 				await rest.get(Routes.applicationGuildCommands(client.user.id, guildID));
-	for (const command of data) {
-		const deleteUrl =
-			guildID == "global"
-				? `${Routes.applicationCommand(client.user.id, command.id)}`
-				: `${Routes.applicationGuildCommands(client.user.id, guildID)}/${command.id}`;
-		await rest.delete(deleteUrl);
-	}
+
+	await Promise.all(
+		data.map((command) =>
+			rest.delete(
+				guildID == "global"
+					? `${Routes.applicationCommand(client.user.id, command.id)}`
+					: `${Routes.applicationGuildCommands(client.user.id, guildID)}/${command.id}`,
+			),
+		),
+	);
 }
 
 module.exports = {

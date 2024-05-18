@@ -37,7 +37,7 @@ module.exports = async function pushTextures(
 				await pushToGitHub(packGitHub.org, packGitHub.repo, branch, commitMessage, path);
 				// only remove path if pushing succeeded, so the bot tries the next day too
 				rmSync(path, { recursive: true });
-				if (DEBUG) console.log(`Pushed: [${packGitHub.repo}:${branch}] (${packGitHub.org})`);
+				if (DEBUG) console.log(`Pushed: ${packGitHub.org}/${packGitHub.repo}:${branch}`);
 			} catch {
 				// can also be an auth error or really anything but this is most likely
 				if (DEBUG) console.log(`Branch ${branch} doesn't exist for pack ${packGitHub.repo}!`);

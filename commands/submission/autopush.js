@@ -46,19 +46,23 @@ module.exports = {
 			embeds: [infoEmbed.setTitle("Downloading textures...")],
 		});
 
-		for (const pack of packs)
-			await downloadResults(interaction.client, pack.submission.channels.results);
+		await Promise.all(
+			packs.map((pack) => downloadResults(interaction.client, pack.submission.channels.results)),
+		);
 
 		await interaction.editReply({
 			embeds: [infoEmbed.setTitle("Pushing textures...")],
 		});
 
-		for (const pack of Object.keys(submissions))
-			await pushTextures(
-				"./downloadedTextures",
-				pack,
-				`Manual push executed by ${interaction.user.displayName} on ${formattedDate()}`,
-			);
+		await Promise.all(
+			Object.keys(submissions).map((pack) =>
+				pushTextures(
+					"./downloadedTextures",
+					pack,
+					`Manual push executed by ${interaction.user.displayName} on ${formattedDate()}`,
+				),
+			),
+		);
 
 		await interaction.editReply({
 			embeds: [

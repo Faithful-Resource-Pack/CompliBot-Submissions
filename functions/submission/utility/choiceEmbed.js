@@ -5,11 +5,7 @@ const getAuthors = require("@submission/utility/getAuthors");
 const makeEmbed = require("@submission/makeEmbed");
 const addDeleteButton = require("@helpers/addDeleteButton");
 
-const {
-	EmbedBuilder,
-	ActionRowBuilder,
-	StringSelectMenuBuilder,
-} = require("discord.js");
+const { EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require("discord.js");
 const axios = require("axios").default;
 
 const DEBUG = process.env.DEBUG.toLowerCase() == "true";

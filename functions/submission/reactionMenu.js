@@ -34,12 +34,14 @@ module.exports = async function reactionMenu(openReaction, user) {
 	if (!canOpenTray(message, openReaction, member, submissionAuthorID)) return;
 
 	// remove the arrow emoji and generate the tray
-	const trayReactions = loadReactions(message, member, allReactions);
+	const trayReactions = filterReactions(message, member, allReactions);
 	await openReaction.remove().catch(console.error);
 	if (DEBUG) console.log(`Reaction tray opened by: ${user.username}`);
+
+	// need to preserve emoji order so each one is awaited individually
 	for (const emoji of trayReactions) await message.react(emoji);
 
-	/** @type {import("discord.js").MessageReaction} await reaction from user */
+	// await reaction from user
 	const actionReaction = await message
 		.awaitReactions({
 			filter: (collectedReaction, collectedUser) =>
@@ -51,6 +53,7 @@ module.exports = async function reactionMenu(openReaction, user) {
 		// grab first person to react
 		.then((res) => res?.first())
 		.catch((err) => {
+			// ran out of time, close tray and return early
 			closeTray(message, allReactions);
 			console.error(err);
 		});
@@ -58,8 +61,8 @@ module.exports = async function reactionMenu(openReaction, user) {
 	// if there's no reaction collected just reset the message and return early
 	if (!actionReaction) return closeTray(message, trayReactions);
 
-	/** @type {import("discord.js").User} used to check permissions */
-	const reactor = Array.from(actionReaction.users.cache.values()).filter((user) => !user.bot)[0];
+	// used to check permissions
+	const reactor = Array.from(actionReaction.users.cache.values()).find((user) => !user.bot);
 
 	if (
 		actionReaction.emoji.id == settings.emojis.delete &&
@@ -92,7 +95,7 @@ module.exports = async function reactionMenu(openReaction, user) {
  * @author Evorp
  * @param {import("discord.js").Message} message
  * @param {import("discord.js").MessageReaction} openReaction
- *  * @param {import("discord.js").GuildMember} member
+ * @param {import("discord.js").GuildMember} member
  * @param {string} submissionAuthorID
  * @returns {boolean} whether the user can react
  */
@@ -101,17 +104,11 @@ function canOpenTray(message, openReaction, member, submissionAuthorID) {
 	if (openReaction.emoji.id !== settings.emojis.see_more || !message.embeds[0]?.fields?.length)
 		return false;
 
-	const status = message.embeds[0].fields[1].value;
-
-	// user doesn't have permission or the submission already finished
-	if (
-		(!hasPermission(member, "any") && submissionAuthorID !== member.id) ||
-		(!status.includes(settings.emojis.pending) && !status.includes(settings.emojis.invalid))
-	) {
+	// user doesn't have permission
+	if (!hasPermission(member, "any") && submissionAuthorID !== member.id) {
 		openReaction.users.remove(member.id).catch((err) => {
 			if (DEBUG) console.error(err);
 		});
-
 		return false;
 	}
 
@@ -122,11 +119,11 @@ function canOpenTray(message, openReaction, member, submissionAuthorID) {
  * Load reaction tray with the correct emojis
  * @author Evorp
  * @param {import("discord.js").Message} message
- * @param {import("discord.js").GuildMember} member check permissions of
- * @param {string[]} allReactions
- * @returns {string[]}
+ * @param {import("discord.js").GuildMember} member who to check permissions of
+ * @param {string[]} allReactions reactions to filter
+ * @returns {string[]} loaded reactions
  */
-function loadReactions(message, member, allReactions) {
+function filterReactions(message, member, allReactions) {
 	const packs = require("@resources/packs.json");
 
 	// if the submission is in council remove delete reaction (avoid misclick)
@@ -139,7 +136,7 @@ function loadReactions(message, member, allReactions) {
 		!message.embeds[0].fields[1].value.includes(settings.emojis.pending)
 	)
 		allReactions = allReactions.filter(
-			(emoji) => emoji !== settings.emojis.instapass && emoji !== settings.emojis.invalid,
+			(emoji) => ![settings.emojis.instapass, settings.emojis.invalid].includes(emoji),
 		);
 
 	return allReactions;
@@ -147,23 +144,15 @@ function loadReactions(message, member, allReactions) {
 
 /**
  * Reset tray completely
- * @author Evorp
+ * @author Evorp, Juknum
  * @param {import("discord.js").Message} message
- * @param {string[]} trayReactions reactions to remove (isn't global)
+ * @param {string[]} emojis reactions to remove
  */
-function closeTray(message, trayReactions) {
+async function closeTray(message, emojis) {
 	if (message.deletable) {
-		removeReactions(message, trayReactions);
+		await Promise.all(
+			emojis.map((emoji) => message.reactions.cache.get(emoji)?.remove()?.catch(console.error)),
+		);
 		return message.react(settings.emojis.see_more);
 	}
-}
-
-/**
- * Convenience method to remove multiple reactions at once
- * @author Juknum
- * @param {import("discord.js").Message} message where to remove reactions from
- * @param {string[]} emojis what to remove
- */
-function removeReactions(message, emojis) {
-	for (const emoji of emojis) message.reactions.cache.get(emoji)?.remove()?.catch(console.error);
 }

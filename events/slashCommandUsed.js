@@ -23,8 +23,7 @@ module.exports = {
 		try {
 			await command.execute(interaction);
 		} catch (error) {
-			if (DEBUG) console.trace(error);
-			if (!DEV) handleError(interaction.client, error, "A command failed to run!");
+			handleError(interaction.client, error, "A command failed to run!");
 
 			const embed = new EmbedBuilder()
 				.setColor(settings.colors.red)
