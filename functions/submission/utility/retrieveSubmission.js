@@ -3,7 +3,7 @@ const settings = require("@resources/settings.json");
 const getMessages = require("@helpers/getMessages");
 
 /**
- * @typedef MappedMessage
+ * @typedef SendableMessage
  * @property {import("discord.js").MessageReaction} upvote
  * @property {import("discord.js").MessageReaction} downvote
  * @property {import("discord.js").Embed} embed
@@ -17,7 +17,7 @@ const getMessages = require("@helpers/getMessages");
  * @param {import("discord.js").Client} client
  * @param {string} channelID where to retrieve from
  * @param {number} delay delay in days from day of retrieval
- * @returns {Promise<{messagesUpvoted: MappedMessage[], messagesDownvoted: MappedMessage[]}>}
+ * @returns {Promise<{messagesUpvoted: SendableMessage[], messagesDownvoted: SendableMessage[]}>}
  */
 module.exports = async function retrieveSubmission(client, channelID, delay) {
 	const delayedDate = new Date();
@@ -35,7 +35,7 @@ module.exports = async function retrieveSubmission(client, channelID, delay) {
 		);
 	});
 
-	/** @type {MappedMessage[]} */
+	/** @type {SendableMessage[]} */
 	const mappedMessages = messages.map((message) => ({
 		upvote: message.reactions.cache.get(settings.emojis.upvote),
 		downvote: message.reactions.cache.get(settings.emojis.downvote),

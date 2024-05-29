@@ -9,7 +9,7 @@ const {
 	addContributorRole,
 	downloadTexture,
 	generateContributionData,
-} = require("@submission/parseResults");
+} = require("@submission/handleResults");
 const pushTextures = require("@submission/pushTextures");
 const getPackByChannel = require("@submission/utility/getPackByChannel");
 const changeStatus = require("@submission/utility/changeStatus");

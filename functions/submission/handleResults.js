@@ -8,7 +8,7 @@ const { mkdirSync, writeFile } = require("fs");
 const axios = require("axios").default;
 
 /**
- * @typedef MappedMessage
+ * @typedef DownloadableMessage
  * @property {string} url texture image url
  * @property {string[]} authors array of author's discord ids
  * @property {number} date
@@ -63,7 +63,7 @@ async function downloadResults(client, channelResultID) {
 /**
  * Download a single texture to all its paths locally
  * @author Juknum, Evorp
- * @param {MappedMessage} texture message and texture info
+ * @param {DownloadableMessage} texture message and texture info
  * @param {import("@helpers/jsdoc").Pack} pack which pack to download it to
  * @param {string} baseFolder where to download the texture to
  * @returns {Promise<import("@helpers/jsdoc").Texture>} info
@@ -77,7 +77,14 @@ async function downloadTexture(texture, pack, baseFolder) {
 	const imageFile = (await axios.get(texture.url, { responseType: "arraybuffer" })).data;
 
 	/** @type {import("@helpers/jsdoc").Texture} */
-	const textureInfo = (await axios.get(`${process.env.API_URL}textures/${texture.id}/all`)).data;
+	let textureInfo;
+	try {
+		textureInfo = (await axios.get(`${process.env.API_URL}textures/${texture.id}/all`)).data;
+	} catch {
+		// handles if texture gets deleted in the db between submission and results (merged, obsolete, etc)
+		if (DEBUG) console.error(`Could not find texture for ID: ${texture.id}`);
+		return;
+	}
 
 	// add the image to all its versions and paths
 	for (const use of textureInfo.uses) {
@@ -86,8 +93,13 @@ async function downloadTexture(texture, pack, baseFolder) {
 		// need to redefine pack folder every time since java/bedrock are different folders
 		const packFolder = pack.github[use.edition]?.repo;
 
-		if (!packFolder && DEBUG)
-			console.log(`GitHub repository not found for pack and edition: ${pack.name} ${use.edition}`);
+		if (!packFolder) {
+			if (DEBUG)
+				console.log(
+					`GitHub repository not found for pack and edition: ${pack.name} ${use.edition}`,
+				);
+			return;
+		}
 
 		for (const path of paths) {
 			// write file to every version of a path
@@ -136,7 +148,7 @@ async function addContributorRole(client, pack, guildID, authors) {
  * Map a texture to a downloadable format
  * @author Juknum
  * @param {import("discord.js").Message} message
- * @returns {MappedMessage}
+ * @returns {DownloadableMessage}
  */
 const mapMessage = (message) => ({
 	url: message.embeds[0].thumbnail.url,
@@ -149,7 +161,7 @@ const mapMessage = (message) => ({
 /**
  * Converts a mapped message to a contribution
  * @author Juknum
- * @param {MappedMessage} texture
+ * @param {DownloadableMessage} texture
  * @param {import("@helpers/jsdoc").Pack} pack
  * @returns {import("@helpers/jsdoc").Contribution}
  */
@@ -174,7 +186,7 @@ async function postContributions(...contributions) {
 			},
 		});
 		if (DEBUG) console.log(`Added contribution(s): ${JSON.stringify(contributions, null, 4)}`);
-	} catch (err) {
+	} catch {
 		if (DEBUG) {
 			console.error(`Failed to add contribution(s) for pack: ${contributions[0]?.pack}`);
 			console.error(JSON.stringify(contributions, null, 4));
