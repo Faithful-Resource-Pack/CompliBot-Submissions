@@ -1,7 +1,7 @@
 /**
  * @callback MessageFilter
- * @param {import("discord.js").Message}
- * @returns {boolean}
+ * @param {import("discord.js").Message} message Message to be filtered
+ * @returns {boolean} Whether the message should stay or be discarded
  */
 
 /**
@@ -10,7 +10,7 @@
  * @param {import("discord.js").Client} client
  * @param {string} channelID channel where messages are fetched from
  * @param {MessageFilter} [filter] filter incoming messages
- * @returns {Promise<import("discord.js").Message[]>} fetched messages
+ * @returns {Promise<import("discord.js").Message[]>} fetched messages from oldest to newest
  */
 module.exports = async function getMessages(client, channelID, filter = () => true) {
 	/** @type {import("discord.js").TextChannel} */
