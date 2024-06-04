@@ -6,6 +6,7 @@ const makeEmbed = require("@submission/makeEmbed");
 const addDeleteButton = require("@helpers/addDeleteButton");
 
 const { EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require("discord.js");
+const { hasPermission } = require("@helpers/permissions");
 const axios = require("axios").default;
 
 const DEBUG = process.env.DEBUG.toLowerCase() == "true";
@@ -51,9 +52,11 @@ module.exports = async function choiceEmbed(message, choices) {
 
 	/** @param {import("discord.js").SelectMenuInteraction} interaction */
 	const filter = (interaction) =>
-		interaction.customId.startsWith("choiceEmbed") && // format is choiceEmbed_<ROWNUMBER>
+		// format is choiceEmbed_<ROWNUMBER> (needs unique ids)
+		interaction.customId.startsWith("choiceEmbed") &&
 		interaction.message.id == choiceMessage.id &&
-		interaction.user.id == message.author.id; // correct permissions
+		// admins can interact with choice embeds always
+		(interaction.user.id == message.author.id || hasPermission(message.author, "administrator"));
 
 	const collector = message.channel.createMessageComponentCollector({ filter, time: 60000 });
 

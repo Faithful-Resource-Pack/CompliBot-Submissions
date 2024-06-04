@@ -66,6 +66,7 @@ module.exports = async function reactionMenu(openReaction, user) {
 
 	if (
 		actionReaction.emoji.id == settings.emojis.delete &&
+		// only admins can delete messages (prevent abuse)
 		(reactor.id === submissionAuthorID || hasPermission(member, "administrator")) &&
 		message.deletable
 	)
