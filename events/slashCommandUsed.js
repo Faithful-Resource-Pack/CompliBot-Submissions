@@ -5,9 +5,6 @@ const addDeleteButton = require("@helpers/addDeleteButton");
 const { EmbedBuilder } = require("discord.js");
 const handleError = require("@functions/handleError");
 
-const DEBUG = process.env.DEBUG.toLowerCase() == "true";
-const DEV = process.env.DEV.toLowerCase() == "true";
-
 /**
  * "fake" emitted event to split up interactionCreate
  * @type {import("@helpers/jsdoc").Event}

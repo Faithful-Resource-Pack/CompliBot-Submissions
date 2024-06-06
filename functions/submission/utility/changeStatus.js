@@ -1,5 +1,7 @@
 const { EmbedBuilder } = require("discord.js");
 
+const DEBUG = process.env.DEBUG.toLowerCase() == "true";
+
 /**
  * @typedef StatusParams
  * @property {string} status
@@ -12,12 +14,19 @@ const { EmbedBuilder } = require("discord.js");
  * Edit submission status
  * @author Evorp
  * @param {import("discord.js").Message} message message to edit
- * @param {StatusParams} params
+ * @param {StatusParams} params other options to edit
+ * @returns {EmbedBuilder} new submission embed
  */
 module.exports = async function changeStatus(
 	message,
 	{ status, color, components, editOriginal = false },
 ) {
+	if (DEBUG)
+		console.log(
+			`Changing status "${
+				message.embeds?.[0]?.fields?.[1]?.value.split("> ")[1]
+			}" to "${status.split("> ")[1]}" for texture: ${message.embeds?.[0]?.title}`,
+		);
 	const embed = EmbedBuilder.from(message.embeds[0]);
 	// fields[1] is always the status field in submissions
 	embed.data.fields[1].value = status;
@@ -26,21 +35,16 @@ module.exports = async function changeStatus(
 	if (!components) components = Array.from(message.components);
 	await message.edit({ embeds: [embed], components });
 
-	// no original post to edit
-	if (!editOriginal) return;
+	// no need to check for original post, return early
+	if (!editOriginal || !embed.data.description?.startsWith("[Original Post](")) return embed;
 
-	const description = message.embeds[0].description;
-
-	// not in council
-	if (!description?.startsWith("[Original Post](")) return;
-
-	// extremely questionable string slicing to get original message id from submission description
-	const [channelID, messageID] = description
+	// get original message id from submission description (pain)
+	const [channelID, messageID] = embed.data.description
 		.replace("[Original Post](", "") // remove markdown links
-		.replace(")", "")
+		.replace(")", "") // should probably be done with match() and regex
 		.split(/\s+/g)[0] // get just the url
 		.split("/") // split url into ids
-		.slice(-2);
+		.slice(-2); // only take the last two ids (channel and message)
 
 	try {
 		/** @type {import("discord.js").TextChannel} */
@@ -48,8 +52,9 @@ module.exports = async function changeStatus(
 		const originalMessage = await channel.messages.fetch(messageID);
 
 		// recursive, but editOriginal disabled this time
-		return changeStatus(originalMessage, { status, color, components });
+		await changeStatus(originalMessage, { status, color, components });
 	} catch {
 		// message deleted or something
 	}
+	return embed;
 };

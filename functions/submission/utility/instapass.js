@@ -33,7 +33,7 @@ module.exports = async function instapass(message, member) {
 	const channelOutID = pack.submission.channels.results;
 	const status = `<:instapass:${settings.emojis.instapass}> Instapassed by <@${member.id}>`;
 
-	await changeStatus(message, {
+	const embed = await changeStatus(message, {
 		status,
 		color: settings.colors.yellow,
 		components: [imageButtons],
@@ -42,8 +42,6 @@ module.exports = async function instapass(message, member) {
 
 	/** @type {import("discord.js").TextChannel} */
 	const channelOut = await message.client.channels.fetch(channelOutID);
-
-	const embed = EmbedBuilder.from(message.embeds[0]);
 
 	// if instapassed in council "original post" is already there
 	if (!message.embeds[0].description?.startsWith("[Original Post]("))
