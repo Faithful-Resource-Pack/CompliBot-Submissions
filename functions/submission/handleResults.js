@@ -98,7 +98,7 @@ async function downloadTexture(texture, pack, baseFolder) {
 				console.log(
 					`GitHub repository not found for pack and edition: ${pack.name} ${use.edition}`,
 				);
-			return;
+			continue;
 		}
 
 		for (const path of paths) {
