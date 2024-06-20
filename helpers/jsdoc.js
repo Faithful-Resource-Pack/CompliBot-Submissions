@@ -23,7 +23,6 @@
  * @property {string} id internal id
  * @property {number} date unix timestamp
  * @property {string} texture texture id
- * @property {8 | 16 | 32 | 64 | 128 | 256 | 512} resolution
  * @property {string} pack
  * @property {string[]} authors
  *

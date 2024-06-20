@@ -167,7 +167,6 @@ const mapMessage = (message) => ({
  */
 const generateContributionData = (texture, pack) => ({
 	date: texture.date,
-	resolution: pack.resolution,
 	pack: pack.id,
 	texture: texture.id,
 	authors: texture.authors,
