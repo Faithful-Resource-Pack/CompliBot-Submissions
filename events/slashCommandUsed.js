@@ -13,14 +13,15 @@ module.exports = {
 	name: "slashCommandUsed",
 	/** @param {import("discord.js").ChatInputCommandInteraction} interaction */
 	async execute(interaction) {
+		if (!client.commands.has(interaction.commandName)) return;
 		/** @type {import("@helpers/jsdoc").Command} */
 		const command = await interaction.client.commands.get(interaction.commandName);
-		if (!command) return;
 
+		// ! await required for try catch support
 		try {
 			await command.execute(interaction);
 		} catch (error) {
-			handleError(interaction.client, error, "A command failed to run!");
+			handleError(interaction.client, error, "Slash Command Error");
 
 			const embed = new EmbedBuilder()
 				.setColor(settings.colors.red)
