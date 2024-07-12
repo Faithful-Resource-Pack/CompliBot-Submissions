@@ -13,7 +13,7 @@ module.exports = {
 	name: "slashCommandUsed",
 	/** @param {import("discord.js").ChatInputCommandInteraction} interaction */
 	async execute(interaction) {
-		if (!client.commands.has(interaction.commandName)) return;
+		if (!interaction.client.commands.has(interaction.commandName)) return;
 		/** @type {import("@helpers/jsdoc").Command} */
 		const command = await interaction.client.commands.get(interaction.commandName);
 
