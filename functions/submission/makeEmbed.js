@@ -53,7 +53,7 @@ module.exports = async function makeEmbed(
 		.addFields(
 			{
 				name: "Author",
-				value: `<@!${authors.join(">\n<@!")}>`,
+				value: `<@${authors.join(">\n<@")}>`,
 				inline: true,
 			},
 			{ name: "Status", value: `<:pending:${settings.emojis.pending}> Pending...`, inline: true },

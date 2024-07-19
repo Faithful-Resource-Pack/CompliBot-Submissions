@@ -128,10 +128,10 @@ async function sendToResults(client, pack, delay = undefined) {
 		// add council downvotes field between the status and path fields
 		resultEmbed.spliceFields(2, 0, {
 			name: "Council Downvotes",
-			value: `<@!${users
+			value: `<@${users
 				.filter((user) => !user.bot)
 				.map((user) => user.id)
-				.join(">\n<@!")
+				.join(">\n<@")
 				.toString()}>`,
 			inline: true,
 		});
