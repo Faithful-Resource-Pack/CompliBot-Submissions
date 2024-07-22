@@ -72,7 +72,7 @@ async function sendToResults(client, pack, delay = undefined) {
 	const { messagesUpvoted, messagesDownvoted } = await retrieveSubmission(
 		client,
 		pack.council_enabled
-			? pack.channels.council ?? pack.channels.submit // pack improperly set up, pull from submissions
+			? (pack.channels.council ?? pack.channels.submit) // pack improperly set up, pull from submissions
 			: pack.channels.submit, // pull from submissions if council disabled
 		// with this delay format we can reuse it for both council enabled and disabled packs
 		delay ?? pack.time_to_results,

@@ -56,8 +56,18 @@ async function downloadResults(client, channelResultID) {
 		);
 	}
 
-	// post all contributions at once (saves on requests)
-	if (allContribution.length) return postContributions(...allContribution);
+	// keep only the last contribution for a texture (prevents issues if multiple textures pass)
+	const uniqueContributions = Object.values(
+		allContribution.reduce((acc, cur) => {
+			acc[cur.texture] = cur;
+			return acc;
+		}, {}),
+	);
+
+	console.log(uniqueContributions);
+
+	// post all contributions at once (saves on requests) only if there's something to post
+	if (uniqueContributions.length) return postContributions(...uniqueContributions);
 }
 
 /**
