@@ -22,9 +22,11 @@ export async function loadCommands(client: Client) {
 	const rest = new REST({ version: "10" }).setToken(process.env.CLIENT_TOKEN);
 
 	// add to discord so they can be used in the slash command menu
-	rest.put(Routes.applicationCommands(client.user.id), {
-		body: Array.from(client.commands.values()).map((command) => command.data.toJSON()),
-	});
+	rest
+		.put(Routes.applicationCommands(client.user.id), {
+			body: Array.from(client.commands.values()).map((command) => command.data.toJSON()),
+		})
+		.then(() => console.log("Slash commands loaded"));
 }
 
 /**

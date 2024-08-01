@@ -23,7 +23,7 @@ export default {
 		console.log(`│     ─=≡Σ((( つ◕ل͜◕)つ                              │`);
 		console.log(`│   TypeScript is a pain, but I'm fine, I hope...   │`);
 		console.log(`│                                                   │`);
-		console.log(`└───────────────────────────────────────────────────┘\n\n`);
+		console.log(`└───────────────────────────────────────────────────┘\n`);
 
 		await loadCommands(client);
 
