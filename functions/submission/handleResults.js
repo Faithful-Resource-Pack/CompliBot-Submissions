@@ -5,6 +5,7 @@ const getMessages = require("@helpers/getMessages");
 const getPackByChannel = require("@submission/utility/getPackByChannel");
 
 const { mkdirSync, writeFile } = require("fs");
+const handleError = require("@functions/handleError");
 const axios = require("axios").default;
 
 /**
@@ -44,7 +45,10 @@ async function downloadResults(client, channelResultID) {
 	const allContribution = [];
 
 	for (const texture of messages.map(mapMessage)) {
-		await downloadTexture(texture, pack, "./downloadedTextures");
+		// if errors aren't handled then the entire cycle gets skipped
+		await downloadTexture(texture, pack, "./downloadedTextures").catch((err) => {
+			handleError(client, err, "Texture Download Error");
+		});
 
 		allContribution.push(generateContributionData(texture, pack));
 
