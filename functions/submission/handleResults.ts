@@ -3,6 +3,7 @@ const DEBUG = process.env.DEBUG.toLowerCase() == "true";
 
 import getMessages from "@helpers/getMessages";
 import getPackByChannel from "@submission/utility/getPackByChannel";
+import handleError from "@functions/handleError";
 
 import { mkdirSync, writeFile } from "fs";
 import axios from "axios";
@@ -43,7 +44,13 @@ export async function downloadResults(client: Client, channelResultID: string) {
 	const allContribution: Contribution[] = [];
 
 	for (const texture of messages.map(mapMessage)) {
-		await downloadTexture(texture, pack, "./downloadedTextures");
+		try {
+			await downloadTexture(texture, pack, "./downloadedTextures");
+		} catch (err) {
+			handleError(client, err, `Failed to download texture [#${texture.id}] for pack ${pack}`);
+			// don't add contribution data or anything else if the texture wasn't downloaded
+			continue;
+		}
 
 		allContribution.push(generateContributionData(texture, pack));
 
@@ -62,8 +69,6 @@ export async function downloadResults(client: Client, channelResultID: string) {
 			return acc;
 		}, {}),
 	);
-
-	console.log(uniqueContributions);
 
 	// post all contributions at once (saves on requests) only if there's something to post
 	if (uniqueContributions.length) return postContributions(...uniqueContributions);
