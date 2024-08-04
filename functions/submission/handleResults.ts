@@ -76,7 +76,8 @@ export async function downloadResults(
 	);
 
 	// post all contributions at once (saves on requests) only if there's something to post
-	if (uniqueContributions.length) return postContributions(...uniqueContributions);
+	if (uniqueContributions.length && addContributions)
+		return postContributions(...uniqueContributions);
 }
 
 /**

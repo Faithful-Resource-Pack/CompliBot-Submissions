@@ -39,6 +39,7 @@ export default {
 		const submissions: PackFile = require("@resources/packs.json");
 		const choice = interaction.options.getString("pack", true);
 		const addContributions = interaction.options.getBoolean("contributions", false) ?? true;
+
 		if (choice == "all" && !process.env.DEVELOPERS.includes(interaction.user.id))
 			return warnUser(interaction, strings.command.no_permission);
 

@@ -22,7 +22,7 @@ export default async function pushTextures(
 	const settings = require("@resources/settings.json");
 
 	const packs: PackFile = require("@resources/packs.json");
-	const editions = Object.keys(settings.versions);
+	const editions = Object.keys(settings.versions).filter((k) => k !== "id");
 	for (const edition of editions) {
 		const packGitHub = packs[pack].github[edition];
 		if (!packGitHub) {
