@@ -2,7 +2,8 @@ import settings from "@resources/settings.json";
 import strings from "@resources/strings.json";
 
 import { EmbedBuilder, ModalSubmitInteraction } from "discord.js";
-import { Octokit } from "@octokit/rest";
+const NewOctokit = (...params: any[]) =>
+	import("@octokit/rest").then(({ Octokit }) => new Octokit(...params));
 
 /**
  * Create a bug report on GitHub with modal information
@@ -74,7 +75,7 @@ export async function feedbackSend(
 	description: string,
 ) {
 	try {
-		const octokit = new Octokit({
+		const octokit = await NewOctokit({
 			auth: process.env.GIT_TOKEN,
 		});
 
