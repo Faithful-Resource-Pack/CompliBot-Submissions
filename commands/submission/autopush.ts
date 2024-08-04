@@ -27,11 +27,18 @@ export default {
 				)
 				.setRequired(true),
 		)
+		.addBooleanOption((option) =>
+			option
+				.setName("contributions")
+				.setDescription("Whether to add contributions (default true)")
+				.setRequired(false),
+		)
 		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
 		.setDMPermission(false),
 	async execute(interaction) {
 		const submissions: PackFile = require("@resources/packs.json");
 		const choice = interaction.options.getString("pack", true);
+		const addContributions = interaction.options.getBoolean("contributions", false) ?? true;
 		if (choice == "all" && !process.env.DEVELOPERS.includes(interaction.user.id))
 			return warnUser(interaction, strings.command.no_permission);
 
@@ -47,7 +54,9 @@ export default {
 		});
 
 		await Promise.all(
-			packs.map((pack) => downloadResults(interaction.client, pack.submission.channels.results)),
+			packs.map((pack) =>
+				downloadResults(interaction.client, pack.submission.channels.results, addContributions),
+			),
 		);
 
 		await interaction.editReply({

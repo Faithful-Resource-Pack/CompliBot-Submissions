@@ -22,8 +22,13 @@ export interface DownloadableMessage {
  * @author Juknum, Evorp
  * @param client
  * @param channelResultID result channel to download from
+ * @param addContributions whether to add contributions or not
  */
-export async function downloadResults(client: Client, channelResultID: string) {
+export async function downloadResults(
+	client: Client,
+	channelResultID: string,
+	addContributions = true,
+) {
 	const packs: PackFile = require("@resources/packs.json");
 	const pack = packs[getPackByChannel(channelResultID, "results")];
 
@@ -52,7 +57,7 @@ export async function downloadResults(client: Client, channelResultID: string) {
 			continue;
 		}
 
-		allContribution.push(generateContributionData(texture, pack));
+		if (addContributions) allContribution.push(generateContributionData(texture, pack));
 
 		addContributorRole(
 			client,
