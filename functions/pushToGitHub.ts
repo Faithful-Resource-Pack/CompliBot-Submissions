@@ -6,13 +6,9 @@
 import { readFileSync } from "fs";
 import { normalize, relative } from "path";
 
+import { Octokit } from "@octokit/rest";
 // globby is pure ESM and we're on CJS (not sure if it's even needed anymore)
 const glob = (path: string) => import("globby").then(({ globby }) => globby(path));
-
-const NewOctokit = (...params: any[]) =>
-	import("@octokit/rest").then(({ Octokit }) => new Octokit(...params));
-
-type Octokit = Awaited<ReturnType<typeof NewOctokit>>;
 
 /**
  * Premade function for pushing directly to GitHub
@@ -30,7 +26,7 @@ export default async function pushToGitHub(
 	commitMessage: string,
 	localPath: string,
 ): Promise<string> {
-	const octo = await NewOctokit({ auth: process.env.GIT_TOKEN });
+	const octo = new Octokit({ auth: process.env.GIT_TOKEN });
 
 	const currentCommit = await getCurrentCommit(octo, org, repo, branch);
 	const filesPaths = await glob(localPath);
