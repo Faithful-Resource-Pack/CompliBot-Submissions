@@ -23,4 +23,4 @@ jobs:
             git pull
             pnpm install
             pm2 delete "complibot-submissions"
-            pm2 start "node --use_strict --trace-warnings index.js" --name "complibot-submissions" --time
+            pm2 start "pnpm start" --name "complibot-submissions"
