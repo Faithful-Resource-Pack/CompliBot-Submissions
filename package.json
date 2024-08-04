@@ -2,7 +2,7 @@
     "name": "complibot-submissions",
     "version": "1.0.0",
     "description": "Fully automated texture pushing and submission system for the Faithful Discord servers.",
-    "main": "index.js",
+    "main": "index.ts",
     "scripts": {
         "start": "node -r ts-node/register -r tsconfig-paths/register index.ts",
         "dev": "nodemon -r tsconfig-paths/register --ignore resources/ --ignore backups/ index.ts",

@@ -16,7 +16,7 @@
 			"@images/*": ["./functions/images/*"],
 			"@interfaces/*": ["./interfaces/*"],
 			"@resources/*": ["./resources/*"],
-			"@index": ["./index.js"],
+			"@index": ["./index.ts"],
 		}
 	}
 }
