@@ -19,7 +19,8 @@ interface MappedURL {
 }
 
 export enum DiffType {
-	Unchanged,
+	// zero is falsy which can cause problems
+	Unchanged = 1,
 	Removed,
 	Added,
 	Changed,
