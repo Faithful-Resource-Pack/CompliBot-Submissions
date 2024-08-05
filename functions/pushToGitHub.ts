@@ -7,8 +7,7 @@ import { readFileSync } from "fs";
 import { normalize, relative } from "path";
 
 import { Octokit } from "@octokit/rest";
-// globby is pure ESM and we're on CJS (not sure if it's even needed anymore)
-const glob = (path: string) => import("globby").then(({ globby }) => globby(path));
+import glob from "fast-glob";
 
 /**
  * Premade function for pushing directly to GitHub
