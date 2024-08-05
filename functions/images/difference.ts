@@ -73,11 +73,11 @@ export async function difference(
 				continue;
 			case DiffType.Changed:
 				data.set(hexToRGBA(CHANGED_PIXEL_COLOR), i);
+				continue;
 			default:
 				// set to original pixel
 				data.set(first.pixels.slice(i, i + 3), i);
 				data[i + 3] = first.pixels[i + 3] * TRANSPARENCY_FACTOR;
-				continue;
 		}
 	}
 
