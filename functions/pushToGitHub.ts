@@ -7,7 +7,7 @@ import { readFileSync } from "fs";
 import { normalize, relative } from "path";
 
 import { Octokit } from "@octokit/rest";
-import glob from "fast-glob";
+import walkSync from "@helpers/walkSync";
 
 /**
  * Premade function for pushing directly to GitHub
@@ -28,12 +28,12 @@ export default async function pushToGitHub(
 	const octo = new Octokit({ auth: process.env.GIT_TOKEN });
 
 	const currentCommit = await getCurrentCommit(octo, org, repo, branch);
-	const filesPaths = await glob(localPath);
-	if (!filesPaths) return;
+	const filePaths = walkSync(localPath);
+	if (!filePaths) return;
 
 	// suspected problem on createBlobForFile which fails and give undefined
-	const filesBlobs = await Promise.all(filesPaths.map(createBlobForFile(octo, org, repo)));
-	const pathsForBlobs = filesPaths.map((fullPath) =>
+	const filesBlobs = await Promise.all(filePaths.map(createBlobForFile(octo, org, repo)));
+	const pathsForBlobs = filePaths.map((fullPath) =>
 		normalize(relative(localPath, fullPath)).replace(/\\/g, "/"),
 	);
 	const newTree = await createNewTree(
