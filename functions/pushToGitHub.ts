@@ -1,5 +1,5 @@
 /**
- * ORIGINAL LINK: (TypeScript)
+ * ORIGINAL LINK
  * https://dev.to/lucis/how-to-push-files-programatically-to-a-repository-using-octokit-with-typescript-1nj0
  */
 
@@ -8,6 +8,12 @@ import { normalize, relative } from "path";
 
 import { Octokit } from "@octokit/rest";
 import walkSync from "@helpers/walkSync";
+
+// octokit is really weirdly typed so you need to manually declare some interfaces
+interface FileBlob {
+	url: string;
+	sha: string;
+}
 
 /**
  * Premade function for pushing directly to GitHub
@@ -32,7 +38,10 @@ export default async function pushToGitHub(
 	if (!filePaths) return;
 
 	// suspected problem on createBlobForFile which fails and give undefined
-	const filesBlobs = await Promise.all(filePaths.map(createBlobForFile(octo, org, repo)));
+	const filesBlobs = await Promise.all(
+		filePaths.map((path) => createBlobForFile(octo, org, repo, path)),
+	);
+
 	const pathsForBlobs = filePaths.map((fullPath) =>
 		normalize(relative(localPath, fullPath)).replace(/\\/g, "/"),
 	);
@@ -111,25 +120,29 @@ const getFileAsBinary = (filePath: string) => readFileSync(filePath, { encoding:
  * @param repo Github repository of the organisation
  * @returns data of the blob
  */
-const createBlobForFile =
-	(octo: Octokit, org: string, repo: string) => async (filePath: string) => {
-		let content: string;
-		let encoding = "utf-8";
+async function createBlobForFile(
+	octo: Octokit,
+	org: string,
+	repo: string,
+	filePath: string,
+): Promise<FileBlob> {
+	let content: string;
+	let encoding = "utf-8";
 
-		if ([".png", ".tga"].some((ex) => filePath.endsWith(ex))) {
-			content = getFileAsBinary(filePath);
-			encoding = "base64";
-		} else content = getFileAsUTF8(filePath);
+	if ([".png", ".tga"].some((ex) => filePath.endsWith(ex))) {
+		content = getFileAsBinary(filePath);
+		encoding = "base64";
+	} else content = getFileAsUTF8(filePath);
 
-		const blobData = await octo.git.createBlob({
-			owner: org,
-			repo,
-			content,
-			encoding,
-		});
+	const blobData = await octo.git.createBlob({
+		owner: org,
+		repo,
+		content,
+		encoding,
+	});
 
-		return blobData.data;
-	};
+	return blobData.data;
+}
 
 /**
  * @param octo
@@ -143,7 +156,7 @@ async function createNewTree(
 	octo: Octokit,
 	owner: string,
 	repo: string,
-	blobs: { url: string; sha: string }[],
+	blobs: FileBlob[],
 	paths: string[],
 	parentTreeSha: string,
 ) {
