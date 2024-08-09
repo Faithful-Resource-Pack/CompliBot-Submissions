@@ -52,7 +52,7 @@ export async function downloadResults(
 		try {
 			await downloadTexture(texture, pack, "./downloadedTextures");
 		} catch (err) {
-			handleError(client, err, `Failed to download texture [#${texture.id}] for pack ${pack}`);
+			handleError(client, err, `Failed to download texture [#${texture.id}] for pack ${pack.name}`);
 			// don't add contribution data or anything else if the texture wasn't downloaded
 			continue;
 		}
