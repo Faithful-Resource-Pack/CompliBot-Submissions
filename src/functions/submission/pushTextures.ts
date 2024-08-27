@@ -4,6 +4,7 @@ import formattedDate from "@helpers/formattedDate";
 
 import pushToGitHub from "@functions/pushToGitHub";
 import type { PackFile } from "@interfaces/database";
+import { join } from "path";
 const DEBUG = process.env.DEBUG.toLowerCase() == "true";
 
 /**
@@ -30,7 +31,7 @@ export default async function pushTextures(
 			continue;
 		}
 		for (const branch of settings.versions[edition]) {
-			const path = `${basePath}/${packGitHub.repo}/${branch}/`;
+			const path = join(basePath, packGitHub.repo, branch);
 
 			// don't create empty commits
 			if (!existsSync(path)) continue;

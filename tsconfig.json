@@ -6,7 +6,7 @@
 		"module": "commonjs",
 		"moduleResolution": "node",
 		"target": "ESNEXT",
-		"baseUrl": ".",
+		"baseUrl": "src",
 		"paths": {
 			"@functions/*": ["./functions/*"],
 			"@helpers/*": ["./helpers/*"],
@@ -15,7 +15,7 @@
 			"@submission/*": ["./functions/submission/*"],
 			"@images/*": ["./functions/images/*"],
 			"@interfaces/*": ["./interfaces/*"],
-			"@resources/*": ["./resources/*"],
+			"@resources/*": ["../resources/*"],
 			"@index": ["./index.ts"],
 		}
 	}

@@ -9,6 +9,7 @@ import { mkdirSync, writeFile } from "fs";
 import axios from "axios";
 import type { Contribution, Pack, PackFile, Texture } from "@interfaces/database";
 import { TextChannel, Client, Message } from "discord.js";
+import { join, sep } from "path";
 
 export interface DownloadableMessage {
 	url: string;
@@ -127,12 +128,12 @@ export async function downloadTexture(
 		for (const path of paths) {
 			// write file to every version of a path
 			for (const version of path.versions) {
-				const fullPath = `${baseFolder}/${packFolder}/${version}/${path.name}`;
+				const fullPath = join(baseFolder, packFolder, version, path.name);
 
 				// trim last bit to get folder tree
-				mkdirSync(fullPath.slice(0, fullPath.lastIndexOf("/")), { recursive: true });
+				mkdirSync(fullPath.slice(0, fullPath.lastIndexOf(sep)), { recursive: true });
 
-				// better to use the callback version because .then and .catch are sent to the same output
+				// something is always being logged when debugging so the callback version is simpler
 				writeFile(fullPath, imageFile, (err) => {
 					if (DEBUG) return console.log(err ?? `Added texture to path: ${fullPath}`);
 				});

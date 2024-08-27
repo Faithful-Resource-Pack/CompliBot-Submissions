@@ -13,6 +13,7 @@ import { fetchSettings } from "@functions/fetchSettings";
 import handleError from "@functions/handleError";
 import { Client, GatewayIntentBits, Partials } from "discord.js";
 import type { Event } from "@interfaces/discord";
+import { join } from "path";
 
 export default function startBot() {
 	const client = new Client({
@@ -47,9 +48,9 @@ export default function startBot() {
 	 * EVENT HANDLER
 	 * - see the ./events folder
 	 */
-	const eventsFiles = readdirSync("./events").filter((f) => f.endsWith(".ts"));
+	const eventsFiles = readdirSync(join(__dirname, "events")).filter((f) => f.endsWith(".ts"));
 	for (const file of eventsFiles) {
-		const event: Event = require(`./events/${file}`).default;
+		const event: Event = require(join(__dirname, "events", file)).default;
 
 		// catch invalid events
 		if (typeof event !== "object") continue;
