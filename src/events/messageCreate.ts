@@ -9,9 +9,9 @@ import { Message } from "discord.js";
 
 export default {
 	name: "messageCreate",
-	async execute(message: Message<true>) {
-		// Ignore bot messages
-		if (message.author.bot) return;
+	async execute(message: Message) {
+		// Ignore bot and DM messages
+		if (message.author.bot || !message.inGuild()) return;
 		const packs: PackFile = require("@resources/packs.json");
 
 		/**
