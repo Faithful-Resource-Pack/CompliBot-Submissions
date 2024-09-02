@@ -50,8 +50,8 @@ This project is heavily developed around our public API. Check out our API docum
 
 ## Configuration
 
-- `resources/strings.json` for all types of bot-related messages
-- `resources/settings.json` for roles, channel ids, and colors
-- `resources/packs.json` for submission pack information
+- `resources/strings.json` for all bot-related messages
+- `resources/settings.json` for roles, channel IDs, and colors
+- `resources/packs.json` for submission pack data
 
 Make sure to disable settings fetching in your `.env` file if you're adding your own packs locally!
