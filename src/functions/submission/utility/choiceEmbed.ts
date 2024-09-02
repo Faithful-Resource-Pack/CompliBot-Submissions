@@ -26,7 +26,7 @@ const DEBUG = process.env.DEBUG.toLowerCase() == "true";
  * @param choices pre-mapped choices
  */
 export default async function choiceEmbed(
-	message: Message,
+	message: Message<true>,
 	choices: SelectMenuComponentOptionData[],
 ) {
 	const emojis = settings.emojis.default_select;
