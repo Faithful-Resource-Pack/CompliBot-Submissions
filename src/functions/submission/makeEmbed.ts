@@ -34,7 +34,7 @@ export interface EmbedParams {
  * @param params additional info (e.g. description, coauthors)
  */
 export default async function makeEmbed(
-	message: Message,
+	message: Message<true>,
 	texture: Texture,
 	attachment: Attachment,
 	{ description, authors }: EmbedParams = { authors: [] },

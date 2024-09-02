@@ -13,7 +13,7 @@ const DEBUG = process.env.DEBUG.toLowerCase() == "true";
  * @param message to check permissions of
  * @param error error message
  */
-export default async function cancelSubmission(message: Message, error = "No error given!") {
+export default async function cancelSubmission(message: Message<true>, error = "No error given!") {
 	// allow managers and council to talk in submit channels
 	if (
 		hasPermission(message.member, "submission") &&

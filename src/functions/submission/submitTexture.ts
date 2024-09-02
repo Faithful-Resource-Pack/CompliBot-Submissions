@@ -18,7 +18,7 @@ import type { Texture } from "@interfaces/database";
  * @author Juknum, Evorp
  * @param message message to check and embed
  */
-export default async function submitTexture(message: Message) {
+export default async function submitTexture(message: Message<true>) {
 	if (!message.attachments.size)
 		return cancelSubmission(message, strings.submission.image_not_attached);
 
