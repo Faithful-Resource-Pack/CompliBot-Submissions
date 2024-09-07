@@ -161,8 +161,8 @@ export async function addContributorRole(
 	const guild = client.guilds.cache.get(guildID);
 	const role = pack.submission.contributor_role;
 
-	// if the pack doesn't have a designated role
-	if (!role) return;
+	// guild couldn't be fetched or no role exists
+	if (!guild || !role) return;
 
 	// Promise.all is faster than awaiting separately + less error handling needed
 	return Promise.all(
