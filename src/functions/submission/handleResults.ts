@@ -152,7 +152,7 @@ export async function downloadTexture(
  * @param guildID where to add the role to
  * @param authors which authors to add roles to
  */
-export async function addContributorRole(
+export function addContributorRole(
 	client: Client,
 	pack: Pack,
 	guildID: string,

@@ -151,7 +151,7 @@ export function addPathsToEmbed(texture: Texture): APIEmbedField[] {
 					}]\``;
 					return `${versionRange} ${p.name}`;
 				});
-			if (!acc[use.edition]) acc[use.edition] = [];
+			acc[use.edition] ||= [];
 			acc[use.edition].push(...paths);
 			return acc;
 		},

@@ -81,7 +81,7 @@ export default async function generateComparison(
 
 	const { magnified, width, factor } = await magnify(stitched, true);
 
-	if (!mcmeta.animation) mcmeta.animation = {};
+	mcmeta.animation ||= {};
 
 	// scale mcmeta info for new resolution
 	mcmeta.animation.width = mcmeta.animation.width
