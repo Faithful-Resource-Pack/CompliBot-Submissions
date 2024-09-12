@@ -49,6 +49,7 @@ export async function downloadResults(
 
 	const allContribution: Contribution[] = [];
 
+	const guildID = (client.channels.cache.get(channelResultID) as TextChannel).guildId;
 	for (const texture of messages.map(mapMessage)) {
 		try {
 			await downloadTexture(texture, pack, "./downloadedTextures");
@@ -59,13 +60,8 @@ export async function downloadResults(
 		}
 
 		if (addContributions) allContribution.push(generateContributionData(texture, pack));
-
-		addContributorRole(
-			client,
-			pack,
-			(client.channels.cache.get(channelResultID) as TextChannel).guildId,
-			texture.authors,
-		);
+		// don't await as the result isn't needed for autopush (faster)
+		addContributorRole(client, pack, guildID, texture.authors);
 	}
 
 	// keep only the last contribution for a texture (prevents issues if multiple textures pass)
@@ -152,12 +148,7 @@ export async function downloadTexture(
  * @param guildID where to add the role to
  * @param authors which authors to add roles to
  */
-export function addContributorRole(
-	client: Client,
-	pack: Pack,
-	guildID: string,
-	authors: string[],
-) {
+export function addContributorRole(client: Client, pack: Pack, guildID: string, authors: string[]) {
 	const guild = client.guilds.cache.get(guildID);
 	const role = pack.submission.contributor_role;
 
