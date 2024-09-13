@@ -1,7 +1,7 @@
 import devLogger from "@helpers/devLogger";
 import { Client, DiscordAPIError } from "discord.js";
 
-const DEV = process.env.DEV.toLowerCase() == "true";
+const DEV = process.env.DEV.toLowerCase() === "true";
 
 /**
  * Handle and log errors

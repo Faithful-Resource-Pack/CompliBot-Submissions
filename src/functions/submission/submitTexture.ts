@@ -1,6 +1,6 @@
 import strings from "@resources/strings.json";
 
-const DEBUG = process.env.DEBUG.toLowerCase() == "true";
+const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
 import choiceEmbed from "@submission/utility/choiceEmbed";
 import makeEmbed from "@submission/makeEmbed";

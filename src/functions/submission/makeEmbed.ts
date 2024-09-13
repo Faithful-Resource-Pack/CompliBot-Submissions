@@ -1,6 +1,6 @@
 import settings from "@resources/settings.json";
 import strings from "@resources/strings.json";
-const DEBUG = process.env.DEBUG.toLowerCase() == "true";
+const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
 import minecraftSorter from "@helpers/minecraftSorter";
 import getPackByChannel from "@submission/utility/getPackByChannel";

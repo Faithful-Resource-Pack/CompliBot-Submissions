@@ -6,7 +6,7 @@ import { hasPermission } from "@helpers/permissions";
 import type { PackFile } from "@interfaces/database";
 import { GuildMember, Message, MessageReaction, User } from "discord.js";
 
-const DEBUG = process.env.DEBUG.toLowerCase() == "true";
+const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
 /**
  * Opens reaction tray, listens for reaction, and closes tray

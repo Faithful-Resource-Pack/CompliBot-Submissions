@@ -5,8 +5,8 @@ import formattedDate from "@helpers/formattedDate";
 import pushToGitHub from "@functions/pushToGitHub";
 import type { PackFile } from "@interfaces/database";
 import { join } from "path";
-const DEBUG = process.env.DEBUG.toLowerCase() == "true";
-
+const DEBUG = process.env.DEBUG.toLowerCase() === "true";
+const DEV = process.env.DEV.toLowerCase() === "true";
 /**
  * Push textures to all versions of a given pack
  * @author Juknum, Evorp
@@ -47,6 +47,6 @@ export default async function pushTextures(
 		}
 	}
 
-	// delete the random hash folder as well so you don't end up with 5 morbillion empty folders
-	if (basePath.includes("instapass")) rmSync(basePath, { recursive: true });
+	// prevent 5 morbillion empty hash folders (disabled in dev for download testing)
+	if (basePath.includes("instapass") && !DEV) rmSync(basePath, { recursive: true });
 }

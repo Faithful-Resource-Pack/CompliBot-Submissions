@@ -7,7 +7,7 @@ import {
 	TextChannel,
 } from "discord.js";
 
-const DEBUG = process.env.DEBUG.toLowerCase() == "true";
+const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
 export interface StatusParams {
 	status: string;

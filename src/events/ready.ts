@@ -1,5 +1,5 @@
-const DEV = process.env.DEV.toLowerCase() == "true";
-const MAINTENANCE = process.env.MAINTENANCE.toLowerCase() == "true";
+const DEV = process.env.DEV.toLowerCase() === "true";
+const MAINTENANCE = process.env.MAINTENANCE.toLowerCase() === "true";
 
 import { loadCommands } from "@functions/commandHandler";
 import { fetchSettings } from "@functions/fetchSettings";

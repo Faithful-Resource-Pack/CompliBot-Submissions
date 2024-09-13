@@ -17,7 +17,7 @@ import { hasPermission } from "@helpers/permissions";
 import axios from "axios";
 import type { Texture } from "@interfaces/database";
 
-const DEBUG = process.env.DEBUG.toLowerCase() == "true";
+const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
 /**
  * Selection menu for dealing with multiple valid options

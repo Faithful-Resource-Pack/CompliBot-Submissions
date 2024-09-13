@@ -1,15 +1,15 @@
 import settings from "@resources/settings.json";
-const DEBUG = process.env.DEBUG.toLowerCase() == "true";
+const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
 import getMessages from "@helpers/getMessages";
 import getPackByChannel from "@submission/utility/getPackByChannel";
 import handleError from "@functions/handleError";
 
-import { mkdirSync, writeFile } from "fs";
 import axios from "axios";
 import type { Contribution, Pack, PackFile, Texture } from "@interfaces/database";
 import { TextChannel, Client, Message } from "discord.js";
 import { join, sep } from "path";
+import { mkdir, writeFile } from "fs/promises";
 
 export interface DownloadableMessage {
 	url: string;
@@ -123,17 +123,18 @@ export async function downloadTexture(
 
 		for (const path of paths) {
 			// write file to every version of a path
-			for (const version of path.versions) {
-				const fullPath = join(baseFolder, packFolder, version, path.name);
-
-				// trim last bit to get folder tree
-				mkdirSync(fullPath.slice(0, fullPath.lastIndexOf(sep)), { recursive: true });
-
-				// something is always being logged when debugging so the callback version is simpler
-				writeFile(fullPath, imageFile, (err) => {
-					if (DEBUG) return console.log(err ?? `Added texture to path: ${fullPath}`);
-				});
-			}
+			await Promise.all(
+				path.versions.map(async (version) => {
+					const fullPath = join(baseFolder, packFolder, version, path.name);
+					try {
+						await mkdir(fullPath.slice(0, fullPath.lastIndexOf(sep)), { recursive: true });
+						await writeFile(fullPath, imageFile);
+						if (DEBUG) console.log(`Added texture to path ${fullPath}`);
+					} catch (err) {
+						console.error(err);
+					}
+				}),
+			);
 		}
 	}
 

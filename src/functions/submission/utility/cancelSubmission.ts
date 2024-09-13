@@ -5,7 +5,7 @@ import addDeleteButton from "@helpers/addDeleteButton";
 import { EmbedBuilder, Message } from "discord.js";
 import { hasPermission } from "@helpers/permissions";
 
-const DEBUG = process.env.DEBUG.toLowerCase() == "true";
+const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
 /**
  * Logic for handling an invalid submission

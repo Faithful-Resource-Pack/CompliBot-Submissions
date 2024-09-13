@@ -3,7 +3,7 @@ import { join } from "path";
 import axios from "axios";
 
 const FETCH_SETTINGS = process.env.FETCH_SETTINGS.toLowerCase() === "true";
-const DEV = process.env.DEV === "true";
+const DEV = process.env.DEV.toLowerCase() === "true";
 
 /**
  * Download JSON files for local usage

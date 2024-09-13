@@ -42,12 +42,13 @@ export async function difference(
 	secondUrl: string,
 	tolerance = 0,
 ): Promise<AttachmentBuilder> {
-	const first = await mapURL(firstUrl);
-	const second = await mapURL(secondUrl);
-	const images = [first, second];
-
-	// could not be loaded
-	if (images.some((i) => !i)) return null;
+	let images: MappedURL[];
+	try {
+		images = await Promise.all([mapURL(firstUrl), mapURL(secondUrl)]);
+	} catch {
+		// could not be loaded
+		return null;
+	}
 
 	// take biggest dimensions regardless of final image size
 	const finalWidth = Math.max(...images.map((i) => i.width));
@@ -60,7 +61,7 @@ export async function difference(
 	for (let i = 0; i < bufferLength; i += 4) {
 		const x = (i / 4) % finalWidth;
 		const y = Math.floor(i / 4 / finalWidth);
-		const type = diffPixel(first, second, x, y, tolerance);
+		const type = diffPixel(images[0], images[1], x, y, tolerance);
 
 		// out of bounds, skip
 		if (!type) continue;
@@ -77,8 +78,8 @@ export async function difference(
 				continue;
 			default:
 				// set to original pixel
-				data.set(first.pixels.slice(i, i + 3), i);
-				data[i + 3] = first.pixels[i + 3] * TRANSPARENCY_FACTOR;
+				data.set(images[0].pixels.slice(i, i + 3), i);
+				data[i + 3] = images[0].pixels[i + 3] * TRANSPARENCY_FACTOR;
 		}
 	}
 
@@ -155,10 +156,7 @@ function diffPixel(
  * @returns Mapped URL
  */
 async function mapURL(url: string): Promise<MappedURL> {
-	const res = await magnify(url).catch(() => null);
-
-	// null values are handled outside
-	if (!res) return null;
+	const res = await magnify(url);
 
 	// we can only destructure after null check
 	const { magnified, width, height } = res;

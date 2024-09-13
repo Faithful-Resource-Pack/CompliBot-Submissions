@@ -7,7 +7,7 @@ import { imageButtons, submissionReactions } from "@helpers/interactions";
 import { Client, EmbedBuilder, MessageReaction, TextChannel } from "discord.js";
 import type { Submission } from "@interfaces/database";
 
-const DEBUG = process.env.DEBUG.toLowerCase() == "true";
+const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
 /**
  * Send textures to a new channel following council rules

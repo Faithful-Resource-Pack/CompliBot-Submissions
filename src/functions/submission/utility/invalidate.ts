@@ -1,6 +1,6 @@
 import settings from "@resources/settings.json";
 
-const DEBUG = process.env.DEBUG.toLowerCase() == "true";
+const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
 import changeStatus from "@submission/utility/changeStatus";
 import { Message, User, GuildMember } from "discord.js";

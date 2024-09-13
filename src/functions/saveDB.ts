@@ -1,5 +1,5 @@
-const DEV = process.env.DEV.toLowerCase() == "true";
-const DEBUG = process.env.DEBUG.toLowerCase() == "true";
+const DEV = process.env.DEV.toLowerCase() === "true";
+const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
 import pushToGitHub from "@functions/pushToGitHub";
 import { join } from "path";
