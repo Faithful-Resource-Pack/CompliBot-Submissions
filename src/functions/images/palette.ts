@@ -22,6 +22,7 @@ const GRADIENT_HEIGHT = 50;
 export interface ColorStorage {
 	hex: string;
 	opacity: number[];
+	// https://devblogs.microsoft.com/typescript/announcing-typescript-4-0/#labeled-tuple-elements
 	rgb: [r: number, g: number, b: number];
 	count: number;
 }

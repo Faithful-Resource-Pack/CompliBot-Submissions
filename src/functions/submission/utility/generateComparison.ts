@@ -29,37 +29,24 @@ export default async function generateComparison(
 		require("@resources/packs.json")[pack].submission.reference ?? "default";
 	const baseURL = `${process.env.API_URL}textures/${texture.id}/url/`;
 
-	const newImage = await loadImage(attachment.url);
-
 	/**
-	 * IMAGE LOADING
-	 * - tries to go from left to right: Reference | New | Current
+	 * [Reference, New, Current?]
 	 */
-
-	const images: Image[] = [];
-
-	try {
-		images.push(await loadImage(`${baseURL}${reference}/latest`));
-	} catch {
-		// reference texture doesn't exist so we use the default repo
-		try {
-			images.push(await loadImage(`${baseURL}default/latest`));
-		} catch {
-			// default texture doesn't exist either
-		}
-	}
-
-	// pushing after the reference texture for better ordering
-	images.push(newImage);
-
-	try {
-		images.push(await loadImage(`${baseURL}${pack}/latest`));
-	} catch {
-		// texture being submitted is a new texture, so there's nothing to compare against
-	}
+	const images: Image[] = (
+		await Promise.all([
+			loadImage(`${baseURL}${reference}/latest`)
+				// fall back to default if reference doesn't exist
+				.catch(() => loadImage(`${baseURL}default/latest`))
+				// default doesn't exist either
+				.catch(() => null),
+			loadImage(attachment.url),
+			// may not be present and that's fine
+			loadImage(`${baseURL}${pack}/latest`).catch(() => null),
+		])
+	).filter((v) => v !== null);
 
 	// return early if the reference texture couldn't be fetched
-	if (images.length == 1) {
+	if (images.length === 1) {
 		return {
 			comparisonImage: await magnifyToAttachment(images[0], "magnified.png"),
 			hasReference: false,
@@ -71,7 +58,7 @@ export default async function generateComparison(
 	if (!texture.paths.some((p) => p.mcmeta === true))
 		return {
 			comparisonImage: await magnifyToAttachment(stitched, "compared.png"),
-			hasReference: images.length == 3,
+			hasReference: images.length === 3,
 		};
 
 	const { mcmeta } = texture;
