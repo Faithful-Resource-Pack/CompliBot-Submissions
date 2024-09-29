@@ -1,6 +1,5 @@
 import settings from "@resources/settings.json";
 import strings from "@resources/strings.json";
-const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
 import minecraftSorter from "@helpers/minecraftSorter";
 import getPackByChannel from "@submission/utility/getPackByChannel";
@@ -19,6 +18,8 @@ import {
 } from "discord.js";
 import { loadImage } from "@napi-rs/canvas";
 import type { MinecraftEdition, Texture } from "@interfaces/database";
+
+const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
 export interface EmbedParams {
 	description?: string;
