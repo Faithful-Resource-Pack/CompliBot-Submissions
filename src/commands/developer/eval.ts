@@ -1,4 +1,3 @@
-import settings from "@resources/settings.json";
 import strings from "@resources/strings.json";
 
 import warnUser from "@helpers/warnUser";
@@ -36,6 +35,8 @@ export default {
 		 * VARIABLES USED IN eval
 		 */
 		const { client, channel, guild } = interaction;
+		const settings = await import("@resources/settings.json");
+		const packs = await import("@resources/packs.json");
 
 		// ----
 
