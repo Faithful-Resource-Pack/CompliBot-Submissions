@@ -1,12 +1,15 @@
-<img src="https://raw.githubusercontent.com/Faithful-Resource-Pack/Branding/main/logos/transparent/256/complibot_submissions_logo.png" alt="CompliBot" align="right" height="256px">
+<img
+  src="https://database.faithfulpack.net/images/branding/logos/transparent/hd/complibot_submissions_logo.png?w=256"
+  alt="CompliBot Submissions Logo"
+  align="right"
+>
 <div align="center">
   <h1>CompliBot Submissions</h1>
   <h3>Fully automated texture pushing and submission system for the Faithful Discord servers.</h3>
 
-![RepoSize](https://img.shields.io/github/repo-size/Faithful-Resource-Pack/CompliBot-Submissions)
-![Issues](https://img.shields.io/github/issues/Faithful-Resource-Pack/CompliBot-Submissions)
-![PullRequests](https://img.shields.io/github/issues-pr/Faithful-Resource-Pack/CompliBot-Submissions)
-
+  ![RepoSize](https://img.shields.io/github/repo-size/Faithful-Resource-Pack/CompliBot-Submissions)
+  ![Issues](https://img.shields.io/github/issues/Faithful-Resource-Pack/CompliBot-Submissions)
+  ![PullRequests](https://img.shields.io/github/issues-pr/Faithful-Resource-Pack/CompliBot-Submissions)
 </div>
 
 ---
