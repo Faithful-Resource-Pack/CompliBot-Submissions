@@ -17,7 +17,7 @@ export default async function getAuthors(message: Message) {
 		?.map((name) => name.toLowerCase().trim());
 
 	if (names?.length) {
-		const users: User[] = (await axios.get(`${process.env.API_URL}users/names`)).data;
+		const users = (await axios.get<User[]>(`${process.env.API_URL}users/names`)).data;
 		for (const user of users)
 			if (names.includes(user.username?.toLowerCase()) && !authors.includes(user.id))
 				authors.push(user.id);

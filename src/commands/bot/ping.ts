@@ -10,7 +10,7 @@ import type { Command } from "@interfaces/discord";
 export default {
 	data: new SlashCommandBuilder().setName("ping").setDescription(strings.command.description.ping),
 	async execute(interaction) {
-		const quotes = (
+		const quotes: string[] = (
 			await axios.get(
 				`https://raw.githubusercontent.com/Faithful-Resource-Pack/CompliBot/main/json/quotes.json`,
 			)
@@ -27,7 +27,7 @@ export default {
 
 				const embed = new EmbedBuilder()
 					.setTitle("Pong!")
-					.setDescription(`_${quote.replace("%YEAR%", new Date().getFullYear() + 2)}_`)
+					.setDescription(`_${quote.replace("%YEAR%", String(new Date().getFullYear() + 2))}_`)
 					.setColor(settings.colors.blue)
 					.addFields(
 						{ name: "Bot Latency", value: `${botPing}ms`, inline: true },

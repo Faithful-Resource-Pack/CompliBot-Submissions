@@ -23,7 +23,7 @@ export default function handleError(client: Client, error: any, type: string) {
 		return console.error(consoleDescription);
 
 	// silence EPROTO errors
-	if (error.code == "EPROTO") return console.error(consoleDescription);
+	if (error.code === "EPROTO") return console.error(consoleDescription);
 
 	// DO NOT DELETE THIS CATCH, IT AVOIDS INFINITE LOOP IF THIS PROMISE REJECTS
 	devLogger(client, embedDescription, { title: type, codeBlocks }).catch(console.error);

@@ -95,11 +95,12 @@ export async function downloadTexture(
 		return;
 	}
 
-	const imageFile = (await axios.get(texture.url, { responseType: "arraybuffer" })).data;
+	const imageFile = (await axios.get<Buffer>(texture.url, { responseType: "arraybuffer" })).data;
 
 	let textureInfo: Texture;
 	try {
-		textureInfo = (await axios.get(`${process.env.API_URL}textures/${texture.id}/all`)).data;
+		textureInfo = (await axios.get<Texture>(`${process.env.API_URL}textures/${texture.id}/all`))
+			.data;
 	} catch {
 		// handles if texture gets deleted in the db between submission and results (merged, obsolete, etc)
 		if (DEBUG) console.error(`Could not find texture for ID: ${texture.id}`);
@@ -108,7 +109,7 @@ export async function downloadTexture(
 
 	// add the image to all its versions and paths
 	for (const use of textureInfo.uses) {
-		const paths = textureInfo.paths.filter((path) => path.use == use.id);
+		const paths = textureInfo.paths.filter((path) => path.use === use.id);
 
 		// need to redefine pack folder every time since java/bedrock are different folders
 		const packFolder = pack.github[use.edition]?.repo;

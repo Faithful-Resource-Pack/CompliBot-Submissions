@@ -17,8 +17,8 @@ export default function getPackByChannel(
 
 	// more annoying to use .find since we're only returning the key
 	for (const [packKey, packValue] of Object.entries(packs)) {
-		if (packValue.submission.channels?.[channelType] == channelID) return packKey;
-		if (Object.values(packValue.submission.channels).includes(channelID) && channelType == "any")
+		if (packValue.submission.channels?.[channelType] === channelID) return packKey;
+		if (Object.values(packValue.submission.channels).includes(channelID) && channelType === "any")
 			return packKey;
 	}
 }

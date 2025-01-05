@@ -9,7 +9,7 @@
         "prettier": "prettier \"{,!(node_modules)/**/}*.ts\" --config .prettierrc --write"
     },
     "devDependencies": {
-        "@types/node": "^22.10.2",
+        "@types/node": "^22.10.5",
         "nodemon": "^3.1.9",
         "prettier": "^3.4.2"
     },
@@ -17,7 +17,7 @@
         "@napi-rs/canvas": "^0.1.65",
         "@octokit/rest": "^20.1.1",
         "axios": "^1.7.9",
-        "cron": "^3.3.1",
+        "cron": "^3.3.2",
         "discord.js": "^14.16.3",
         "dotenv": "^16.4.7",
         "gif-encoder-2": "^1.0.5",

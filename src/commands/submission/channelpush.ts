@@ -34,10 +34,10 @@ export default {
 		const submissions: PackFile = require("@resources/packs.json");
 		const choice = interaction.options.getString("pack", true);
 		const delay = interaction.options.getInteger("delay", false);
-		if (choice == "all" && !process.env.DEVELOPERS.includes(interaction.user.id))
+		if (choice === "all" && !process.env.DEVELOPERS.includes(interaction.user.id))
 			return warnUser(interaction, strings.command.no_permission);
 
-		const packs = choice == "all" ? Object.values(submissions) : [submissions[choice]];
+		const packs = choice === "all" ? Object.values(submissions) : [submissions[choice]];
 
 		await interaction.deferReply();
 

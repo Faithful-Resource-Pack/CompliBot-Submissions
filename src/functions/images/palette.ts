@@ -113,7 +113,7 @@ export default async function palette(interaction: AnyInteraction, origin: Image
 
 	// create palette links, 9 max per link
 	// make arrays of hex arrays
-	const paletteGroups = [];
+	const paletteGroups: string[][] = [];
 	for (let i = 0; i < colors.length; ++i) {
 		if (i % COLORS_PER_PALETTE === 0) paletteGroups.push([]);
 		paletteGroups.at(-1).push(colors[i].replace("#", ""));

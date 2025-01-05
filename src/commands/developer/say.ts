@@ -11,7 +11,6 @@ export default {
 		.addStringOption((option) =>
 			option.setName("message").setDescription("What should the bot say?").setRequired(true),
 		)
-		.setDMPermission(false)
 		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
 		.setDMPermission(false),
 	async execute(interaction) {

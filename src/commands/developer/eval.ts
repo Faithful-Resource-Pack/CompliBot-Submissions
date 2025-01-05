@@ -20,7 +20,7 @@ export default {
 			return warnUser(interaction, strings.command.no_permission);
 		await interaction.deferReply({ ephemeral: true });
 
-		const clean = async (text) => {
+		const clean = async (text: any) => {
 			if (text && text.constructor.name === "Promise") text = await text;
 			if (typeof text !== "string") text = require("util").inspect(text, { depth: 1 });
 
@@ -41,7 +41,7 @@ export default {
 		// ----
 
 		const code = interaction.options.getString("code", true);
-		let evaluated;
+		let evaluated: any;
 		try {
 			evaluated = await eval(
 				`(async () => { try { return await (async () => {${

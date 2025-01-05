@@ -34,9 +34,9 @@ export default async function retrieveSubmission(client: Client, channelID: stri
 		const messageDate = new Date(message.createdTimestamp);
 		return (
 			// correct date
-			messageDate.getDate() == delayedDate.getDate() &&
-			messageDate.getMonth() == delayedDate.getMonth() &&
-			messageDate.getFullYear() == delayedDate.getFullYear() &&
+			messageDate.getDate() === delayedDate.getDate() &&
+			messageDate.getMonth() === delayedDate.getMonth() &&
+			messageDate.getFullYear() === delayedDate.getFullYear() &&
 			// only get pending submissions
 			message.embeds?.[0]?.fields[1]?.value?.includes(settings.emojis.pending)
 		);
@@ -59,7 +59,7 @@ export default async function retrieveSubmission(client: Client, channelID: stri
 		return (
 			upvoteCount > downvoteCount ||
 			// if nobody voted assume nobody cares
-			(upvoteCount == 1 && downvoteCount == 1)
+			(upvoteCount === 1 && downvoteCount === 1)
 		);
 	});
 

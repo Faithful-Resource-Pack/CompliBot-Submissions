@@ -8,12 +8,12 @@ import { createCanvas, Image } from "@napi-rs/canvas";
  * @returns stitched texture and the gap length added
  */
 export default async function stitch(images: Image[], gap?: number): Promise<[Buffer, number]> {
-	const biggestImage = images.reduce((a, e) => (a.width > e.width ? a : e), {
+	const biggestImage = images.reduce((best, cur) => (best.width > cur.width ? best : cur), {
 		width: 0,
 		height: 0,
 	});
 
-	if (gap == null || gap == undefined) {
+	if (gap === null || gap === undefined) {
 		// the gap should be the size of one 16x "pixel"
 		gap = 1;
 		if (biggestImage.width > 16) gap = 2;

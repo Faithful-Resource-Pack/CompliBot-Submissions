@@ -91,7 +91,7 @@ export default {
 					message.deletable &&
 					(!original ||
 						hasPermission(interaction.member as GuildMember, "moderator") ||
-						original.id == interaction.user.id)
+						original.id === interaction.user.id)
 				)
 					return message.delete();
 

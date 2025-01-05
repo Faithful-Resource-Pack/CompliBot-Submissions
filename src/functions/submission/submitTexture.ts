@@ -54,7 +54,7 @@ export default async function submitTexture(message: Message<true>) {
 
 		let results: Texture[] = [];
 		try {
-			results = (await axios.get(`${process.env.API_URL}textures/${search}/all`)).data;
+			results = (await axios.get<Texture[]>(`${process.env.API_URL}textures/${search}/all`)).data;
 		} catch {
 			await cancelSubmission(message, strings.submission.does_not_exist + "\n" + search);
 			continue;
@@ -68,7 +68,7 @@ export default async function submitTexture(message: Message<true>) {
 			continue;
 		}
 
-		if (results.length == 1) {
+		if (results.length === 1) {
 			await makeEmbed(message, results[0], attachment, param);
 			continue;
 		}

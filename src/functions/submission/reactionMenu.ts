@@ -33,7 +33,7 @@ export default async function reactionMenu(openReaction: MessageReaction, user: 
 	const submissionAuthorID = message.embeds[0].fields[0].value.split("\n")[0].replace(/\D+/g, "");
 
 	// if you don't check to close tray first, the bot won't listen for reactions upon restart
-	if (openReaction.emoji.id == settings.emojis.see_less) return closeTray(message, allReactions);
+	if (openReaction.emoji.id === settings.emojis.see_less) return closeTray(message, allReactions);
 
 	if (!canOpenTray(message, openReaction, member, submissionAuthorID)) return;
 
@@ -69,7 +69,7 @@ export default async function reactionMenu(openReaction: MessageReaction, user: 
 	const reactor = Array.from(actionReaction.users.cache.values()).find((user) => !user.bot);
 
 	if (
-		actionReaction.emoji.id == settings.emojis.delete &&
+		actionReaction.emoji.id === settings.emojis.delete &&
 		// only admins can delete messages (prevent abuse)
 		(reactor.id === submissionAuthorID || hasPermission(member, "administrator")) &&
 		message.deletable
@@ -137,7 +137,7 @@ function filterReactions(message: Message, member: GuildMember, allReactions: st
 	const packs: PackFile = require("@resources/packs.json");
 
 	// if the submission is in council remove delete reaction (avoid misclick)
-	if (Object.values(packs).some((pack) => pack.submission.channels.council == message.channel.id))
+	if (Object.values(packs).some((pack) => pack.submission.channels.council === message.channel.id))
 		allReactions = allReactions.filter((emoji) => emoji !== settings.emojis.delete);
 
 	// remove instapass/invalid if just the author is reacting or if submission is no longer pending

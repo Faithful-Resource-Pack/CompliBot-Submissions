@@ -17,7 +17,7 @@ export async function magnify(origin: ImageSource, isAnimation = false) {
 	const surface = isAnimation ? input.width * 16 : input.width * input.height;
 
 	let factor = 64;
-	if (surface == 256) factor = 32;
+	if (surface === 256) factor = 32;
 	if (surface > 256) factor = 16;
 	if (surface > 1024) factor = 8;
 	if (surface > 4096) factor = 4;

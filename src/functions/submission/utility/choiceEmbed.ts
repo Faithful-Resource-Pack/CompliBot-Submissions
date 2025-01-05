@@ -12,6 +12,7 @@ import {
 	Message,
 	SelectMenuComponentOptionData,
 	StringSelectMenuInteraction,
+	ComponentType,
 } from "discord.js";
 import { hasPermission } from "@helpers/permissions";
 import axios from "axios";
@@ -60,15 +61,17 @@ export default async function choiceEmbed(
 	const choiceMessage = await message.reply({ embeds: [embed], components: components });
 	await addDeleteButton(choiceMessage);
 
-	// typed as any since we know it's a string select menu but discord.js doesn't
-	const filter: any = (interaction: StringSelectMenuInteraction) =>
+	const filter = (interaction: StringSelectMenuInteraction) =>
 		// format is choiceEmbed_<ROWNUMBER> (needs unique ids)
 		interaction.customId.startsWith("choiceEmbed") &&
-		interaction.message.id == choiceMessage.id &&
+		interaction.message.id === choiceMessage.id &&
 		// admins can interact with choice embeds always
-		(interaction.user.id == message.author.id || hasPermission(message.member, "administrator"));
+		(interaction.user.id === message.author.id || hasPermission(message.member, "administrator"));
 
-	const collector = message.channel.createMessageComponentCollector({ filter, time: 60000 });
+	const collector = message.channel.createMessageComponentCollector<ComponentType.StringSelect>({
+		filter,
+		time: 60000,
+	});
 
 	collector.once("collect", async (interaction: StringSelectMenuInteraction) => {
 		if (!message.deletable) {
@@ -86,7 +89,7 @@ export default async function choiceEmbed(
 			authors: await getAuthors(message),
 		};
 
-		const texture: Texture = (await axios.get(`${process.env.API_URL}textures/${id}/all`)).data;
+		const texture = (await axios.get<Texture>(`${process.env.API_URL}textures/${id}/all`)).data;
 		if (choiceMessage.deletable) await choiceMessage.delete();
 
 		return makeEmbed(message, texture, attachments[index], param);

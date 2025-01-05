@@ -71,12 +71,12 @@ export default {
 				.setRequired(true),
 		),
 	async execute(interaction) {
-		const type = interaction.options.getString("type");
+		const type = interaction.options.getString("type") as keyof typeof feedbackFormat;
 		const modal = new ModalBuilder().setCustomId(`${type}Ticket`).setTitle(`New ${type} issue`);
 
 		modal.addComponents(
 			// every modal input needs to be in a new action row (blame djs)
-			...feedbackFormat[type].map((textInput: TextInputBuilder) =>
+			...feedbackFormat[type].map((textInput) =>
 				new ActionRowBuilder<TextInputBuilder>().addComponents(textInput),
 			),
 		);

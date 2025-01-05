@@ -17,7 +17,7 @@ export default {
 		/**
 		 * TEXTURE SUBMISSION
 		 */
-		if (Object.values(packs).some((pack) => pack.submission.channels.submit == message.channel.id))
+		if (Object.values(packs).some((pack) => pack.submission.channels.submit === message.channel.id))
 			return submitTexture(message);
 
 		/**

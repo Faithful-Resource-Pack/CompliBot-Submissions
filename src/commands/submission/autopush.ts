@@ -40,10 +40,10 @@ export default {
 		const choice = interaction.options.getString("pack", true);
 		const addContributions = interaction.options.getBoolean("contributions", false) ?? true;
 
-		if (choice == "all" && !process.env.DEVELOPERS.includes(interaction.user.id))
+		if (choice === "all" && !process.env.DEVELOPERS.includes(interaction.user.id))
 			return warnUser(interaction, strings.command.no_permission);
 
-		const packs = choice == "all" ? Object.values(submissions) : [submissions[choice]];
+		const packs = choice === "all" ? Object.values(submissions) : [submissions[choice]];
 
 		const infoEmbed = new EmbedBuilder()
 			.setDescription("This can take some time, please wait...")

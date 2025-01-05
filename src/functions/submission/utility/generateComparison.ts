@@ -32,8 +32,8 @@ export default async function generateComparison(
 	/**
 	 * [Reference, New, Current?]
 	 */
-	const images: Image[] = (
-		await Promise.all([
+	const images = (
+		await Promise.all<Image>([
 			loadImage(`${baseURL}${reference}/latest`)
 				// fall back to default if reference doesn't exist
 				.catch(() => loadImage(`${baseURL}default/latest`))
@@ -82,7 +82,7 @@ export default async function generateComparison(
 
 	return {
 		comparisonImage: new AttachmentBuilder(animated, { name: "compared.gif" }),
-		hasReference: images.length == 3,
+		hasReference: images.length === 3,
 		mcmeta: displayedMcmeta,
 	};
 }

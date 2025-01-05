@@ -141,7 +141,7 @@ export default async function makeEmbed(
  * @returns usable embed field data
  */
 export function addPathsToEmbed(texture: Texture): APIEmbedField[] {
-	const groupedPaths: Partial<Record<MinecraftEdition, string[]>> = texture.uses.reduce(
+	const groupedPaths = texture.uses.reduce<Partial<Record<MinecraftEdition, string[]>>>(
 		(acc, use) => {
 			const paths = texture.paths
 				.filter((el) => el.use === use.id)

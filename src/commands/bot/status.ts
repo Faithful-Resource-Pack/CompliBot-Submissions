@@ -23,7 +23,7 @@ export default {
 				.setDescription("What activity the bot is doing (e.g. playing, streaming)")
 				.addChoices(
 					...Object.values(ActivityType)
-						.filter((x) => typeof x == "string")
+						.filter((x) => typeof x === "string")
 						.map((i) => ({ name: i, value: i })),
 				)
 				.setRequired(true),
