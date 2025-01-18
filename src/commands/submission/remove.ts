@@ -91,7 +91,13 @@ export default {
 			const { org, repo } = submissions[pack].github[edition as MinecraftEdition];
 			for (const [version, paths] of Object.entries(versions)) {
 				try {
-					await deleteFromGitHub(org, repo, version, `Delete ${name}`, paths);
+					await deleteFromGitHub(
+						org,
+						repo,
+						version,
+						`Delete ${name} executed by ${interaction.user.displayName}`,
+						paths,
+					);
 					if (DEBUG) console.log(`Deleted: ${org}/${repo}:${version} (${name})`);
 				} catch {
 					// can also be an auth error or really anything but this is most likely
@@ -105,6 +111,9 @@ export default {
 				embeds: [
 					new EmbedBuilder()
 						.setTitle(`Successfully removed texture ${name} from pack ${submissions[pack].name}`)
+						.setDescription(
+							"Note that this does not remove contributions or other pack-specific data.",
+						)
 						.setColor(settings.colors.green),
 				],
 			})
