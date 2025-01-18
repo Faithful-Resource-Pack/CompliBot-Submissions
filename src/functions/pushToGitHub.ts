@@ -68,6 +68,56 @@ export default async function pushToGitHub(
 }
 
 /**
+ * Remove files from a GitHub repository by name
+ * @author Evorp
+ * @param org GitHub organization name
+ * @param repo GitHub repository name
+ * @param branch branch name
+ * @param commitMessage
+ * @param filePaths Paths to delete
+ * @returns sent commit sha
+ */
+export async function deleteFromGitHub(
+	org: string,
+	repo: string,
+	branch: string,
+	commitMessage: string,
+	filePaths: string[],
+) {
+	const octo = new Octokit({ auth: process.env.GIT_TOKEN });
+	const { commitSha, treeSha } = await getCurrentCommit(octo, org, repo, branch);
+
+	const treeItems = filePaths.map(
+		(path) =>
+			({
+				path,
+				mode: "100644",
+				// null means deletion
+				sha: null,
+			}) as const,
+	);
+
+	const { data: newTreeData } = await octo.git.createTree({
+		owner: org,
+		repo,
+		tree: treeItems,
+		base_tree: treeSha,
+	});
+
+	const commitData = await createNewCommit(
+		octo,
+		org,
+		repo,
+		commitMessage,
+		newTreeData.sha,
+		commitSha,
+	);
+
+	await setBranchToCommit(octo, org, repo, branch, commitData.sha);
+	return commitData.sha;
+}
+
+/**
  * Get current commit of a branch from a repository
  * @param octo
  * @param org GitHub organisation
@@ -186,7 +236,7 @@ async function createNewTree(
  * @param repo GitHub repository of the organisation
  * @param message Commit message
  * @param currentTreeSha
- * @param currentCommitSha
+ * @param lastCommitSha
  */
 async function createNewCommit(
 	octo: Octokit,
@@ -194,14 +244,14 @@ async function createNewCommit(
 	repo: string,
 	message: string,
 	currentTreeSha: string,
-	currentCommitSha: string,
+	lastCommitSha: string,
 ) {
 	const { data } = await octo.git.createCommit({
 		owner: org,
 		repo,
 		message,
 		tree: currentTreeSha,
-		parents: [currentCommitSha],
+		parents: [lastCommitSha],
 	});
 	return data;
 }

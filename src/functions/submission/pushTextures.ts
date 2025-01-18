@@ -3,7 +3,7 @@ import { existsSync, rmSync } from "fs";
 import formattedDate from "@helpers/formattedDate";
 
 import pushToGitHub from "@functions/pushToGitHub";
-import type { PackFile } from "@interfaces/database";
+import type { MinecraftEdition, PackFile } from "@interfaces/database";
 import { join } from "path";
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 const DEV = process.env.DEV.toLowerCase() === "true";
@@ -23,14 +23,13 @@ export default async function pushTextures(
 	const settings = require("@resources/settings.json");
 
 	const packs: PackFile = require("@resources/packs.json");
-	const editions = Object.keys(settings.versions).filter((k) => k !== "id");
-	for (const edition of editions) {
-		const packGitHub = packs[pack].github[edition];
+	for (const edition of Object.keys(settings.versions)) {
+		const packGitHub = packs[pack].github[edition as MinecraftEdition];
 		if (!packGitHub) {
 			if (DEBUG) console.log(`${pack} doesn't support ${edition} yet!`);
 			continue;
 		}
-		for (const branch of settings.versions[edition]) {
+		for (const branch of settings.versions[edition] as string) {
 			const path = join(basePath, packGitHub.repo, branch);
 
 			// don't create empty commits
