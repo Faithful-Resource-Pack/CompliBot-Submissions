@@ -95,7 +95,7 @@ export default async function makeEmbed(
 		embed
 			.setImage(comparedUrl)
 			.setThumbnail(thumbnailUrl)
-			.setFooter({ text: hasReference ? "Reference | New | Current" : "Reference | New" });
+			.setFooter({ text: hasReference ? "Reference | Proposed | Current" : "Reference | Proposed" });
 
 		// if it's a blank mcmeta there's no point adding a whole field for it
 		if (Object.keys(mcmeta?.animation ?? {}).length)
