@@ -207,6 +207,7 @@ function rgbToHex(r: number, g: number, b: number) {
  * @returns The HSL representation
  */
 function rgbToHSL(r: number, g: number, b: number): number[] {
+	// gets as float between 0 and 1
 	r /= 255;
 	g /= 255;
 	b /= 255;
@@ -217,6 +218,8 @@ function rgbToHSL(r: number, g: number, b: number): number[] {
 
 	let h: number;
 	let s: number;
+
+	// average brightness across all three channels
 	let l = (max + min) / 2;
 
 	// all color channels are equal so it's grayscale
@@ -235,6 +238,7 @@ function rgbToHSL(r: number, g: number, b: number): number[] {
 			break;
 	}
 
+	// converts hue to match the other channels
 	h /= 6;
 
 	return [h, s, l];
