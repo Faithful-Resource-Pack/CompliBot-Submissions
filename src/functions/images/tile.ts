@@ -1,5 +1,5 @@
 import { createCanvas, loadImage } from "@napi-rs/canvas";
-import { EmbedBuilder } from "discord.js";
+import { EmbedBuilder, MessageFlags } from "discord.js";
 import settings from "@resources/settings.json";
 import strings from "@resources/strings.json";
 import type { ImageSource } from "@interfaces/images";
@@ -27,7 +27,7 @@ export default async function tile(interaction: AnyInteraction, origin: ImageSou
 					)
 					.setColor(settings.colors.red),
 			],
-			ephemeral: true,
+			flags: MessageFlags.Ephemeral,
 		});
 		return null;
 	}

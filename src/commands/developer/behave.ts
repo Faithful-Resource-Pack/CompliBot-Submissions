@@ -22,8 +22,8 @@ export default {
 
 		try {
 			const message = await interaction.channel.messages.fetch(msgID);
-			const msg = await interaction.reply({ content: "** **", fetchReply: true });
-			msg.delete();
+			const { resource } = await interaction.reply({ content: "** **", withResponse: true });
+			resource.message.delete();
 
 			return message.reply({ content: strings.command.behave });
 		} catch {

@@ -1,7 +1,7 @@
 import settings from "@resources/settings.json";
 import strings from "@resources/strings.json";
 
-import { EmbedBuilder, Message } from "discord.js";
+import { EmbedBuilder, Message, MessageFlags } from "discord.js";
 import addDeleteButton from "./addDeleteButton";
 import type { AnyInteraction } from "@interfaces/discord";
 
@@ -29,7 +29,13 @@ export default async function warnUser(
 
 	if (deferred) {
 		await interaction.deleteReply().catch(() => {});
-		return interaction.followUp({ embeds: [embed], ephemeral: true });
+		return interaction.followUp({ embeds: [embed], flags: MessageFlags.Ephemeral });
 	}
-	return interaction.reply({ embeds: [embed], ephemeral: true, fetchReply: true });
+	return interaction
+		.reply({
+			embeds: [embed],
+			flags: MessageFlags.Ephemeral,
+			withResponse: true,
+		})
+		.then(({ resource }) => resource.message);
 }

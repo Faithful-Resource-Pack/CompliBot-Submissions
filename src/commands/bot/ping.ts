@@ -20,10 +20,10 @@ export default {
 		// NEVER USE AWAIT ASYNC
 		// only send response to maximize response time
 		return interaction
-			.reply({ content: "** **", fetchReply: true })
-			.then((msg) => {
+			.reply({ content: "** **", withResponse: true })
+			.then(({ resource }) => {
 				const apiPing = interaction.client.ws.ping;
-				const botPing = msg.createdTimestamp - interaction.createdTimestamp;
+				const botPing = resource.message.createdTimestamp - interaction.createdTimestamp;
 
 				const embed = new EmbedBuilder()
 					.setTitle("Pong!")

@@ -27,9 +27,9 @@ export default {
 							.addFields({ name: "Reason", value: "trying to stop me lmao" })
 							.setColor(settings.colors.red),
 					],
-					fetchReply: true,
+					withResponse: true,
 				})
-				.then(addDeleteButton);
+				.then(({ resource }) => addDeleteButton(resource.message));
 		}
 
 		await interaction.reply({

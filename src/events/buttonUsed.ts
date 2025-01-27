@@ -3,7 +3,7 @@ import tile from "@images/tile";
 import palette from "@images/palette";
 import { difference } from "@images/difference";
 
-import { ButtonInteraction, EmbedBuilder, GuildMember } from "discord.js";
+import { ButtonInteraction, EmbedBuilder, GuildMember, MessageFlags } from "discord.js";
 
 import strings from "@resources/strings.json";
 import settings from "@resources/settings.json";
@@ -26,7 +26,7 @@ export default {
 			case "magnifyButton": {
 				return interaction.reply({
 					files: [await magnifyToAttachment(image)],
-					ephemeral: true,
+					flags: MessageFlags.Ephemeral,
 				});
 			}
 			case "tileButton": {
@@ -35,7 +35,7 @@ export default {
 				if (!tileBuffer) return;
 				return interaction.reply({
 					files: [await magnifyToAttachment(tileBuffer)],
-					ephemeral: true,
+					flags: MessageFlags.Ephemeral,
 				});
 			}
 			case "paletteButton": {
@@ -48,7 +48,7 @@ export default {
 
 				const id = message.embeds?.[0]?.title?.match(/(?<=\[#)(.*?)(?=\])/)?.[0];
 				if (!id) break;
-				await interaction.deferReply({ ephemeral: true });
+				await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
 				const currentUrl = `${process.env.API_URL}textures/${id}/url/${packName}/latest`;
 				const proposedUrl = message.embeds[0].thumbnail?.url;
@@ -99,7 +99,7 @@ export default {
 
 				return interaction.reply({
 					content: `This interaction is reserved for ${user}!`,
-					ephemeral: true,
+					flags: MessageFlags.Ephemeral,
 				});
 			}
 			default: {

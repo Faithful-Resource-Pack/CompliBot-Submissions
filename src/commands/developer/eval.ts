@@ -2,7 +2,7 @@ import strings from "@resources/strings.json";
 
 import warnUser from "@helpers/warnUser";
 
-import { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } from "discord.js";
+import { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, MessageFlags } from "discord.js";
 import type { Command } from "@interfaces/discord";
 
 export default {
@@ -18,7 +18,7 @@ export default {
 		// remove this line to instantly die
 		if (!process.env.DEVELOPERS.includes(interaction.user.id))
 			return warnUser(interaction, strings.command.no_permission);
-		await interaction.deferReply({ ephemeral: true });
+		await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
 		const clean = async (text: any) => {
 			if (text && text.constructor.name === "Promise") text = await text;

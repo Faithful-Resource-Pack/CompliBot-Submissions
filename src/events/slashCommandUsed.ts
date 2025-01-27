@@ -28,8 +28,10 @@ export default {
 				);
 
 			const msgEmbed = interaction.deferred
-				? await interaction.followUp({ embeds: [embed], fetchReply: true })
-				: await interaction.reply({ embeds: [embed], fetchReply: true });
+				? await interaction.followUp({ embeds: [embed] })
+				: await interaction
+						.reply({ embeds: [embed], withResponse: true })
+						.then(({ resource }) => resource.message);
 
 			return addDeleteButton(msgEmbed);
 		}

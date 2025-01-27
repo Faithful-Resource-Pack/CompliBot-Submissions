@@ -72,8 +72,8 @@ export default {
 						.setTitle("Bot status successfully changed!")
 						.setColor(settings.colors.green),
 				],
-				fetchReply: true,
+				withResponse: true,
 			})
-			.then(addDeleteButton);
+			.then(({ resource }) => addDeleteButton(resource.message));
 	},
 } as Command;

@@ -4,7 +4,7 @@ import { createCanvas, loadImage } from "@napi-rs/canvas";
 import settings from "@resources/settings.json";
 import strings from "@resources/strings.json";
 
-import { EmbedBuilder, AttachmentBuilder } from "discord.js";
+import { EmbedBuilder, AttachmentBuilder, MessageFlags } from "discord.js";
 
 const COOLORS_URL = "https://coolors.co/";
 
@@ -41,7 +41,7 @@ export default async function palette(interaction: AnyInteraction, origin: Image
 	if (input.width * input.height > 262144)
 		return interaction.reply({
 			content: strings.command.image.input_too_big,
-			ephemeral: true,
+			flags: MessageFlags.Ephemeral,
 		});
 
 	const ctx = createCanvas(input.width, input.height).getContext("2d");
@@ -182,7 +182,7 @@ export default async function palette(interaction: AnyInteraction, origin: Image
 	return interaction.reply({
 		embeds: [embed],
 		files: [colorImageAttachment],
-		ephemeral: true,
+		flags: MessageFlags.Ephemeral,
 	});
 }
 

@@ -19,8 +19,8 @@ export default {
 
 		const content = interaction.options.getString("message", true);
 
-		const msg = await interaction.reply({ content: "** **", fetchReply: true });
-		if (msg.deletable) await msg.delete();
+		const { resource } = await interaction.reply({ content: "** **", withResponse: true });
+		if (resource.message.deletable) await resource.message.delete();
 		await interaction.channel.send({ content });
 	},
 } as Command;
