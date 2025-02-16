@@ -60,16 +60,11 @@ export default {
 				)
 			).data;
 		} catch {
-			return interaction.editReply({
-				embeds: [noResultEmbed],
-			});
+			return interaction.editReply({ embeds: [noResultEmbed] });
 		}
 
 		results = Array.isArray(results) ? results : [results];
-		if (!results.length)
-			return interaction.editReply({
-				embeds: [noResultEmbed],
-			});
+		if (!results.length) return interaction.editReply({ embeds: [noResultEmbed] });
 
 		// take first result
 		const { name, uses, paths } = results[0];
