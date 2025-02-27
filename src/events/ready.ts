@@ -44,32 +44,43 @@ export default {
 		 * Send submission messages to their respective channels
 		 * Runs each day at midnight
 		 */
-
-		new CronJob("0 0 * * *", async () => {
-			for (const pack of Object.values(packs)) {
-				await sendToResults(client, pack.submission);
-				if (pack.submission.council_enabled) await sendToCouncil(client, pack.submission);
-			}
-		}).start();
+		CronJob.from({
+			cronTime: "0 0 * * *",
+			async onTick() {
+				for (const pack of Object.values(packs)) {
+					await sendToResults(client, pack.submission);
+					if (pack.submission.council_enabled) await sendToCouncil(client, pack.submission);
+				}
+			},
+			start: true,
+		});
 
 		/**
 		 * Download passed textures
 		 * Runs each day at 12:15 AM
 		 */
-		new CronJob("15 0 * * *", async () => {
-			for (const pack of Object.values(packs))
-				await downloadResults(client, pack.submission.channels.results);
-		}).start();
+		CronJob.from({
+			cronTime: "15 0 * * *",
+			async onTick() {
+				for (const pack of Object.values(packs)) {
+					await downloadResults(client, pack.submission.channels.results);
+				}
+			},
+			start: true,
+		});
 
 		/**
 		 * Push downloaded textures to GitHub, and back up database files
 		 * Runs each day at 12:30 AM
 		 */
-		new CronJob("30 0 * * *", async () => {
-			for (const pack of Object.keys(packs)) await pushTextures("./downloadedTextures", pack);
-
-			await saveDB(client);
-		}).start();
+		CronJob.from({
+			cronTime: "30 0 * * *",
+			async onTick() {
+				for (const pack of Object.keys(packs)) await pushTextures("./downloadedTextures", pack);
+				await saveDB(client);
+			},
+			start: true,
+		});
 
 		/**
 		 * LOOP EVENTS

@@ -43,7 +43,7 @@ export default async function generateComparison(
 			// may not be present and that's fine
 			loadImage(`${baseURL}${pack}/latest`).catch(() => null),
 		])
-	).filter((v) => v !== null);
+	).filter((img) => img !== null);
 
 	// return early if the reference texture couldn't be fetched
 	if (images.length === 1) {
