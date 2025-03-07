@@ -10,8 +10,8 @@ import type { Command } from "@interfaces/discord";
 export default {
 	data: new SlashCommandBuilder().setName("ping").setDescription(strings.command.description.ping),
 	async execute(interaction) {
-		const quotes: string[] = (
-			await axios.get(
+		const quotes = (
+			await axios.get<Record<string, string[]>>(
 				`https://raw.githubusercontent.com/Faithful-Resource-Pack/CompliBot/main/json/quotes.json`,
 			)
 		).data.ping;
