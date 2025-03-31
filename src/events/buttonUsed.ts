@@ -75,7 +75,7 @@ export default {
 				});
 			}
 			case "deleteButton": {
-				let original = interaction.message.interaction?.user;
+				let original = interaction.message.interactionMetadata?.user;
 
 				// no interaction found, try replies instead
 				if (message?.reference && !original) {

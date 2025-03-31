@@ -9,15 +9,15 @@
         "prettier": "prettier \"{,!(node_modules)/**/}*.ts\" --config .prettierrc --write"
     },
     "devDependencies": {
-        "@types/node": "^22.13.8",
+        "@types/node": "^22.13.14",
         "nodemon": "^3.1.9",
         "prettier": "^3.5.3"
     },
     "dependencies": {
-        "@napi-rs/canvas": "^0.1.67",
+        "@napi-rs/canvas": "^0.1.68",
         "@octokit/rest": "^20.1.2",
-        "axios": "^1.8.1",
-        "cron": "^4.1.0",
+        "axios": "^1.8.4",
+        "cron": "^4.1.3",
         "discord.js": "^14.18.0",
         "dotenv": "^16.4.7",
         "gif-encoder-2": "^1.0.5",
