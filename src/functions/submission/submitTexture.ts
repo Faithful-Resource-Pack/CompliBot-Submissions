@@ -7,7 +7,7 @@ import makeEmbed from "@submission/makeEmbed";
 import cancelSubmission from "@submission/utility/cancelSubmission";
 
 import getAuthors from "@submission/utility/getAuthors";
-import minecraftSorter from "@helpers/minecraftSorter";
+import versionSorter from "@helpers/versionSorter";
 
 import axios from "axios";
 import { Message } from "discord.js";
@@ -76,7 +76,7 @@ export default async function submitTexture(message: Message<true>) {
 		if (DEBUG) console.log(`Generating choice embed for texture search: ${search}`);
 		ongoingMenu = true;
 		const mappedResults = results.map((result) => {
-			const version = result.paths[0].versions.sort(minecraftSorter).at(-1);
+			const version = result.paths[0].versions.sort(versionSorter).at(-1);
 			return {
 				label: `[#${result.id}] (${version}) ${result.name}`,
 				description: result.paths[0].name,

@@ -1,7 +1,7 @@
 import settings from "@resources/settings.json";
 import strings from "@resources/strings.json";
 
-import minecraftSorter from "@helpers/minecraftSorter";
+import versionSorter from "@helpers/versionSorter";
 import getPackByChannel from "@submission/utility/getPackByChannel";
 import getImages from "@helpers/getImages";
 import generateComparison from "@submission/utility/generateComparison";
@@ -148,7 +148,7 @@ export function addPathsToEmbed(texture: Texture): APIEmbedField[] {
 			const paths = texture.paths
 				.filter((el) => el.use === use.id)
 				.map((p) => {
-					const versions = p.versions.sort(minecraftSorter);
+					const versions = p.versions.sort(versionSorter);
 					const versionRange = `\`[${
 						versions.length > 1 ? `${versions[0]} – ${versions[versions.length - 1]}` : versions[0]
 					}]\``;
