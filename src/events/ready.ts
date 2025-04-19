@@ -13,6 +13,7 @@ import { ActivityType, Client } from "discord.js";
 import { CronJob } from "cron";
 import type { PackFile } from "@interfaces/database";
 import type { Event } from "@interfaces/discord";
+import handleError from "@functions/handleError";
 
 export default {
 	name: "ready",
@@ -63,7 +64,10 @@ export default {
 			cronTime: "15 0 * * *",
 			async onTick() {
 				for (const pack of Object.values(packs)) {
-					await downloadResults(client, pack.submission.channels.results);
+					// errors don't stop the rest of the packs from downloading
+					await downloadResults(client, pack.submission.channels.results).catch((err) => {
+						handleError(client, err, `Failed to download results for pack ${pack.name}`);
+					});
 				}
 			},
 			start: true,
