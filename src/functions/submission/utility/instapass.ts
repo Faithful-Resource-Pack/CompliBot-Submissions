@@ -14,7 +14,7 @@ import pushTextures from "@submission/pushTextures";
 import getPackByChannel from "@submission/utility/getPackByChannel";
 import changeStatus from "@submission/utility/changeStatus";
 
-import { imageButtons } from "@helpers/interactions";
+import { submissionButtons } from "@helpers/interactions";
 import formattedDate from "@helpers/formattedDate";
 
 import type { PackFile } from "@interfaces/database";
@@ -36,7 +36,7 @@ export default async function instapass(message: Message, member: User | GuildMe
 	const embed = await changeStatus(message, {
 		status,
 		color: settings.colors.yellow,
-		components: [imageButtons],
+		components: [submissionButtons],
 		editOriginal: true,
 	});
 
@@ -49,7 +49,7 @@ export default async function instapass(message: Message, member: User | GuildMe
 	const texture = mapMessage(
 		await channelOut.send({
 			embeds: [embed],
-			components: [imageButtons],
+			components: [submissionButtons],
 		}),
 	);
 

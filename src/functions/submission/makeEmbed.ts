@@ -5,7 +5,7 @@ import versionSorter from "@helpers/versionSorter";
 import getPackByChannel from "@submission/utility/getPackByChannel";
 import getImages from "@helpers/getImages";
 import generateComparison from "@submission/utility/generateComparison";
-import { imageButtons, submissionButtons, submissionReactions } from "@helpers/interactions";
+import { submissionButtons, diffableButtons, submissionReactions } from "@helpers/interactions";
 
 import {
 	EmbedBuilder,
@@ -106,7 +106,7 @@ export default async function makeEmbed(
 				value: `\`\`\`json\n${JSON.stringify(mcmeta.animation)}\`\`\``,
 			});
 
-		imgButtons = hasReference ? [submissionButtons] : [imageButtons];
+		imgButtons = hasReference ? [diffableButtons] : [submissionButtons];
 	} else {
 		if (DEBUG)
 			console.log(
@@ -120,7 +120,7 @@ export default async function makeEmbed(
 			.setThumbnail(imageUrl)
 			.setFooter({ text: strings.submission.cant_compare });
 
-		imgButtons = [imageButtons];
+		imgButtons = [submissionButtons];
 	}
 
 	if (description) embed.setDescription(description);

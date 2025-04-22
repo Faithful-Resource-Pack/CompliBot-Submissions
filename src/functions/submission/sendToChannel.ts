@@ -2,7 +2,7 @@ import settings from "@resources/settings.json";
 
 import retrieveSubmission from "@submission/utility/retrieveSubmission";
 import changeStatus from "@submission/utility/changeStatus";
-import { imageButtons, submissionReactions } from "@helpers/interactions";
+import { submissionButtons, submissionReactions } from "@helpers/interactions";
 
 import { Client, EmbedBuilder, MessageReaction, TextChannel } from "discord.js";
 import type { Submission } from "@interfaces/database";
@@ -94,7 +94,7 @@ export async function sendToResults(client: Client, pack: Submission, delay?: nu
 				`[Original Post](${message.message.url})\n${message.embed.description ?? ""}`,
 			);
 
-		await channelOut.send({ embeds: [resultEmbed], components: [imageButtons] });
+		await channelOut.send({ embeds: [resultEmbed], components: [submissionButtons] });
 
 		changeStatus(message.message, {
 			status: `<:upvote:${settings.emojis.upvote}> Sent to results!`,

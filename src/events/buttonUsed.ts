@@ -9,8 +9,9 @@ import strings from "@resources/strings.json";
 import settings from "@resources/settings.json";
 import getPackByChannel from "@submission/utility/getPackByChannel";
 import warnUser from "@helpers/warnUser";
-import type { Event } from "@interfaces/discord";
+import type { AnyInteraction, Event } from "@interfaces/discord";
 import { hasPermission } from "@helpers/permissions";
+import info from "@commands/bot/info";
 
 /** "fake" emitted event to split up interactionCreate */
 export default {
@@ -41,6 +42,10 @@ export default {
 			case "paletteButton": {
 				// since there's multiple components in palette it's easier to reply there
 				return palette(interaction, image);
+			}
+			case "infoButton": {
+				// the only method used is reply which is shared by buttons and commands
+				return info.execute(interaction as any);
 			}
 			case "viewRawButton": // compatibility with old submissions
 			case "diffButton": {
