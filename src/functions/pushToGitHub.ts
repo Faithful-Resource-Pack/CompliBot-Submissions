@@ -3,10 +3,11 @@
  * https://dev.to/lucis/how-to-push-files-programatically-to-a-repository-using-octokit-with-typescript-1nj0
  */
 
-import { readdir, readFile } from "fs/promises";
-import { join, normalize, relative } from "path";
+import { readFileSync } from "fs";
+import { normalize, relative } from "path";
 
 import { Octokit } from "@octokit/rest";
+import walkSync from "@helpers/walkSync";
 
 // octokit is really weirdly typed so you need to manually declare some interfaces
 interface FileBlob {
@@ -33,13 +34,11 @@ export default async function pushToGitHub(
 	const octo = new Octokit({ auth: process.env.GIT_TOKEN });
 
 	const currentCommit = await getCurrentCommit(octo, org, repo, branch);
-	const filePaths = (await readdir(localPath, { recursive: true })).map((path) =>
-		join(localPath, path),
-	);
-	if (!filePaths.length) return;
+	const filePaths = walkSync(localPath);
+	if (!filePaths) return;
 
-	// suspected problem in createBlobForFile which fails and give undefined
-	const fileBlobs = await Promise.all(
+	// suspected problem on createBlobForFile which fails and give undefined
+	const filesBlobs = await Promise.all(
 		filePaths.map((path) => createBlobForFile(octo, org, repo, path)),
 	);
 
@@ -50,7 +49,7 @@ export default async function pushToGitHub(
 		octo,
 		org,
 		repo,
-		fileBlobs,
+		filesBlobs,
 		pathsForBlobs,
 		currentCommit.treeSha,
 	);
@@ -155,14 +154,14 @@ async function getCurrentCommit(
  * @param filePath
  * @returns a utf8 file
  */
-const getFileAsUTF8 = (filePath: string) => readFile(filePath, { encoding: "utf-8" });
+const getFileAsUTF8 = (filePath: string) => readFileSync(filePath, { encoding: "utf-8" });
 
 /**
  * Get file as binary (used for image files)
  * @param filePath
  * @returns a base64 file
  */
-const getFileAsBinary = (filePath: string) => readFile(filePath, { encoding: "base64" });
+const getFileAsBinary = (filePath: string) => readFileSync(filePath, { encoding: "base64" });
 
 /**
  * Create blob for a file
@@ -181,9 +180,9 @@ async function createBlobForFile(
 	let encoding = "utf-8";
 
 	if ([".png", ".tga"].some((ex) => filePath.endsWith(ex))) {
-		content = await getFileAsBinary(filePath);
+		content = getFileAsBinary(filePath);
 		encoding = "base64";
-	} else content = await getFileAsUTF8(filePath);
+	} else content = getFileAsUTF8(filePath);
 
 	const blobData = await octo.git.createBlob({
 		owner: org,

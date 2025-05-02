@@ -1,10 +1,8 @@
 import { Routes, REST, Collection, Client } from "discord.js";
 import { join } from "path";
 
+import walkSync from "@helpers/walkSync";
 import type { Command } from "@interfaces/discord";
-import { readdir } from "fs/promises";
-
-export const COMMAND_PATH = join(__dirname, "..", "commands");
 
 /**
  * Load slash commands and add them to the client
@@ -12,19 +10,19 @@ export const COMMAND_PATH = join(__dirname, "..", "commands");
  * @param client client to load commands to
  */
 export async function loadCommands(client: Client) {
-	const commandPaths = await readdir(COMMAND_PATH, { recursive: true });
-	const commands = await Promise.all<Command>(
-		commandPaths
-			.filter((f) => f.endsWith(".ts"))
-			.map(async (f) => (await import(join(COMMAND_PATH, f))).default),
-	);
+	client.commands = new Collection();
+	const commandPaths = walkSync(join(__dirname, "..", "commands")).filter((f) => f.endsWith(".ts"));
 
-	client.commands = new Collection(commands.map((c) => [c.data.name, c]));
+	// add to collection in bot so they can be fetched
+	for (const path of commandPaths) {
+		const command: Command = require(path).default;
+		client.commands.set(command.data.name, command);
+	}
 
 	const rest = new REST({ version: "10" }).setToken(process.env.CLIENT_TOKEN);
 
 	// add to discord so they can be used in the slash command menu
-	return rest
+	rest
 		.put(Routes.applicationCommands(client.user.id), {
 			body: Array.from(client.commands.values()).map((command) => command.data.toJSON()),
 		})
