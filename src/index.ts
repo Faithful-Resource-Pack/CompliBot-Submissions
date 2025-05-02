@@ -7,15 +7,17 @@
 
 import "dotenv/config";
 
-import { readdirSync } from "fs";
-
 import { fetchSettings } from "@functions/fetchSettings";
 import handleError from "@functions/handleError";
 import { Client, GatewayIntentBits, Partials } from "discord.js";
 import type { Event } from "@interfaces/discord";
+
+import { readdir } from "fs/promises";
 import { join } from "path";
 
-export default function startBot() {
+export const EVENT_PATH = join(__dirname, "events");
+
+export default async function startBot() {
 	const client = new Client({
 		// remove this line to die instantly ~JackDotJS 2021
 		allowedMentions: { parse: ["users", "roles"], repliedUser: false },
@@ -48,23 +50,25 @@ export default function startBot() {
 	 * EVENT HANDLER
 	 * - see the ./events folder
 	 */
-	const eventsFiles = readdirSync(join(__dirname, "events")).filter((f) => f.endsWith(".ts"));
-	for (const file of eventsFiles) {
-		const event: Event = require(join(__dirname, "events", file)).default;
+	const eventPaths = await readdir(EVENT_PATH);
+	const events = await Promise.all<Event>(
+		eventPaths
+			.filter((f) => f.endsWith(".ts"))
+			.map(async (f) => (await import(join(EVENT_PATH, f))).default),
+	);
 
+	for (const event of events) {
 		// catch invalid events
-		if (typeof event !== "object") continue;
+		if (typeof event !== "object") return;
 
-		if (event.once) client.once<string>(event.name, event.execute);
-		else client.on<string>(event.name, event.execute);
+		if (event.once) client.once(event.name, event.execute);
+		else client.on(event.name, event.execute);
 	}
 
 	/**
 	 * ERROR HANDLER
 	 */
-	process.on("unhandledRejection", (reason: any) =>
-		handleError(client, reason, "Unhandled Rejection"),
-	);
+	process.on("unhandledRejection", (reason) => handleError(client, reason, "Unhandled Rejection"));
 	process.on("uncaughtException", (error) => handleError(client, error, "Uncaught Exception"));
 
 	client.login(process.env.CLIENT_TOKEN).catch(console.error);
