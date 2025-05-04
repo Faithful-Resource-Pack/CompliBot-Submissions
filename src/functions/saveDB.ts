@@ -1,12 +1,11 @@
-const DEV = process.env.DEV.toLowerCase() === "true";
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
-import pushToGitHub from "@functions/pushToGitHub";
 import { join } from "path";
 import axios from "axios";
 import handleError from "./handleError";
 import { writeFile, mkdir } from "fs/promises";
 import { Client } from "discord.js";
+import GitHubRepository from "./GitHubRepository";
 
 export type BackupParams = Partial<{
 	org: string;
@@ -70,7 +69,8 @@ export default async function saveDB(
 	);
 
 	if (DEBUG) console.log(`Downloaded database files: ${successfulPushes}`);
-	const commit = await pushToGitHub(org, repo, branch, commitMessage, "./backups/").catch((err) => {
+	const conn = new GitHubRepository(org, repo);
+	const commit = await conn.push(branch, commitMessage, "./backups/").catch((err) => {
 		failedPushes.push(...successfulPushes);
 		// equivalent to resetting array
 		successfulPushes.length = 0;
