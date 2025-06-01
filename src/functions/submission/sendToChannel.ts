@@ -17,45 +17,8 @@ const DEBUG = process.env.DEBUG.toLowerCase() === "true";
  * @param delay override delay
  */
 export async function sendToCouncil(client: Client, pack: Submission, delay?: number) {
-	// pack improperly set up, send to results instead
-	if (!pack.channels.council) return;
-	const channelOut = client.channels.cache.get(pack.channels.council) as TextChannel;
-
-	if (DEBUG) console.log(`Sending textures to channel: #${channelOut.name}`);
-
-	const { messagesUpvoted, messagesDownvoted } = await retrieveSubmission(
-		client,
-		pack.channels.submit, // always fetching from submission channel
-		delay ?? pack.time_to_council,
-	);
-
-	for (const message of messagesUpvoted) {
-		const councilEmbed = EmbedBuilder.from(message.embed)
-			.setColor(settings.colors.council)
-			.setDescription(
-				`[Original Post](${message.message.url})\n${message.embed.description ?? ""}`,
-			);
-
-		const sentMessage = await channelOut.send({
-			embeds: [councilEmbed],
-			components: message.components,
-		});
-
-		for (const emoji of submissionReactions) await sentMessage.react(emoji);
-
-		changeStatus(message.message, {
-			status: `<:upvote:${settings.emojis.upvote}> Sent to council!`,
-			color: settings.colors.green,
-		});
-	}
-
-	for (const message of messagesDownvoted) {
-		// not sent anywhere, returned early instead
-		changeStatus(message.message, {
-			status: `<:downvote:${settings.emojis.downvote}> Not enough upvotes!`,
-			color: settings.colors.red,
-		});
-	}
+	// todo: remove this after one day
+	return sendToResults(client, { ...pack, council_enabled: false }, delay);
 }
 
 /**
