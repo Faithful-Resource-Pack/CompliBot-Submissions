@@ -1,6 +1,6 @@
 import type { PackFile } from "@interfaces/database";
 
-export type ChannelType = "any" | "submit" | "council" | "results";
+export type ChannelType = "any" | "submit" | "results";
 
 /**
  * Get pack id (e.g. faithful_32x, classic_faithful_64x) by a given submission channel id

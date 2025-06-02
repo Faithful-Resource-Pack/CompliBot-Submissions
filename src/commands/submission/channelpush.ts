@@ -3,7 +3,7 @@ import strings from "@resources/strings.json";
 
 import { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } from "discord.js";
 
-import { sendToCouncil, sendToResults } from "@submission/sendToChannel";
+import { sendToResults } from "@submission/sendToChannel";
 import warnUser from "@helpers/warnUser";
 import type { Pack, PackFile } from "@interfaces/database";
 import type { Command } from "@interfaces/discord";
@@ -43,8 +43,6 @@ export default {
 
 		for (const pack of packs) {
 			await sendToResults(interaction.client, pack.submission, delay);
-			if (pack.submission.council_enabled)
-				await sendToCouncil(interaction.client, pack.submission, delay);
 		}
 
 		await interaction.editReply({

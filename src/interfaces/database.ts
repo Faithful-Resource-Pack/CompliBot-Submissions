@@ -67,15 +67,12 @@ export interface Submission {
 	id: string;
 	reference: string;
 	channels: SubmissionChannels;
-	council_enabled: boolean;
-	time_to_council?: number;
 	time_to_results: number;
 	contributor_role?: string;
 }
 
 export interface SubmissionChannels {
 	submit: string;
-	council?: string;
 	results: string;
 }
 

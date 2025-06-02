@@ -4,7 +4,7 @@ const MAINTENANCE = process.env.MAINTENANCE.toLowerCase() === "true";
 import { loadCommands } from "@functions/commandHandler";
 import { fetchSettings } from "@functions/fetchSettings";
 
-import { sendToCouncil, sendToResults } from "@submission/sendToChannel";
+import { sendToResults } from "@submission/sendToChannel";
 import { downloadResults } from "@submission/handleResults";
 import pushTextures from "@submission/pushTextures";
 import saveDB from "@functions/saveDB";
@@ -50,7 +50,6 @@ export default {
 			async onTick() {
 				for (const pack of Object.values(packs)) {
 					await sendToResults(client, pack.submission);
-					if (pack.submission.council_enabled) await sendToCouncil(client, pack.submission);
 				}
 			},
 			start: true,

@@ -8,7 +8,7 @@
 		"maintenance": "I'm currently under maintenance, please try again later.",
 		"description": {
 			"autopush": "Push textures from a result channel to GitHub.",
-			"channelpush": "Send textures to council and result channels.",
+			"channelpush": "Send textures to result channels.",
 			"behave": "(⌯˃̶᷄ ﹏ ˂̶᷄⌯)",
 			"feedback": "Create a new suggestion or bug report on our GitHub bug tracker.",
 			"backup": "Back up all files to the GitHub Database repository.",

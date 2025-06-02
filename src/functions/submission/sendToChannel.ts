@@ -2,24 +2,12 @@ import settings from "@resources/settings.json";
 
 import retrieveSubmission from "@submission/utility/retrieveSubmission";
 import changeStatus from "@submission/utility/changeStatus";
-import { imageButtons, submissionReactions } from "@helpers/interactions";
+import { imageButtons } from "@helpers/interactions";
 
 import { Client, EmbedBuilder, MessageReaction, TextChannel } from "discord.js";
 import type { Submission } from "@interfaces/database";
 
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
-
-/**
- * Send textures to a new channel following council rules
- * @author Evorp
- * @param client
- * @param pack pack information
- * @param delay override delay
- */
-export async function sendToCouncil(client: Client, pack: Submission, delay?: number) {
-	// todo: remove this after one day
-	return sendToResults(client, { ...pack, council_enabled: false }, delay);
-}
 
 /**
  * Send textures to a new channel following result-like rules
@@ -35,10 +23,7 @@ export async function sendToResults(client: Client, pack: Submission, delay?: nu
 
 	const { messagesUpvoted, messagesDownvoted } = await retrieveSubmission(
 		client,
-		pack.council_enabled
-			? (pack.channels.council ?? pack.channels.submit) // pack improperly set up, pull from submissions
-			: pack.channels.submit, // pull from submissions if council disabled
-		// with this delay format we can reuse it for both council enabled and disabled packs
+		pack.channels.submit,
 		delay ?? pack.time_to_results,
 	);
 
@@ -66,19 +51,10 @@ export async function sendToResults(client: Client, pack: Submission, delay?: nu
 	}
 
 	for (const message of messagesDownvoted) {
-		// just send to results if council not enabled
-		if (!pack.council_enabled) {
-			changeStatus(message.message, {
-				status: `<:downvote:${settings.emojis.downvote}> Not enough upvotes!`,
-				color: settings.colors.red,
-			});
-			continue;
-		}
-
 		const statusField = message.embed.fields[1];
 		statusField.value = `<:downvote:${
 			settings.emojis.downvote
-		}> This texture did not pass council voting and therefore will not be added. ${getPercentage(
+		}> This texture did not pass voting and therefore will not be added. ${getPercentage(
 			message.upvote,
 			message.downvote,
 		)}`;
@@ -87,24 +63,11 @@ export async function sendToResults(client: Client, pack: Submission, delay?: nu
 			.spliceFields(1, 1, statusField)
 			.setColor(settings.colors.red);
 
-		const users = await message.downvote.users.fetch();
-
-		// add council downvotes field between the status and path fields
-		resultEmbed.spliceFields(2, 0, {
-			name: "Council Downvotes",
-			value: `<@${users
-				.filter((user) => !user.bot)
-				.map((user) => user.id)
-				.join(">\n<@")
-				.toString()}>`,
-			inline: true,
-		});
-
 		// no need to react because there's no more voting, the buttons are enough
 		await channelOut.send({ embeds: [resultEmbed], components: message.components });
 
 		changeStatus(message.message, {
-			status: `<:downvote:${settings.emojis.downvote}> Sent to results!`,
+			status: `<:downvote:${settings.emojis.downvote}> Not enough upvotes!`,
 			color: settings.colors.red,
 		});
 	}
