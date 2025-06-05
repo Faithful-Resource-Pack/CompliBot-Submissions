@@ -217,14 +217,13 @@ function rgbToHSL(r: number, g: number, b: number): number[] {
 	const diff = max - min;
 
 	let h: number;
-	let s: number;
 
 	// average brightness across all three channels
-	let l = (max + min) / 2;
+	const l = (max + min) / 2;
 
 	// all color channels are equal so it's grayscale
 	if (!diff) return [0, 0, l];
-	s = l > 0.5 ? diff / (2 - max - min) : diff / (max + min);
+	const s = l > 0.5 ? diff / (2 - max - min) : diff / (max + min);
 
 	switch (max) {
 		case r:

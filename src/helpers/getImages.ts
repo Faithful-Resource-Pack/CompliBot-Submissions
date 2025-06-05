@@ -1,5 +1,5 @@
 import settings from "@resources/settings.json";
-import { Client, AttachmentBuilder, Message, TextChannel, Attachment } from "discord.js";
+import { Client, AttachmentBuilder, TextChannel, Attachment } from "discord.js";
 
 /**
  * Convert AttachmentBuilder objects into sendable URLs

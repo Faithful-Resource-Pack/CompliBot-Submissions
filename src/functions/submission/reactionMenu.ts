@@ -134,8 +134,6 @@ function canOpenTray(
  * @returns loaded reactions
  */
 function filterReactions(message: Message, member: GuildMember, allReactions: string[]): string[] {
-	const packs: PackFile = require("@resources/packs.json");
-
 	// remove instapass/invalid if just the author is reacting or if submission is no longer pending
 	if (
 		!hasPermission(member, "submission") ||
