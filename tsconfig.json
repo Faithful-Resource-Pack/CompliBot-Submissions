@@ -6,6 +6,7 @@
 		"module": "commonjs",
 		"moduleResolution": "node",
 		"target": "ESNEXT",
+		"noEmit": true,
 		"baseUrl": "src",
 		"paths": {
 			"@functions/*": ["./functions/*"],

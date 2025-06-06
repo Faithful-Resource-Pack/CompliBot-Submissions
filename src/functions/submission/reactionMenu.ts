@@ -3,7 +3,6 @@ import settings from "@resources/settings.json";
 import instapass from "@submission/utility/instapass";
 import invalidate from "@submission/utility/invalidate";
 import { hasPermission } from "@helpers/permissions";
-import type { PackFile } from "@interfaces/database";
 import { GuildMember, Message, MessageReaction, User } from "discord.js";
 
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";

@@ -6,18 +6,22 @@
     "scripts": {
         "start": "node -r ts-node/register -r tsconfig-paths/register src/index.ts",
         "dev": "nodemon -r tsconfig-paths/register --ignore resources/ --ignore backups/ src/index.ts",
-        "prettier": "prettier \"{,!(node_modules)/**/}*.ts\" --config .prettierrc --write"
+        "prettier": "prettier \"{,!(node_modules)/**/}*.ts\" --config .prettierrc --write",
+        "lint": "eslint ."
     },
     "devDependencies": {
-        "@types/node": "^22.15.21",
+        "@eslint/js": "^9.28.0",
+        "@types/node": "^22.15.30",
+        "eslint": "^9.28.0",
         "nodemon": "^3.1.10",
-        "prettier": "^3.5.3"
+        "prettier": "^3.5.3",
+        "typescript-eslint": "^8.33.1"
     },
     "dependencies": {
         "@napi-rs/canvas": "^0.1.70",
         "@octokit/rest": "^20.1.2",
         "axios": "^1.9.0",
-        "cron": "^4.3.0",
+        "cron": "^4.3.1",
         "discord.js": "^14.18.0",
         "dotenv": "^16.5.0",
         "gif-encoder-2": "^1.0.5",
