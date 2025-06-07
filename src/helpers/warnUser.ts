@@ -2,7 +2,7 @@ import settings from "@resources/settings.json";
 import strings from "@resources/strings.json";
 
 import { EmbedBuilder, Message, MessageFlags } from "discord.js";
-import addDeleteButton from "./addDeleteButton";
+import addDeleteButton from "@helpers/addDeleteButton";
 import type { AnyInteraction } from "@interfaces/discord";
 
 /**

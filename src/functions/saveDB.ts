@@ -2,10 +2,10 @@ const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
 import { join } from "path";
 import axios from "axios";
-import handleError from "./handleError";
+import handleError from "@functions/handleError";
 import { writeFile, mkdir } from "fs/promises";
 import { Client } from "discord.js";
-import GitHubRepository from "./GitHubRepository";
+import GitHubRepository from "@functions/GitHubRepository";
 
 export type BackupParams = Partial<{
 	org: string;

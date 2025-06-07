@@ -15,5 +15,6 @@ export default async function invalidate(message: Message, member: User | GuildM
 	if (DEBUG) console.log(`Texture invalidated: ${message.embeds[0].title}`);
 	const status = `<:invalid:${settings.emojis.invalid}> Invalidated by <@${member.id}>`;
 
+	// not posted to results
 	await changeStatus(message, { status, color: settings.colors.red, editOriginal: true });
 }

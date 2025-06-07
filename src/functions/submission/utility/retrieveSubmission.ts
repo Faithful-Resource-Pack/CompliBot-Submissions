@@ -42,13 +42,7 @@ export default async function retrieveSubmission(client: Client, channelID: stri
 		);
 	});
 
-	const mappedMessages: SendableMessage[] = messages.map((message) => ({
-		upvote: message.reactions.cache.get(settings.emojis.upvote),
-		downvote: message.reactions.cache.get(settings.emojis.downvote),
-		embed: message.embeds[0],
-		components: message.components,
-		message: message,
-	}));
+	const mappedMessages: SendableMessage[] = messages.map(mapSendableMessage);
 
 	const messagesUpvoted = mappedMessages.filter((message) => {
 		// handle undefined vote counts (probably discord api problem)
@@ -69,3 +63,11 @@ export default async function retrieveSubmission(client: Client, channelID: stri
 		messagesDownvoted: mappedMessages.filter((msg) => !messagesUpvoted.includes(msg)),
 	};
 }
+
+export const mapSendableMessage = (message: Message): SendableMessage => ({
+	upvote: message.reactions.cache.get(settings.emojis.upvote),
+	downvote: message.reactions.cache.get(settings.emojis.downvote),
+	embed: message.embeds[0],
+	components: message.components,
+	message,
+});

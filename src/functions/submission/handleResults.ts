@@ -50,7 +50,7 @@ export async function downloadResults(
 	const allContribution: Contribution[] = [];
 
 	const guildID = (client.channels.cache.get(channelResultID) as TextChannel).guildId;
-	for (const texture of messages.map(mapMessage)) {
+	for (const texture of messages.map(mapDownloadableMessage)) {
 		try {
 			await downloadTexture(texture, pack, "./downloadedTextures");
 		} catch (err) {
@@ -172,7 +172,7 @@ export function addContributorRole(client: Client, pack: Pack, guildID: string, 
  * @param message message to map
  * @returns downloadable message
  */
-export const mapMessage = (message: Message): DownloadableMessage => ({
+export const mapDownloadableMessage = (message: Message): DownloadableMessage => ({
 	url: message.embeds[0].thumbnail.url,
 	// only get the numbers (discord id)
 	authors: message.embeds[0].fields[0].value.split("\n").map((author) => author.match(/\d+/g)?.[0]),

@@ -4,7 +4,7 @@ const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 import { randomBytes } from "crypto";
 
 import {
-	mapMessage,
+	mapDownloadableMessage,
 	postContributions,
 	addContributorRole,
 	downloadTexture,
@@ -12,13 +12,14 @@ import {
 } from "@submission/handleResults";
 import pushTextures from "@submission/pushTextures";
 import getPackByChannel from "@submission/utility/getPackByChannel";
-import changeStatus from "@submission/utility/changeStatus";
 
 import { imageButtons } from "@helpers/interactions";
 import formattedDate from "@helpers/formattedDate";
 
 import type { PackFile } from "@interfaces/database";
 import { Message, User, GuildMember, TextChannel } from "discord.js";
+import { sendMessage } from "@submission/sendToChannel";
+import { mapSendableMessage } from "@submission/utility/retrieveSubmission";
 
 /**
  * Instapass a given texture embed
@@ -31,42 +32,36 @@ export default async function instapass(message: Message, member: User | GuildMe
 	const pack = packs[getPackByChannel(message.channel.id)];
 
 	const channelOutID = pack.submission.channels.results;
-	const status = `<:instapass:${settings.emojis.instapass}> Instapassed by <@${member.id}>`;
-
-	const embed = await changeStatus(message, {
-		status,
-		color: settings.colors.yellow,
-		components: [imageButtons],
-		editOriginal: true,
-	});
-
 	const channelOut = (await message.client.channels.fetch(channelOutID)) as TextChannel;
 
-	// if instapassed in council "original post" is already there
-	if (!message.embeds[0].description?.startsWith("[Original Post]("))
-		embed.setDescription(`[Original Post](${message.url})\n${message.embeds[0].description ?? ""}`);
+	const status = `Instapassed by <@${member.id}>`;
+	const resultMessage = await sendMessage(mapSendableMessage(message), channelOut, {
+		color: settings.colors.yellow,
+		emoji: `<:instapass:${settings.emojis.instapass}>`,
+		components: [imageButtons],
+		// same result/original status
+		originalStatus: status,
+		resultStatus: status,
+	});
 
-	const texture = mapMessage(
-		await channelOut.send({
-			embeds: [embed],
-			components: [imageButtons],
-		}),
-	);
+	const texture = mapDownloadableMessage(resultMessage);
 
 	// random folder name so multiple textures can be instapassed at once
 	const basePath = `./instapassedTextures/${randomBytes(6).toString("hex")}`;
 
 	const textureInfo = await downloadTexture(texture, pack, basePath);
 
-	// not awaited since not timebound
-	postContributions(generateContributionData(texture, pack));
-	addContributorRole(
-		message.client,
-		pack,
-		(message.channel as TextChannel).guildId,
-		texture.authors,
-	);
-	await pushTextures(basePath, pack.id, `Instapass ${textureInfo.name} from ${formattedDate()}`);
+	// use allSettled so if one throws the others don't abort
+	await Promise.allSettled([
+		pushTextures(basePath, pack.id, `Instapass ${textureInfo.name} from ${formattedDate()}`),
+		postContributions(generateContributionData(texture, pack)),
+		addContributorRole(
+			message.client,
+			pack,
+			(message.channel as TextChannel).guildId,
+			texture.authors,
+		),
+	]);
 
 	if (DEBUG) console.log(`Texture instapassed: ${message.embeds[0].title}`);
 }
