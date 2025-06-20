@@ -23,7 +23,7 @@ const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
 export interface EmbedParams {
 	description?: string;
-	authors: string[];
+	authors: Set<string>;
 }
 
 /**
@@ -38,7 +38,7 @@ export default async function makeEmbed(
 	message: Message<true>,
 	texture: Texture,
 	attachment: Attachment,
-	{ description, authors }: EmbedParams = { authors: [] },
+	{ description, authors }: EmbedParams = { authors: new Set() },
 ) {
 	// so the user doesn't think the bot is dead when it's loading a huge comparison
 	message.channel.sendTyping();
@@ -52,8 +52,7 @@ export default async function makeEmbed(
 			.sort((a, b) => (a.date > b.date ? -1 : 1))?.[0];
 
 		if (lastContribution) {
-			for (const author of lastContribution.authors)
-				if (!authors.includes(author)) authors.push(author);
+			for (const author of lastContribution.authors) authors.add(author);
 		}
 	}
 
@@ -68,7 +67,7 @@ export default async function makeEmbed(
 		.addFields(
 			{
 				name: "Author",
-				value: `<@${authors.join(">\n<@")}>`,
+				value: `<@${Array.from(authors).join(">\n<@")}>`,
 				inline: true,
 			},
 			{ name: "Status", value: `<:pending:${settings.emojis.pending}> Pending...`, inline: true },
@@ -124,7 +123,7 @@ export default async function makeEmbed(
 	}
 
 	if (description) embed.setDescription(description);
-	if (authors.length > 1) embed.data.fields[0].name += "s";
+	if (authors.size > 1) embed.data.fields[0].name += "s";
 
 	const msg = await message.channel.send({
 		embeds: [embed],

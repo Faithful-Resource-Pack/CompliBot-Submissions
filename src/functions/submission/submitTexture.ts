@@ -3,7 +3,7 @@ import strings from "@resources/strings.json";
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
 import choiceEmbed from "@submission/utility/choiceEmbed";
-import makeEmbed from "@submission/makeEmbed";
+import makeEmbed, { EmbedParams } from "@submission/makeEmbed";
 import cancelSubmission from "@submission/utility/cancelSubmission";
 
 import getAuthors from "@submission/utility/getAuthors";
@@ -38,7 +38,7 @@ export default async function submitTexture(message: Message<true>) {
 		const id = message.content.match(/(?<=\[#)(.*?)(?=\])/)?.[0];
 
 		// get authors and description for embed
-		const param = {
+		const params: EmbedParams = {
 			description: message.content.replace(`[#${id}]`, ""),
 			authors: await getAuthors(message),
 		};
@@ -69,7 +69,7 @@ export default async function submitTexture(message: Message<true>) {
 		}
 
 		if (results.length === 1) {
-			await makeEmbed(message, results[0], attachment, param);
+			await makeEmbed(message, results[0], attachment, params);
 			continue;
 		}
 
