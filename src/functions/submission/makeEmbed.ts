@@ -67,7 +67,9 @@ export default async function makeEmbed(
 		.addFields(
 			{
 				name: "Author",
-				value: `<@${Array.from(authors).join(">\n<@")}>`,
+				value: Array.from(authors)
+					.map((id) => `<@${id}>`)
+					.join("\n"),
 				inline: true,
 			},
 			{ name: "Status", value: `<:pending:${settings.emojis.pending}> Pending...`, inline: true },
