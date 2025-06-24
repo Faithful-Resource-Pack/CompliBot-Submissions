@@ -19,8 +19,8 @@ export default async function getAuthors(message: Message) {
 
 	if (names?.length) {
 		const users = (await axios.get<User[]>(`${process.env.API_URL}users/names`)).data;
+		// much faster to use a set since we don't have to filter duplicates
 		for (const user of users)
-			// much faster to use a set since we don't have to filter duplicates
 			if (names.includes(user.username?.toLowerCase())) authors.add(user.id);
 	}
 
