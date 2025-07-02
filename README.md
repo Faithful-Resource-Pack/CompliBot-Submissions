@@ -37,11 +37,11 @@ pnpm dev
 
 **DISCLAIMER: We won't help you rebrand the bot for any other server. If you really want to do that, then you need to figure it out yourself.**
 
-- Create an app on the **[Discord Developer Portal](https://discord.com/developers/)**.
-- Go to the **Bot** tab, create a bot and copy its token.
-- Rename the **.env.example** file to **.env** and open it using any text editor.
-- Paste in your token after `CLIENT_TOKEN`.
-- Create two files in `resources/` called `settings.json` and `packs.json`, both of which can be just a set of curly brackets `{}`. This will be loaded dynamically later but needs to be created first because of GitHub limitations.
+1. Create an app on the **[Discord Developer Portal](https://discord.com/developers/)**.
+2. Go to the **Bot** tab, create a bot and copy its token.
+3. Rename the **.env.example** file to **.env** and open it using any text editor.
+4. Paste in your token after `CLIENT_TOKEN`.
+5. Create two files in `resources/` called `settings.json` and `packs.json`, both of which can be just a set of curly brackets `{}`. This will be loaded dynamically later but needs to be created first because of GitHub limitations.
 
 ## API Reference:
 
