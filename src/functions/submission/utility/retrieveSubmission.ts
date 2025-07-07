@@ -68,6 +68,7 @@ export const mapSendableMessage = (message: Message): SendableMessage => ({
 	upvote: message.reactions.cache.get(settings.emojis.upvote),
 	downvote: message.reactions.cache.get(settings.emojis.downvote),
 	embed: message.embeds[0],
-	components: message.components,
+	// djs v14.19 workaround
+	components: message.components as ActionRow<MessageActionRowComponent>[],
 	message,
 });

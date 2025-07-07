@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ComponentType, Message } from "discord.js";
+import { ActionRow, ActionRowBuilder, ButtonBuilder, ComponentType, Message } from "discord.js";
 import { deleteButton } from "@helpers/interactions";
 
 /**
@@ -7,15 +7,14 @@ import { deleteButton } from "@helpers/interactions";
  * @param message message sent by bot
  */
 export default async function addDeleteButton(message: Message) {
+	// djs v14.19 workaround
+	const actionRow = message.components.at(-1) as ActionRow<any>;
 	if (
 		message.components[0] != undefined &&
-		message.components.at(-1).components.length < 5 && // check there aren't 5 buttons
-		message.components.at(-1).components[0].type === ComponentType.Button // checks there isn't a select menu
+		actionRow.components.length < 5 && // check there aren't 5 buttons
+		actionRow.components[0].type === ComponentType.Button // checks there isn't a select menu
 	) {
-		// typed as any since we know it's a button row but discord.js doesn't
-		const deleteRow = ActionRowBuilder.from<ButtonBuilder>(
-			message.components.at(-1) as any,
-		).addComponents(deleteButton);
+		const deleteRow = ActionRowBuilder.from<ButtonBuilder>(actionRow).addComponents(deleteButton);
 
 		return message.edit({
 			components: [...message.components.slice(0, -1), deleteRow],
