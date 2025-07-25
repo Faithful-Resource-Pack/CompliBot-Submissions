@@ -42,8 +42,8 @@ export default async function saveDB(
 	const folderPath = join(process.cwd(), "backups", folder);
 	await mkdir(folderPath, { recursive: true });
 
-	const successfulPushes = [];
-	const failedPushes = [];
+	const successfulPushes: string[] = [];
+	const failedPushes: string[] = [];
 
 	await Promise.all(
 		Object.entries(backup.urls).map(([filename, url]) =>
