@@ -13,7 +13,7 @@ import {
 import pushTextures from "@submission/pushTextures";
 import getPackByChannel from "@submission/utility/getPackByChannel";
 
-import { imageButtons } from "@helpers/interactions";
+import { submissionButtons } from "@helpers/interactions";
 import formattedDate from "@helpers/formattedDate";
 
 import type { PackFile } from "@interfaces/database";
@@ -38,7 +38,7 @@ export default async function instapass(message: Message, member: User | GuildMe
 	const resultMessage = await sendMessage(mapSendableMessage(message), channelOut, {
 		color: settings.colors.yellow,
 		emoji: `<:instapass:${settings.emojis.instapass}>`,
-		components: [imageButtons],
+		components: [submissionButtons],
 		// same result/original status
 		originalStatus: status,
 		resultStatus: status,
