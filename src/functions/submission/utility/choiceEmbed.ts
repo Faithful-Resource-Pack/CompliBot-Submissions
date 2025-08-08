@@ -2,7 +2,7 @@ import settings from "@resources/settings.json";
 import strings from "@resources/strings.json";
 
 import getAuthors from "@submission/utility/getAuthors";
-import makeEmbed from "@submission/makeEmbed";
+import makeEmbed, { EmbedParams } from "@submission/makeEmbed";
 import addDeleteButton from "@helpers/addDeleteButton";
 
 import {
@@ -84,7 +84,7 @@ export default async function choiceEmbed(
 		if (DEBUG) console.log(`Texture selected: ${id}`);
 		const attachments = Array.from(message.attachments.values());
 
-		const param = {
+		const params: EmbedParams = {
 			description: message.content,
 			authors: await getAuthors(message),
 		};
@@ -92,7 +92,7 @@ export default async function choiceEmbed(
 		const texture = (await axios.get<Texture>(`${process.env.API_URL}textures/${id}/all`)).data;
 		if (choiceMessage.deletable) await choiceMessage.delete();
 
-		return makeEmbed(message, texture, attachments[index], param);
+		return makeEmbed(message, texture, attachments[index], params);
 	});
 
 	collector.once("end", async () => {

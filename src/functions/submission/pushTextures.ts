@@ -2,9 +2,10 @@ import { existsSync, rmSync } from "fs";
 
 import formattedDate from "@helpers/formattedDate";
 
-import pushToGitHub from "@functions/pushToGitHub";
+import GitHubRepository from "@functions/GitHubRepository";
 import type { MinecraftEdition, PackFile } from "@interfaces/database";
 import { join } from "path";
+
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 const DEV = process.env.DEV.toLowerCase() === "true";
 /**
@@ -29,13 +30,14 @@ export default async function pushTextures(
 			if (DEBUG) console.log(`${pack} doesn't support ${edition} yet!`);
 			continue;
 		}
+		const conn = new GitHubRepository(packGitHub.org, packGitHub.repo);
 		for (const branch of settings.versions[edition] as string) {
 			const path = join(basePath, packGitHub.repo, branch);
 
 			// don't create empty commits
 			if (!existsSync(path)) continue;
 			try {
-				await pushToGitHub(packGitHub.org, packGitHub.repo, branch, commitMessage, path);
+				await conn.push(branch, commitMessage, path);
 				// only remove path if pushing succeeded, so the bot tries the next day too
 				rmSync(path, { recursive: true });
 				if (DEBUG) console.log(`Pushed: ${packGitHub.org}/${packGitHub.repo}:${branch}`);

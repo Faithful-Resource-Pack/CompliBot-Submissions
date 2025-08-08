@@ -9,7 +9,8 @@ import { Message } from "discord.js";
  * @returns array of author's discord IDs
  */
 export default async function getAuthors(message: Message) {
-	const authors = [message.author.id];
+	// submitter always goes first (sets maintain insertion order)
+	const authors = new Set([message.author.id]);
 
 	// detect text between curly brackets
 	const names = message.content
@@ -18,14 +19,14 @@ export default async function getAuthors(message: Message) {
 
 	if (names?.length) {
 		const users = (await axios.get<User[]>(`${process.env.API_URL}users/names`)).data;
+		// much faster to use a set since we don't have to filter duplicates
 		for (const user of users)
-			if (names.includes(user.username?.toLowerCase()) && !authors.includes(user.id))
-				authors.push(user.id);
+			if (names.includes(user.username?.toLowerCase())) authors.add(user.id);
 	}
 
 	// detect by ping (using regex to ensure users not in the server get included)
 	const mentions = message.content.match(/(?<=<@|<@!)(\d*?)(?=>)/g) ?? [];
-	for (const mention of mentions) if (!authors.includes(mention)) authors.push(mention);
+	for (const mention of mentions) authors.add(mention);
 
 	return authors;
 }

@@ -1,18 +1,11 @@
-import {
-	ActionRowBuilder,
-	EmbedBuilder,
-	ActionRow,
-	Message,
-	MessageActionRowComponent,
-	TextChannel,
-} from "discord.js";
+import { EmbedBuilder, Message, TextChannel, BaseMessageOptions } from "discord.js";
 
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
 export interface StatusParams {
 	status: string;
 	color?: string;
-	components?: (ActionRowBuilder<any> | ActionRow<MessageActionRowComponent>)[];
+	components?: BaseMessageOptions["components"];
 	editOriginal?: boolean;
 }
 

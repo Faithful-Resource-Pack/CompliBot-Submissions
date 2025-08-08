@@ -3,10 +3,10 @@ import settings from "@resources/settings.json";
 
 import { Command } from "@interfaces/discord";
 import { EmbedBuilder, PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
-import { MinecraftEdition, Pack, PackFile, Path, Texture } from "@interfaces/database";
+import { MinecraftEdition, Pack, PackFile, Texture } from "@interfaces/database";
 import axios from "axios";
-import { deleteFromGitHub } from "@functions/pushToGitHub";
 import addDeleteButton from "@helpers/addDeleteButton";
+import GitHubRepository from "@functions/GitHubRepository";
 
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
@@ -85,11 +85,10 @@ export default {
 		for (const [edition, versions] of Object.entries(groupedPaths)) {
 			const packGithub = submissions[pack].github[edition as MinecraftEdition];
 			if (!packGithub) continue;
+			const conn = new GitHubRepository(packGithub.org, packGithub.repo);
 			for (const [version, paths] of Object.entries(versions)) {
 				try {
-					await deleteFromGitHub(
-						packGithub.org,
-						packGithub.repo,
+					await conn.delete(
 						version,
 						`Delete ${name} executed by ${interaction.user.displayName}`,
 						paths,

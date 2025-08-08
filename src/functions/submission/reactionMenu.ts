@@ -3,7 +3,6 @@ import settings from "@resources/settings.json";
 import instapass from "@submission/utility/instapass";
 import invalidate from "@submission/utility/invalidate";
 import { hasPermission } from "@helpers/permissions";
-import type { PackFile } from "@interfaces/database";
 import { GuildMember, Message, MessageReaction, User } from "discord.js";
 
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
@@ -134,12 +133,6 @@ function canOpenTray(
  * @returns loaded reactions
  */
 function filterReactions(message: Message, member: GuildMember, allReactions: string[]): string[] {
-	const packs: PackFile = require("@resources/packs.json");
-
-	// if the submission is in council remove delete reaction (avoid misclick)
-	if (Object.values(packs).some((pack) => pack.submission.channels.council === message.channel.id))
-		allReactions = allReactions.filter((emoji) => emoji !== settings.emojis.delete);
-
 	// remove instapass/invalid if just the author is reacting or if submission is no longer pending
 	if (
 		!hasPermission(member, "submission") ||
