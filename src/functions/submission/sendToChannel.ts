@@ -5,7 +5,7 @@ import changeStatus from "@submission/utility/changeStatus";
 
 import { BaseMessageOptions, Client, EmbedBuilder, MessageReaction, TextChannel } from "discord.js";
 import type { Submission } from "@interfaces/database";
-import { imageButtons } from "@helpers/interactions";
+import { submissionButtons } from "@helpers/interactions";
 
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
@@ -32,7 +32,7 @@ export async function sendToResults(client: Client, pack: Submission, delay?: nu
 		await sendMessage(message, channelOut, {
 			color: settings.colors.green,
 			emoji: `<:upvote:${settings.emojis.upvote}>`,
-			components: [imageButtons],
+			components: [submissionButtons],
 			originalStatus: "Sent to results!",
 			resultStatus: `Will be added in a future version! ${getPercentage(message.upvote, message.downvote)}`,
 		});

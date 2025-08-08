@@ -32,15 +32,24 @@ export const deleteButton = new ButtonBuilder()
 	.setEmoji(settings.emojis.delete)
 	.setCustomId("deleteButton");
 
-export const imageButtons = new ActionRowBuilder<ButtonBuilder>().addComponents([
+export const infoButton = new ButtonBuilder()
+	.setStyle(ButtonStyle.Secondary)
+	.setEmoji(settings.emojis.question_mark)
+	.setCustomId("infoButton");
+
+export const submissionButtons = new ActionRowBuilder<ButtonBuilder>().addComponents([
 	magnifyButton,
 	tileButton,
 	paletteButton,
+	infoButton,
 ]);
 
-export const submissionButtons = new ActionRowBuilder<ButtonBuilder>().addComponents([
-	...imageButtons.components,
+export const diffableButtons = new ActionRowBuilder<ButtonBuilder>().addComponents([
+	magnifyButton,
+	tileButton,
+	paletteButton,
 	diffButton,
+	infoButton,
 ]);
 
 export const submissionReactions = [
