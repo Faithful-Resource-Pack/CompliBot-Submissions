@@ -9,7 +9,7 @@ import strings from "@resources/strings.json";
 import settings from "@resources/settings.json";
 import getPackByChannel from "@submission/utility/getPackByChannel";
 import warnUser from "@helpers/warnUser";
-import type { AnyInteraction, Event } from "@interfaces/discord";
+import type { Event } from "@interfaces/discord";
 import { hasPermission } from "@helpers/permissions";
 import info from "@commands/bot/info";
 
