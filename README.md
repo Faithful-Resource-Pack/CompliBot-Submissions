@@ -18,7 +18,7 @@ You can either create an issue on our [bug tracker](https://github.com/Faithful-
 
 ## Requirements
 
-- NodeJS 20+ https://nodejs.org
+- NodeJS v20+ https://nodejs.org
 - pnpm (`corepack enable` + `corepack prepare pnpm@latest --activate`)
 
 ## Running
