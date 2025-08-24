@@ -16,7 +16,7 @@ import type { Event } from "@interfaces/discord";
 import handleError from "@functions/handleError";
 
 export default {
-	name: "ready",
+	name: "clientReady",
 	once: true,
 	async execute(client: Client) {
 		console.log(`┌───────────────────────────────────────────────────┐`);
