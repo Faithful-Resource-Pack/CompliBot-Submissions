@@ -24,7 +24,7 @@ export async function loadCommands(client: Client) {
 	// add to discord so they can be used in the slash command menu
 	rest
 		.put(Routes.applicationCommands(client.user.id), {
-			body: Array.from(client.commands.values()).map((command) => command.data.toJSON()),
+			body: Array.from(client.commands.values(), (command) => command.data.toJSON()),
 		})
 		.then(() => console.log("Slash commands loaded"));
 }
@@ -38,11 +38,11 @@ export async function loadCommands(client: Client) {
 export async function deleteCommands(client: Client, guildID: string | "global") {
 	const rest = new REST({ version: "10" }).setToken(process.env.CLIENT_TOKEN);
 
-	const data: any =
+	const data: any = await rest.get(
 		guildID === "global"
-			? await rest.get(Routes.applicationCommands(client.user.id))
-			: // get all command ids
-				await rest.get(Routes.applicationGuildCommands(client.user.id, guildID));
+			? Routes.applicationCommands(client.user.id)
+			: Routes.applicationGuildCommands(client.user.id, guildID),
+	);
 
 	await Promise.all(
 		data.map((command: any) =>
