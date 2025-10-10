@@ -38,8 +38,10 @@ export default {
 	async execute(interaction) {
 		interaction.deferReply();
 		const submissions: PackFile = require("@resources/packs.json");
-		const pack = interaction.options.getString("pack", true);
+		const choice = interaction.options.getString("pack", true);
 		const texture = interaction.options.getString("texture", true);
+
+		const packs = choice === "all" ? Object.values(submissions) : [submissions[choice]];
 
 		const cleanedTextureName = texture
 			.trim()
@@ -82,22 +84,24 @@ export default {
 			return acc;
 		}, {});
 
-		for (const [edition, versions] of Object.entries(groupedPaths)) {
-			const packGithub = submissions[pack].github[edition as MinecraftEdition];
-			if (!packGithub) continue;
-			const conn = new GitHubRepository(packGithub.org, packGithub.repo);
-			for (const [version, paths] of Object.entries(versions)) {
-				try {
-					await conn.delete(
-						version,
-						`Delete ${name} executed by ${interaction.user.displayName}`,
-						paths,
-					);
-					if (DEBUG)
-						console.log(`Deleted: ${packGithub.org}/${packGithub.repo}:${version} (${name})`);
-				} catch {
-					// can also be an auth error or really anything but this is most likely
-					if (DEBUG) console.log(`Branch ${version} doesn't exist for pack ${packGithub.repo}!`);
+		for (const pack of packs) {
+			for (const [edition, versions] of Object.entries(groupedPaths)) {
+				const packGithub = pack.github[edition as MinecraftEdition];
+				if (!packGithub) continue;
+				const conn = new GitHubRepository(packGithub.org, packGithub.repo);
+				for (const [version, paths] of Object.entries(versions)) {
+					try {
+						await conn.delete(
+							version,
+							`Delete ${name} executed by ${interaction.user.displayName}`,
+							paths,
+						);
+						if (DEBUG)
+							console.log(`Deleted: ${packGithub.org}/${packGithub.repo}:${version} (${name})`);
+					} catch {
+						// can also be an auth error or really anything but this is most likely
+						if (DEBUG) console.log(`Branch ${version} doesn't exist for pack ${packGithub.repo}!`);
+					}
 				}
 			}
 		}
@@ -106,7 +110,9 @@ export default {
 			.editReply({
 				embeds: [
 					new EmbedBuilder()
-						.setTitle(`Successfully removed texture ${name} from pack ${submissions[pack].name}`)
+						.setTitle(
+							`Successfully removed texture ${name} from ${choice === "all" ? "all packs" : packs[0]}`,
+						)
 						.setDescription(
 							"Note that this does not remove contributions or other pack-specific data.",
 						)
