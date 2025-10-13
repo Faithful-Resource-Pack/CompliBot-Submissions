@@ -30,7 +30,7 @@ export interface Texture {
 	tags: string[];
 	uses: Use[];
 	paths: Path[];
-	contributions?: Contribution[];
+	contributions: Contribution[];
 	mcmeta?: MCMETA;
 }
 

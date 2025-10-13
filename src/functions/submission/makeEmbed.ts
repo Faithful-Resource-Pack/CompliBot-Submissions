@@ -18,6 +18,8 @@ import {
 } from "discord.js";
 import { loadImage } from "@napi-rs/canvas";
 import type { MinecraftEdition, Texture } from "@interfaces/database";
+import instapass from "./utility/instapass";
+import { hasPermission } from "@helpers/permissions";
 
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
@@ -45,8 +47,13 @@ export default async function makeEmbed(
 	const packName = getPackByChannel(message.channel.id, "submit");
 	let imgButtons: ActionRowBuilder<ButtonBuilder>[];
 
+	// one star only (prevents italicized contributions getting instapassed)
+	const doInstapass = description.startsWith("*") && description.match(/\*/g).length === 1;
+	const member = message.guild.members.cache.get(Array.from(authors)[0]);
+	const canInstapass = hasPermission(member, "submission");
+
 	// load previous contributions if applicable
-	if (description.startsWith("+")) {
+	if (description.startsWith("+") || (doInstapass && canInstapass)) {
 		const lastContribution = texture.contributions
 			.filter((contribution) => contribution.pack === packName)
 			.sort((a, b) => (a.date > b.date ? -1 : 1))?.[0];
@@ -132,9 +139,14 @@ export default async function makeEmbed(
 		components: imgButtons,
 	});
 
-	for (const emoji of submissionReactions) await msg.react(emoji);
-
 	if (DEBUG) console.log(`Finished submission embed for texture: ${texture.name}`);
+
+	if (doInstapass && canInstapass) {
+		await instapass(msg, member);
+		return msg.delete();
+	}
+
+	for (const emoji of submissionReactions) await msg.react(emoji);
 }
 
 /**
