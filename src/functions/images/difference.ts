@@ -5,8 +5,8 @@ import { magnify } from "@images/magnify";
 
 import settings from "@resources/settings.json";
 
-// set to 1 to disable
-export const TRANSPARENCY_FACTOR = 1 / 2;
+// what the alpha is multiplied by (0 is transparent, 1 does nothing)
+export const TRANSPARENCY_FACTOR = 0.5;
 
 export const CHANGED_PIXEL_COLOR = settings.colors.blue;
 export const REMOVED_PIXEL_COLOR = settings.colors.red;
@@ -19,11 +19,11 @@ interface MappedURL {
 }
 
 export enum DiffType {
-	// zero is falsy which can cause problems
-	Unchanged = 1,
-	Removed,
+	OutOfBounds,
 	Added,
+	Removed,
 	Changed,
+	Unchanged,
 }
 
 /**
@@ -31,7 +31,7 @@ export enum DiffType {
  * - blue is changed
  * - red is removed
  * - green is added
- * @author EwanHowell
+ * @author Ewan Howell, Evorp
  * @param firstUrl first url to compare
  * @param secondUrl second url to compare
  * @param tolerance difference between colors considered acceptable
@@ -63,10 +63,9 @@ export async function difference(
 		const y = Math.floor(i / 4 / finalWidth);
 		const type = diffPixel(images[0], images[1], x, y, tolerance);
 
-		// out of bounds, skip
-		if (!type) continue;
-
 		switch (type) {
+			case DiffType.OutOfBounds:
+				continue;
 			case DiffType.Added:
 				data.set(hexToRGBA(ADDED_PIXEL_COLOR), i);
 				continue;
@@ -76,10 +75,11 @@ export async function difference(
 			case DiffType.Changed:
 				data.set(hexToRGBA(CHANGED_PIXEL_COLOR), i);
 				continue;
-			default:
+			case DiffType.Unchanged:
 				// set to original pixel
 				data.set(images[0].pixels.slice(i, i + 3), i);
 				data[i + 3] = images[0].pixels[i + 3] * TRANSPARENCY_FACTOR;
+				continue;
 		}
 	}
 
@@ -93,7 +93,7 @@ export async function difference(
 
 /**
  * Find the difference for a single pixel between two image datas
- * @author EwanHowell
+ * @author Ewan Howell
  * @param first image data
  * @param second image data
  * @param x coordinate
@@ -109,7 +109,8 @@ function diffPixel(
 	tolerance: number,
 ): DiffType {
 	// boundary and size checks
-	if ((x >= first.width && y >= second.height) || (x >= second.width && y >= first.height)) return;
+	if ((x >= first.width && y >= second.height) || (x >= second.width && y >= first.height))
+		return DiffType.OutOfBounds;
 
 	if ((x >= second.width && x <= first.width) || (y >= second.height && y <= first.height))
 		return DiffType.Removed;

@@ -2,7 +2,7 @@ import { createCanvas, Image } from "@napi-rs/canvas";
 
 /**
  * stitches together an arbitrary number of images
- * @author EwanHowell, Evorp
+ * @author Ewan Howell, Evorp
  * @param images images to stitch
  * @param gap optionally force gap size
  * @returns stitched texture and the gap length added
