@@ -44,8 +44,8 @@
 	},
 	"submission": {
 		"cancelled": {
-			"error_title": "Submission Cancelled",
-			"error_footer": "This message will self-destruct in 30 seconds, please re-submit!"
+			"error_title": "Submission Error",
+			"error_footer": "This message will self-destruct in %SECONDS% seconds!"
 		},
 		"choice_embed": {
 			"description": "If you can't what you're looking for, please be more specific!",

@@ -143,9 +143,11 @@ export default async function makeEmbed(
 
 	if (doInstapass && canInstapass) {
 		await instapass(msg, member);
-		return msg.delete();
+		await msg.delete();
+		return;
 	}
 
+	// don't bother adding reactions if the message is instapassed and deleted anyways
 	for (const emoji of submissionReactions) await msg.react(emoji);
 }
 

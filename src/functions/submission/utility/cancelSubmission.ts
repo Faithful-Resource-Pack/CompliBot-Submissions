@@ -7,6 +7,8 @@ import { hasPermission } from "@helpers/permissions";
 
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
+const EMBED_VISIBLE_SECONDS = 30;
+
 /**
  * Logic for handling an invalid submission
  * @author Juknum
@@ -30,7 +32,10 @@ export default async function cancelSubmission(message: Message<true>, error = "
 		.setThumbnail(settings.images.warning)
 		.setDescription(error)
 		.setFooter({
-			text: strings.submission.cancelled.error_footer,
+			text: strings.submission.cancelled.error_footer.replace(
+				"%SECONDS%",
+				String(EMBED_VISIBLE_SECONDS),
+			),
 			iconURL: message.client.user.displayAvatarURL(),
 		});
 
@@ -45,7 +50,7 @@ export default async function cancelSubmission(message: Message<true>, error = "
 			// throws error if already deleted
 			noticeMessage.delete().catch(() => {});
 			message.delete().catch(() => {});
-		}, 30000);
+		}, EMBED_VISIBLE_SECONDS * 1000);
 	} catch {
 		// message couldn't be deleted
 	}
