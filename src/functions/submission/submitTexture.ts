@@ -7,12 +7,11 @@ import cancelSubmission from "@submission/utility/cancelSubmission";
 import choiceEmbed from "@submission/utility/choiceEmbed";
 
 import getAuthors from "@submission/utility/getAuthors";
-import versionSorter from "@helpers/versionSorter";
+import versionRange from "@helpers/versionRange";
 
 import axios from "axios";
 import { Attachment, Message, SelectMenuComponentOptionData } from "discord.js";
 import type { Texture } from "@interfaces/database";
-import versionRange from "@helpers/versionRange";
 
 /**
  * Create submission embeds from a message
@@ -53,7 +52,8 @@ export async function submitAttachment(
 	const url = attachment.url.split("?")[0];
 	const name = url.split("/").slice(-1)[0].replace(".png", "");
 
-	if (DEBUG) console.log(`Texture ${name} submitted: ${index + 1} of ${message.attachments.size}`);
+	if (DEBUG)
+		console.log(`Texture "${name}" submitted: ${index + 1} of ${message.attachments.size}`);
 
 	// throw the error string so the caller can handle it as they want (easier than sending a result type)
 	if (!url.endsWith(".png")) throw strings.submission.invalid_format;
@@ -72,25 +72,26 @@ export async function submitAttachment(
 
 	// if there's no search and no id the submission can't be valid
 	if (!search) throw strings.submission.no_name_given;
+	const formattedSearch = id === search ? `[#${id}] ${name}` : search;
 
 	let results: Texture[] = [];
 	try {
 		results = (await axios.get<Texture[]>(`${process.env.API_URL}textures/${search}/all`)).data;
 	} catch {
-		throw `${strings.submission.does_not_exist}\n${search}`;
+		throw `${strings.submission.does_not_exist}\`\`\`${formattedSearch}\`\`\``;
 	}
 
 	// if using texture id
 	if (!Array.isArray(results)) results = [results];
 
-	if (!results.length) throw `${strings.submission.does_not_exist}\n${search}`;
+	if (!results.length) throw `${strings.submission.does_not_exist}\`\`\`${formattedSearch}\`\`\``;
 
 	if (results.length === 1) {
 		await makeEmbed(message, results[0], attachment, params);
 		return false;
 	}
 
-	if (DEBUG) console.log(`Generating choice embed for texture search: ${search}`);
+	if (DEBUG) console.log(`Generating choice embed for texture search: ${formattedSearch}`);
 
 	const mappedResults = results.map<SelectMenuComponentOptionData>(({ id, name, paths }) => ({
 		// usually the first path is the most important

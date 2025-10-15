@@ -1,7 +1,6 @@
 import settings from "@resources/settings.json";
 import strings from "@resources/strings.json";
 
-import versionSorter from "@helpers/versionSorter";
 import getPackByChannel from "@submission/utility/getPackByChannel";
 import getImages from "@helpers/getImages";
 import generateComparison from "@submission/utility/generateComparison";

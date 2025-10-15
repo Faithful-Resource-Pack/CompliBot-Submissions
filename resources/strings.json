@@ -51,13 +51,11 @@
 			"description": "If you can't find what you're looking for, please be more specific!",
 			"placeholder": "Select a texture…"
 		},
-		"no_result_channel": "Could not fetch corresponding result channel! Make sure `settings.json` has been set up correctly.",
-		"no_file_attached": "Your submission has to have a file attached!",
-		"image_not_attached": "You didn't attach an image! ",
-		"invalid_format": "Please provide a valid `.png` file. Other file formats like `.zip` or `.tga` are not supported yet.",
-		"unknown_id": "Please choose a valid texture ID!\n",
-		"does_not_exist": "The specified texture or folder doesn't exist!",
-		"no_name_given": "You didn't provide a texture name!",
+		"no_result_channel": "Could not fetch corresponding result channel! Please make sure that the pack data has been set up correctly in the web app.",
+		"image_not_attached": "Please attach an image to your message!",
+		"invalid_format": "Please provide a valid `.png` file. Other file formats like `.zip` or `.tga` are currently not supported.",
+		"does_not_exist": "The specified texture name or ID doesn't exist!",
+		"no_name_given": "No texture name or ID was found in your submission message!",
 		"cant_compare": "This texture is too big to create a comparison image!"
 	}
 }
