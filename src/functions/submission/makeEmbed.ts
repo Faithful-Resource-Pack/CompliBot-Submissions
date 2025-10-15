@@ -20,6 +20,7 @@ import { loadImage } from "@napi-rs/canvas";
 import type { MinecraftEdition, Texture } from "@interfaces/database";
 import instapass from "./utility/instapass";
 import { hasPermission } from "@helpers/permissions";
+import versionRange from "@helpers/versionRange";
 
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
@@ -162,13 +163,7 @@ export function addPathsToEmbed(texture: Texture): APIEmbedField[] {
 		(acc, use) => {
 			const paths = texture.paths
 				.filter((el) => el.use === use.id)
-				.map((p) => {
-					const versions = p.versions.sort(versionSorter);
-					const versionRange = `\`[${
-						versions.length > 1 ? `${versions[0]} – ${versions[versions.length - 1]}` : versions[0]
-					}]\``;
-					return `${versionRange} ${p.name}`;
-				});
+				.map((p) => `\`[${versionRange(p.versions)}\`] ${p.name}`);
 			acc[use.edition] ||= [];
 			acc[use.edition].push(...paths);
 			return acc;

@@ -12,6 +12,7 @@ import versionSorter from "@helpers/versionSorter";
 import axios from "axios";
 import { Attachment, Message, SelectMenuComponentOptionData } from "discord.js";
 import type { Texture } from "@interfaces/database";
+import versionRange from "@helpers/versionRange";
 
 /**
  * Create submission embeds from a message
@@ -22,10 +23,13 @@ export default async function submitTexture(message: Message<true>) {
 	if (!message.attachments.size)
 		return cancelSubmission(message, strings.submission.image_not_attached);
 
-	const attachments = Array.from(message.attachments.values());
-	// can run concurrently because the process order doesn't matter as long as it all happens
+	// process order doesn't matter as long as the index is passed in
 	const hasMenus = await Promise.all(
-		attachments.map((attachment, i) => submitAttachment(message, attachment, i)),
+		Array.from(message.attachments.values(), (attachment, i) =>
+			submitAttachment(message, attachment, i).catch((err: string) =>
+				cancelSubmission(message, err),
+			),
+		),
 	);
 
 	// can only delete message if there are no choice menus anywhere
@@ -44,14 +48,15 @@ export async function submitAttachment(
 	message: Message<true>,
 	attachment: Attachment,
 	index: number,
-): Promise<void | true> {
+): Promise<boolean> {
 	// remove extra metadata
 	const url = attachment.url.split("?")[0];
 	const name = url.split("/").slice(-1)[0].replace(".png", "");
 
 	if (DEBUG) console.log(`Texture ${name} submitted: ${index + 1} of ${message.attachments.size}`);
 
-	if (!url.endsWith(".png")) return cancelSubmission(message, strings.submission.invalid_format);
+	// throw the error string so the caller can handle it as they want (easier than sending a result type)
+	if (!url.endsWith(".png")) throw strings.submission.invalid_format;
 
 	// try and get the texture id from the message contents
 	const id = message.content.match(/(?<=\[#)(.*?)(?=\])/)?.[0];
@@ -66,33 +71,33 @@ export async function submitAttachment(
 	const search = id ?? name;
 
 	// if there's no search and no id the submission can't be valid
-	if (!search) return cancelSubmission(message, strings.submission.no_name_given);
+	if (!search) throw strings.submission.no_name_given;
 
 	let results: Texture[] = [];
 	try {
 		results = (await axios.get<Texture[]>(`${process.env.API_URL}textures/${search}/all`)).data;
 	} catch {
-		return cancelSubmission(message, `${strings.submission.does_not_exist}\n${search}`);
+		throw `${strings.submission.does_not_exist}\n${search}`;
 	}
 
 	// if using texture id
 	if (!Array.isArray(results)) results = [results];
 
-	if (!results.length)
-		return cancelSubmission(message, `${strings.submission.does_not_exist}\n${search}`);
+	if (!results.length) throw `${strings.submission.does_not_exist}\n${search}`;
 
-	if (results.length === 1) return makeEmbed(message, results[0], attachment, params);
+	if (results.length === 1) {
+		await makeEmbed(message, results[0], attachment, params);
+		return false;
+	}
 
 	if (DEBUG) console.log(`Generating choice embed for texture search: ${search}`);
 
-	const mappedResults = results.map<SelectMenuComponentOptionData>((result) => {
-		const version = result.paths[0].versions.sort(versionSorter).at(-1);
-		return {
-			label: `[#${result.id}] (${version}) ${result.name}`,
-			description: result.paths[0].name,
-			value: `${result.id}__${index}`,
-		};
-	});
+	const mappedResults = results.map<SelectMenuComponentOptionData>(({ id, name, paths }) => ({
+		// usually the first path is the most important
+		label: `[#${id}] (${versionRange(paths[0].versions)}) ${name}`,
+		description: paths[0].name,
+		value: `${id}__${index}`,
+	}));
 
 	await choiceEmbed(message, mappedResults);
 	return true;
