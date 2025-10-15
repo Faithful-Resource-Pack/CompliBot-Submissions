@@ -48,8 +48,8 @@
 			"error_footer": "This message will self-destruct in %SECONDS% seconds!"
 		},
 		"choice_embed": {
-			"description": "If you can't what you're looking for, please be more specific!",
-			"placeholder": "Select a texture!"
+			"description": "If you can't find what you're looking for, please be more specific!",
+			"placeholder": "Select a texture…"
 		},
 		"no_result_channel": "Could not fetch corresponding result channel! Make sure `settings.json` has been set up correctly.",
 		"no_file_attached": "Your submission has to have a file attached!",
