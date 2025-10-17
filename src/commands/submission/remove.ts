@@ -111,7 +111,7 @@ export default {
 				embeds: [
 					new EmbedBuilder()
 						.setTitle(
-							`Successfully removed texture ${name} from ${choice === "all" ? "all packs" : packs[0]}`,
+							`Successfully removed texture ${name} from ${choice === "all" ? "all packs" : packs[0].name}`,
 						)
 						.setDescription(
 							"Note that this does not remove contributions or other pack-specific data.",
