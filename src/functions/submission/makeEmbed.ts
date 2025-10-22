@@ -162,7 +162,7 @@ export function addPathsToEmbed(texture: Texture): APIEmbedField[] {
 		(acc, use) => {
 			const paths = texture.paths
 				.filter((el) => el.use === use.id)
-				.map((p) => `\`[${versionRange(p.versions)}\`] ${p.name}`);
+				.map((p) => `\`[${versionRange(p.versions)}]\` ${p.name}`);
 			acc[use.edition] ||= [];
 			acc[use.edition].push(...paths);
 			return acc;
