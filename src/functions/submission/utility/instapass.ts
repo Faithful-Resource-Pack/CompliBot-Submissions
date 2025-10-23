@@ -1,25 +1,25 @@
 import settings from "@resources/settings.json";
 
-const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 import { randomBytes } from "crypto";
 
-import {
-	mapDownloadableMessage,
-	postContributions,
-	addContributorRole,
-	downloadTexture,
-	generateContributionData,
-} from "@submission/handleResults";
-import pushTextures from "@submission/pushTextures";
+import { Message, User, GuildMember, TextChannel } from "discord.js";
+
+import type { PackFile } from "@interfaces/database";
 import getPackByChannel from "@submission/utility/getPackByChannel";
+import { mapSendableMessage } from "@submission/utility/retrieveSubmission";
+import { mapDownloadableMessage, downloadTexture } from "@submission/handleResults";
+import { sendMessage } from "@submission/sendToChannel";
+import {
+	addContributorRole,
+	generateContributionData,
+	postContributions,
+} from "@submission/handleContributions";
+import pushTextures from "@submission/pushTextures";
 
 import { submissionButtons } from "@helpers/interactions";
 import formattedDate from "@helpers/formattedDate";
 
-import type { PackFile } from "@interfaces/database";
-import { Message, User, GuildMember, TextChannel } from "discord.js";
-import { sendMessage } from "@submission/sendToChannel";
-import { mapSendableMessage } from "@submission/utility/retrieveSubmission";
+const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
 /**
  * Instapass a given texture embed

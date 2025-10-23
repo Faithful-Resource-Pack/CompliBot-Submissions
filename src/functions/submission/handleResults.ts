@@ -10,12 +10,17 @@ import type { Contribution, Pack, PackFile, Texture } from "@interfaces/database
 import { TextChannel, Client, Message } from "discord.js";
 import { join, sep } from "path";
 import { mkdir, writeFile } from "fs/promises";
+import {
+	addContributorRole,
+	generateContributionData,
+	postContributions,
+} from "@submission/handleContributions";
 
 export interface DownloadableMessage {
 	url: string;
 	authors: string[];
 	date: number;
-	id: string;
+	id: string; // texture id
 }
 
 /**
@@ -47,39 +52,50 @@ export async function downloadResults(
 		);
 	});
 
-	const allContribution: Contribution[] = [];
-
-	const guildID = (client.channels.cache.get(channelResultID) as TextChannel).guildId;
-	for (const texture of messages.map(mapDownloadableMessage)) {
-		try {
-			await downloadTexture(texture, pack, "./downloadedTextures");
-		} catch (err) {
-			handleError(client, err, `Failed to download texture [#${texture.id}] for pack ${pack.name}`);
-			// don't add contribution data or anything else if the texture wasn't downloaded
-			continue;
-		}
-
-		if (addContributions) allContribution.push(generateContributionData(texture, pack));
-		// don't await as the result isn't needed for autopush (faster)
-		addContributorRole(client, pack, guildID, texture.authors);
-	}
-
-	// keep only the last contribution for a texture (prevents issues if multiple textures pass)
-	const uniqueContributions = Object.values(
-		allContribution.reduce<Record<string, Contribution>>((acc, cur) => {
-			acc[cur.texture] = cur;
+	// filter out duplicates first based on date-sorted array so we can do everything concurrently
+	const uniqueTextures = Object.values(
+		messages.map(mapDownloadableMessage).reduce<Record<string, DownloadableMessage>>((acc, cur) => {
+			acc[cur.id] = cur;
 			return acc;
 		}, {}),
 	);
 
+	const allContributions: (Contribution | undefined)[] = await Promise.all(
+		uniqueTextures.map((texture) =>
+			downloadTexture(texture, pack, "./downloadedTextures")
+				// only create contribution data if the texture download succeeded
+				.then(() => generateContributionData(texture, pack))
+				.catch(
+					(err: unknown) =>
+						void handleError(
+							client,
+							err,
+							`Failed to download texture [#${texture.id}] for pack ${pack.name}`,
+						),
+				),
+		),
+	);
+
+	if (!addContributions) return;
+
+	const addedContributions = allContributions.filter(
+		// typescript trick for a type-safe filter cast
+		(c): c is Contribution => c !== undefined,
+	);
+
 	// post all contributions at once (saves on requests) only if there's something to post
-	if (uniqueContributions.length && addContributions)
-		return postContributions(...uniqueContributions);
+	if (addedContributions.length) {
+		const guildID = (client.channels.cache.get(channelResultID) as TextChannel).guildId;
+		return Promise.all([
+			postContributions(...addedContributions),
+			...addedContributions.map((c) => addContributorRole(client, pack, guildID, c.authors)),
+		]);
+	}
 }
 
 /**
  * Download a single texture to all its paths locally
- * @author Juknum, Evorp
+ * @author Evorp
  * @param texture message and texture info
  * @param pack which pack to download it to
  * @param baseFolder where to download the texture to
@@ -107,63 +123,55 @@ export async function downloadTexture(
 		return;
 	}
 
-	// add the image to all its versions and paths
-	for (const use of textureInfo.uses) {
-		const paths = textureInfo.paths.filter((path) => path.use === use.id);
+	// instead of making a bunch of nested loops generate one flat array of paths and use that
+	const allPaths = generatePaths(textureInfo, pack, baseFolder);
 
-		// need to redefine pack folder every time since java/bedrock are different folders
-		const packFolder = pack.github[use.edition]?.repo;
-
-		if (!packFolder) {
-			if (DEBUG)
-				console.log(
-					`GitHub repository not found for pack and edition: ${pack.name} ${use.edition}`,
-				);
-			continue;
-		}
-
-		for (const path of paths) {
-			// write file to every version of a path
-			await Promise.all(
-				path.versions.map(async (version) => {
-					const fullPath = join(baseFolder, packFolder, version, path.name);
-					try {
-						await mkdir(fullPath.slice(0, fullPath.lastIndexOf(sep)), { recursive: true });
-						await writeFile(fullPath, imageFile);
-						if (DEBUG) console.log(`Added texture to path ${fullPath}`);
-					} catch (err) {
-						console.error(err);
-					}
-				}),
-			);
-		}
-	}
-
+	await Promise.all(allPaths.map((fullPath) => downloadToPath(fullPath, imageFile)));
 	return textureInfo;
 }
 
 /**
- * Add a contributor role to users without one
+ * Generate all paths a texture needs to be downloaded to
  * @author Evorp
- * @param client
- * @param pack different packs have different roles
- * @param guildID where to add the role to
- * @param authors which authors to add roles to
+ * @param textureInfo The texture being downloaded
+ * @param pack The pack it's being downloaded to
+ * @param baseFolder The base folder to download to
+ * @returns Flat array of all needed paths
  */
-export function addContributorRole(client: Client, pack: Pack, guildID: string, authors: string[]) {
-	const guild = client.guilds.cache.get(guildID);
-	const role = pack.submission.contributor_role;
+function generatePaths(textureInfo: Texture, pack: Pack, baseFolder: string) {
+	// flatMap is a one to many operation
+	return textureInfo.uses.flatMap((use) => {
+		const paths = textureInfo.paths.filter((path) => path.use === use.id);
+		const packFolder = pack.github[use.edition]?.repo;
+		if (!packFolder) {
+			// don't error since some packs don't support all editions
+			if (DEBUG)
+				console.log(
+					`GitHub repository not found for pack and edition: ${pack.name} ${use.edition}`,
+				);
+			return [];
+		}
+		// every version of every path of every use gets an entry
+		return paths.flatMap((path) =>
+			path.versions.map((version) => join(baseFolder, packFolder, version, path.name)),
+		);
+	});
+}
 
-	// guild couldn't be fetched or no role exists
-	if (!guild || !role) return;
-
-	// Promise.all is faster than awaiting separately + less error handling needed
-	return Promise.all(
-		authors
-			.map((author) => guild.members.cache.get(author))
-			.filter((user) => user && !user.roles.cache.has(role))
-			.map((user) => user.roles.add(role).catch(() => {})),
-	);
+/**
+ * Safely download an image to a given path
+ * @author Juknum, Evorp
+ * @param fullPath Full path to download to
+ * @param imageFile Image to download
+ */
+async function downloadToPath(fullPath: string, imageFile: Buffer) {
+	try {
+		await mkdir(fullPath.slice(0, fullPath.lastIndexOf(sep)), { recursive: true });
+		await writeFile(fullPath, imageFile);
+		if (DEBUG) console.log(`Added texture to path ${fullPath}`);
+	} catch (err: unknown) {
+		console.error(err);
+	}
 }
 
 /**
@@ -179,41 +187,3 @@ export const mapDownloadableMessage = (message: Message): DownloadableMessage =>
 	date: message.createdTimestamp,
 	id: message.embeds[0].title.match(/(?<=\[#)(.*?)(?=\])/)?.[0],
 });
-
-/**
- * Converts a mapped message to a contribution
- * @author Juknum
- * @param texture texture message
- * @param pack contribution pack
- * @returns postable contribution
- */
-export const generateContributionData = (
-	texture: DownloadableMessage,
-	pack: Pack,
-): Contribution => ({
-	date: texture.date,
-	pack: pack.id,
-	texture: texture.id,
-	authors: texture.authors,
-});
-
-/**
- * Post contribution(s) to database
- * @author Evorp
- * @param contributions contributions to post
- */
-export async function postContributions(...contributions: Contribution[]) {
-	try {
-		await axios.post(`${process.env.API_URL}contributions`, contributions, {
-			headers: {
-				bot: process.env.API_TOKEN,
-			},
-		});
-		if (DEBUG) console.log(`Added contribution(s): ${JSON.stringify(contributions, null, 4)}`);
-	} catch {
-		if (DEBUG) {
-			console.error(`Failed to add contribution(s) for pack: ${contributions[0]?.pack}`);
-			console.error(JSON.stringify(contributions, null, 4));
-		}
-	}
-}
