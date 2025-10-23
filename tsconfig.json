@@ -11,7 +11,7 @@
 			"@helpers/*": ["./src/helpers/*"],
 			"@commands/*": ["./src/commands/*"],
 			"@events/*": ["./src/events/*"],
-			"@submission/*": ["./src/functions/submission/*"],
+			"@submission/*": ["./src/submission/*"],
 			"@images/*": ["./src/functions/images/*"],
 			"@interfaces/*": ["./src/interfaces/*"],
 			"@resources/*": ["./resources/*"],
