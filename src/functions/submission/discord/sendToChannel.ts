@@ -1,11 +1,13 @@
 import settings from "@resources/settings.json";
 
-import retrieveSubmission, { type SendableMessage } from "@submission/utility/retrieveSubmission";
-import changeStatus from "@submission/utility/changeStatus";
+import type { Submission } from "@interfaces/database";
+
+import retrieveSubmission, { type SendableMessage } from "@submission/discord/retrieveSubmission";
+import changeStatus from "@submission/discord/changeStatus";
+
+import { submissionButtons } from "@helpers/interactions";
 
 import { BaseMessageOptions, Client, EmbedBuilder, MessageReaction, TextChannel } from "discord.js";
-import type { Submission } from "@interfaces/database";
-import { submissionButtons } from "@helpers/interactions";
 
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 

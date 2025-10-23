@@ -1,12 +1,13 @@
 import settings from "@resources/settings.json";
 import strings from "@resources/strings.json";
 
-import { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } from "discord.js";
-
-import { sendToResults } from "@submission/sendToChannel";
-import warnUser from "@helpers/warnUser";
-import type { Pack, PackFile } from "@interfaces/database";
 import type { Command } from "@interfaces/discord";
+import type { Pack, PackFile } from "@interfaces/database";
+
+import { sendToResults } from "@submission/discord/sendToChannel";
+import warnUser from "@helpers/warnUser";
+
+import { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } from "discord.js";
 
 export default {
 	data: new SlashCommandBuilder()

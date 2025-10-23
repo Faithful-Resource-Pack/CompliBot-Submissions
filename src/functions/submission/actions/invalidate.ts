@@ -1,9 +1,9 @@
 import settings from "@resources/settings.json";
 
-const DEBUG = process.env.DEBUG.toLowerCase() === "true";
-
-import changeStatus from "@submission/utility/changeStatus";
+import changeStatus from "@submission/discord/changeStatus";
 import { Message, User, GuildMember } from "discord.js";
+
+const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
 /**
  * Invalidate a given texture embed

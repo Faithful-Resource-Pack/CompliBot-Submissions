@@ -1,10 +1,10 @@
 import settings from "@resources/settings.json";
 import strings from "@resources/strings.json";
+import type { Command } from "@interfaces/discord";
 
 import warnUser from "@helpers/warnUser";
 import { EmbedBuilder, SlashCommandBuilder, PermissionFlagsBits } from "discord.js";
 
-import type { Command } from "@interfaces/discord";
 export default {
 	data: new SlashCommandBuilder()
 		.setName("restart")

@@ -1,5 +1,6 @@
 import type { PackFile } from "@interfaces/database";
 
+// string union works better than enum since you can use members as object keys
 export type ChannelType = "any" | "submit" | "results";
 
 /**

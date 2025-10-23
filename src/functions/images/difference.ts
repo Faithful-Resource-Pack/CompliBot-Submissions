@@ -1,11 +1,11 @@
-import { createCanvas, loadImage, ImageData } from "@napi-rs/canvas";
-import { AttachmentBuilder } from "discord.js";
+import settings from "@resources/settings.json";
 
 import { magnify } from "@images/magnify";
 
-import settings from "@resources/settings.json";
+import { createCanvas, loadImage, ImageData } from "@napi-rs/canvas";
+import { AttachmentBuilder } from "discord.js";
 
-// what the alpha is multiplied by (0 is transparent, 1 does nothing)
+// alpha multiplier (0 is transparent, 1 does nothing)
 export const TRANSPARENCY_FACTOR = 0.5;
 
 export const CHANGED_PIXEL_COLOR = settings.colors.blue;

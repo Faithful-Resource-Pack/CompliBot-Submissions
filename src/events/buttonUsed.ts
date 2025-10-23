@@ -1,17 +1,18 @@
+import strings from "@resources/strings.json";
+import settings from "@resources/settings.json";
+import type { Event } from "@interfaces/discord";
+
 import { magnifyToAttachment } from "@images/magnify";
 import tile from "@images/tile";
 import palette from "@images/palette";
 import { difference } from "@images/difference";
+import info from "@commands/bot/info";
+
+import getPackByChannel from "@submission/discord/getPackByChannel";
+import { hasPermission, PermissionType } from "@helpers/permissions";
+import warnUser from "@helpers/warnUser";
 
 import { ButtonInteraction, EmbedBuilder, GuildMember, MessageFlags } from "discord.js";
-
-import strings from "@resources/strings.json";
-import settings from "@resources/settings.json";
-import getPackByChannel from "@submission/utility/getPackByChannel";
-import warnUser from "@helpers/warnUser";
-import type { Event } from "@interfaces/discord";
-import { hasPermission } from "@helpers/permissions";
-import info from "@commands/bot/info";
 
 /** "fake" emitted event to split up interactionCreate */
 export default {
@@ -95,7 +96,7 @@ export default {
 				if (
 					message.deletable &&
 					(!original ||
-						hasPermission(interaction.member as GuildMember, "moderator") ||
+						hasPermission(interaction.member as GuildMember, PermissionType.Moderator) ||
 						original.id === interaction.user.id)
 				)
 					return message.delete();

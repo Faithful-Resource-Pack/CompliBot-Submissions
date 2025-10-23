@@ -2,22 +2,25 @@ import settings from "@resources/settings.json";
 
 import { randomBytes } from "crypto";
 
-import { Message, User, GuildMember, TextChannel } from "discord.js";
-
 import type { PackFile } from "@interfaces/database";
-import getPackByChannel from "@submission/utility/getPackByChannel";
-import { mapSendableMessage } from "@submission/utility/retrieveSubmission";
-import { mapDownloadableMessage, downloadTexture } from "@submission/handleResults";
-import { sendMessage } from "@submission/sendToChannel";
+
+import getPackByChannel from "@submission/discord/getPackByChannel";
+import { mapSendableMessage } from "@submission/discord/retrieveSubmission";
+import { sendMessage } from "@submission/discord/sendToChannel";
+
+import { mapDownloadableMessage } from "@submission/results/handleResults";
+import { downloadTexture } from "@submission/results/downloadTexture";
 import {
 	addContributorRole,
 	generateContributionData,
 	postContributions,
-} from "@submission/handleContributions";
-import pushTextures from "@submission/pushTextures";
+} from "@submission/results/handleContributions";
+import pushTextures from "@submission/results/pushTextures";
 
 import { submissionButtons } from "@helpers/interactions";
 import formattedDate from "@helpers/formattedDate";
+
+import { Message, User, GuildMember, TextChannel } from "discord.js";
 
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 

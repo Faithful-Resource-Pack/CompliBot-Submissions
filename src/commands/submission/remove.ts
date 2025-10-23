@@ -2,11 +2,13 @@ import strings from "@resources/strings.json";
 import settings from "@resources/settings.json";
 
 import { Command } from "@interfaces/discord";
-import { EmbedBuilder, PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
 import { MinecraftEdition, Pack, PackFile, Texture } from "@interfaces/database";
-import axios from "axios";
-import addDeleteButton from "@helpers/addDeleteButton";
+
 import GitHubRepository from "@functions/GitHubRepository";
+import addDeleteButton from "@helpers/addDeleteButton";
+
+import { EmbedBuilder, PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
+import axios from "axios";
 
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 

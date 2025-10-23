@@ -1,9 +1,9 @@
 import strings from "@resources/strings.json";
-
-import { SlashCommandBuilder, PermissionFlagsBits } from "discord.js";
-import warnUser from "@helpers/warnUser";
-
 import type { Command } from "@interfaces/discord";
+
+import warnUser from "@helpers/warnUser";
+import { SlashCommandBuilder, PermissionFlagsBits } from "discord.js";
+
 export default {
 	data: new SlashCommandBuilder()
 		.setName("say")

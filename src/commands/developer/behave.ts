@@ -1,8 +1,8 @@
 import strings from "@resources/strings.json";
+import type { Command } from "@interfaces/discord";
 
 import { SlashCommandBuilder, PermissionFlagsBits } from "discord.js";
 
-import type { Command } from "@interfaces/discord";
 export default {
 	data: new SlashCommandBuilder()
 		.setName("behave")

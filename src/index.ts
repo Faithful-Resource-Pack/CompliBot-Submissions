@@ -8,12 +8,13 @@
 import "dotenv/config";
 
 import { readdirSync } from "fs";
+import { join } from "path";
+
+import type { Event } from "@interfaces/discord";
 
 import { fetchSettings } from "@functions/fetchSettings";
 import handleError from "@functions/handleError";
 import { Client, GatewayIntentBits, Partials } from "discord.js";
-import type { Event } from "@interfaces/discord";
-import { join } from "path";
 
 export default function startBot() {
 	const client = new Client({

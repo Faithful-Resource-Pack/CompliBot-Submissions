@@ -1,8 +1,10 @@
 import settings from "@resources/settings.json";
 
-import instapass from "@submission/utility/instapass";
-import invalidate from "@submission/utility/invalidate";
-import { hasPermission } from "@helpers/permissions";
+import instapass from "@submission/actions/instapass";
+import invalidate from "@submission/actions/invalidate";
+
+import { hasPermission, PermissionType } from "@helpers/permissions";
+
 import { GuildMember, Message, MessageReaction, User } from "discord.js";
 
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
@@ -70,13 +72,13 @@ export default async function reactionMenu(openReaction: MessageReaction, user: 
 	if (
 		actionReaction.emoji.id === settings.emojis.delete &&
 		// only admins can delete messages (prevent abuse)
-		(reactor.id === submissionAuthorID || hasPermission(member, "administrator")) &&
+		(reactor.id === submissionAuthorID || hasPermission(member, PermissionType.Administrator)) &&
 		message.deletable
 	)
 		return message.delete();
 
 	// already confirmed it's the same user reacting
-	if (hasPermission(member, "submission")) {
+	if (hasPermission(member, PermissionType.Submission)) {
 		switch (actionReaction.emoji.id) {
 			// flush votes and reaction menu
 			case settings.emojis.instapass:
@@ -114,7 +116,7 @@ function canOpenTray(
 		return false;
 
 	// user doesn't have permission
-	if (!hasPermission(member, "submission") && submissionAuthorID !== member.id) {
+	if (!hasPermission(member, PermissionType.Submission) && submissionAuthorID !== member.id) {
 		openReaction.users.remove(member.id).catch((err) => {
 			if (DEBUG) console.error(err);
 		});
@@ -135,7 +137,7 @@ function canOpenTray(
 function filterReactions(message: Message, member: GuildMember, allReactions: string[]): string[] {
 	// remove instapass/invalid if just the author is reacting or if submission is no longer pending
 	if (
-		!hasPermission(member, "submission") ||
+		!hasPermission(member, PermissionType.Submission) ||
 		!message.embeds[0].fields[1].value.includes(settings.emojis.pending)
 	)
 		allReactions = allReactions.filter(

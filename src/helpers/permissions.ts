@@ -1,6 +1,11 @@
 import { GuildMember, PermissionFlagsBits } from "discord.js";
 
-export type PermissionType = "administrator" | "council" | "moderator" | "submission";
+export enum PermissionType {
+	Administrator,
+	Moderator,
+	Council,
+	Submission, // admin or council
+}
 
 /**
  * Check permissions of a given member
@@ -9,21 +14,19 @@ export type PermissionType = "administrator" | "council" | "moderator" | "submis
  * @param type what type of role to check for
  * @returns whether the member has the permissions
  */
-export function hasPermission(member: GuildMember, type: PermissionType = "submission"): boolean {
+export function hasPermission(member: GuildMember, type = PermissionType.Submission): boolean {
 	const hasAdmin = member.permissions.has(PermissionFlagsBits.Administrator);
 	const hasMod = member.permissions.has(PermissionFlagsBits.ManageMessages);
 	const hasCouncil = member.roles.cache.some((role) => role.name.toLowerCase().includes("council"));
 
 	switch (type) {
-		case "administrator":
+		case PermissionType.Administrator:
 			return hasAdmin;
-		case "council":
+		case PermissionType.Council:
 			return hasCouncil;
-		case "moderator":
+		case PermissionType.Moderator:
 			return hasMod;
-		case "submission":
+		case PermissionType.Submission:
 			return hasAdmin || hasCouncil;
-		default:
-			return false;
 	}
 }

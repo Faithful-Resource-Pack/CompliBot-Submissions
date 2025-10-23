@@ -1,13 +1,14 @@
 import { existsSync, rmSync } from "fs";
+import { join } from "path";
+
+import type { MinecraftEdition, PackFile } from "@interfaces/database";
 
 import formattedDate from "@helpers/formattedDate";
-
 import GitHubRepository from "@functions/GitHubRepository";
-import type { MinecraftEdition, PackFile } from "@interfaces/database";
-import { join } from "path";
 
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 const DEV = process.env.DEV.toLowerCase() === "true";
+
 /**
  * Push textures to all versions of a given pack
  * @author Juknum, Evorp

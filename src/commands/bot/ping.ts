@@ -1,11 +1,11 @@
 import settings from "@resources/settings.json";
 import strings from "@resources/strings.json";
+import type { Command } from "@interfaces/discord";
 
 import addDeleteButton from "@helpers/addDeleteButton";
 
 import axios from "axios";
 import { EmbedBuilder, SlashCommandBuilder } from "discord.js";
-import type { Command } from "@interfaces/discord";
 
 export default {
 	data: new SlashCommandBuilder().setName("ping").setDescription(strings.command.description.ping),

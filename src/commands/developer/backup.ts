@@ -1,13 +1,13 @@
 import settings from "@resources/settings.json";
 import strings from "@resources/strings.json";
+import type { Command } from "@interfaces/discord";
 
 import saveDB from "@functions/saveDB";
-
-import { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } from "discord.js";
 import warnUser from "@helpers/warnUser";
 import addDeleteButton from "@helpers/addDeleteButton";
 
-import type { Command } from "@interfaces/discord";
+import { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } from "discord.js";
+
 export default {
 	data: new SlashCommandBuilder()
 		.setName("backup")

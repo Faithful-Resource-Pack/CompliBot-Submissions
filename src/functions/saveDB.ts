@@ -1,11 +1,13 @@
-const DEBUG = process.env.DEBUG.toLowerCase() === "true";
-
-import { join } from "path";
-import axios from "axios";
-import handleError from "@functions/handleError";
 import { writeFile, mkdir } from "fs/promises";
-import { Client } from "discord.js";
+import { join } from "path";
+
 import GitHubRepository from "@functions/GitHubRepository";
+import handleError from "@functions/handleError";
+
+import axios from "axios";
+import { Client } from "discord.js";
+
+const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
 export type BackupParams = Partial<{
 	org: string;

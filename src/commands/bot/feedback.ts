@@ -1,4 +1,5 @@
 import strings from "@resources/strings.json";
+import type { Command } from "@interfaces/discord";
 
 import {
 	ActionRowBuilder,
@@ -7,8 +8,6 @@ import {
 	TextInputBuilder,
 	TextInputStyle,
 } from "discord.js";
-
-import type { Command } from "@interfaces/discord";
 
 // I'm sorry...
 const feedbackFormat = {

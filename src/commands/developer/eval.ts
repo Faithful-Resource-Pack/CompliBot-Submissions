@@ -1,9 +1,10 @@
 import strings from "@resources/strings.json";
+import type { Command } from "@interfaces/discord";
 
 import { inspect } from "util";
+
 import warnUser from "@helpers/warnUser";
 import { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, MessageFlags } from "discord.js";
-import type { Command } from "@interfaces/discord";
 
 export default {
 	data: new SlashCommandBuilder()

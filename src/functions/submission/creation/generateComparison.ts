@@ -1,10 +1,11 @@
+import type { MCMETA, Texture } from "@interfaces/database";
+
 import { magnifyToAttachment, magnify } from "@images/magnify";
 import animate from "@images/animate";
 import stitch from "@images/stitch";
 
 import { Image, loadImage } from "@napi-rs/canvas";
 import { Attachment, AttachmentBuilder } from "discord.js";
-import type { MCMETA, Texture } from "@interfaces/database";
 
 interface ComparisonResults {
 	comparisonImage: AttachmentBuilder;

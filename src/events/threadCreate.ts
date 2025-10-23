@@ -1,5 +1,5 @@
-import { ThreadChannel } from "discord.js";
 import type { Event } from "@interfaces/discord";
+import { ThreadChannel } from "discord.js";
 
 export default {
 	name: "threadCreate",

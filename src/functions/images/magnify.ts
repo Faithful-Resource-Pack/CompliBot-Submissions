@@ -1,6 +1,6 @@
 import type { ImageSource } from "@interfaces/images";
-import { createCanvas, loadImage } from "@napi-rs/canvas";
 
+import { createCanvas, loadImage } from "@napi-rs/canvas";
 import { AttachmentBuilder } from "discord.js";
 
 /**

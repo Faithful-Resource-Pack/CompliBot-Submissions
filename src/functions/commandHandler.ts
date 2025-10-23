@@ -1,8 +1,9 @@
-import { Routes, REST, Collection, Client } from "discord.js";
 import { join } from "path";
 
-import walkSync from "@helpers/walkSync";
 import type { Command } from "@interfaces/discord";
+import walkSync from "@helpers/walkSync";
+
+import { Routes, REST, Collection, Client } from "discord.js";
 
 /**
  * Load slash commands and add them to the client

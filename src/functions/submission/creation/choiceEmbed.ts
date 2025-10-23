@@ -1,9 +1,13 @@
 import settings from "@resources/settings.json";
 import strings from "@resources/strings.json";
 
-import getAuthors from "@submission/utility/getAuthors";
-import makeEmbed, { EmbedParams } from "@submission/makeEmbed";
+import type { Texture } from "@interfaces/database";
+
+import getAuthors from "@submission/creation/getAuthors";
+import makeEmbed, { EmbedParams } from "@submission/creation/makeEmbed";
+
 import addDeleteButton from "@helpers/addDeleteButton";
+import { hasPermission, PermissionType } from "@helpers/permissions";
 
 import {
 	EmbedBuilder,
@@ -14,9 +18,7 @@ import {
 	StringSelectMenuInteraction,
 	ComponentType,
 } from "discord.js";
-import { hasPermission } from "@helpers/permissions";
 import axios from "axios";
-import type { Texture } from "@interfaces/database";
 
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
@@ -66,7 +68,8 @@ export default async function choiceEmbed(
 		interaction.customId.startsWith("choiceEmbed") &&
 		interaction.message.id === choiceMessage.id &&
 		// admins can interact with choice embeds always
-		(interaction.user.id === message.author.id || hasPermission(message.member, "administrator"));
+		(interaction.user.id === message.author.id ||
+			hasPermission(message.member, PermissionType.Administrator));
 
 	const collector = message.channel.createMessageComponentCollector<ComponentType.StringSelect>({
 		filter,

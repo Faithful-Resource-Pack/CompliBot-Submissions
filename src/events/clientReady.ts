@@ -1,19 +1,21 @@
-const DEV = process.env.DEV.toLowerCase() === "true";
-const MAINTENANCE = process.env.MAINTENANCE.toLowerCase() === "true";
+import type { Event } from "@interfaces/discord";
+import type { PackFile } from "@interfaces/database";
 
 import { loadCommands } from "@functions/commandHandler";
 import { fetchSettings } from "@functions/fetchSettings";
 
-import { sendToResults } from "@submission/sendToChannel";
-import { downloadResults } from "@submission/handleResults";
-import pushTextures from "@submission/pushTextures";
-import saveDB from "@functions/saveDB";
+import { sendToResults } from "@submission/discord/sendToChannel";
+import { handleResults } from "@submission/results/handleResults";
+import pushTextures from "@submission/results/pushTextures";
 
-import { ActivityType, Client } from "discord.js";
-import { CronJob } from "cron";
-import type { PackFile } from "@interfaces/database";
-import type { Event } from "@interfaces/discord";
+import saveDB from "@functions/saveDB";
 import handleError from "@functions/handleError";
+
+import { CronJob } from "cron";
+import { ActivityType, Client } from "discord.js";
+
+const DEV = process.env.DEV.toLowerCase() === "true";
+const MAINTENANCE = process.env.MAINTENANCE.toLowerCase() === "true";
 
 export default {
 	name: "clientReady",
@@ -64,7 +66,7 @@ export default {
 			async onTick() {
 				for (const pack of Object.values(packs)) {
 					// errors don't stop the rest of the packs from downloading
-					await downloadResults(client, pack.submission.channels.results).catch((err) => {
+					await handleResults(client, pack.submission.channels.results).catch((err) => {
 						handleError(client, err, `Failed to download results for pack ${pack.name}`);
 					});
 				}

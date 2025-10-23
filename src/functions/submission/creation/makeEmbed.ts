@@ -1,10 +1,16 @@
 import settings from "@resources/settings.json";
 import strings from "@resources/strings.json";
 
-import getPackByChannel from "@submission/utility/getPackByChannel";
-import getImages from "@helpers/getImages";
-import generateComparison from "@submission/utility/generateComparison";
+import type { MinecraftEdition, Texture } from "@interfaces/database";
+
+import generateComparison from "@submission/creation/generateComparison";
+import instapass from "@submission/actions/instapass";
+import getPackByChannel from "@submission/discord/getPackByChannel";
+
 import { submissionButtons, diffableButtons, submissionReactions } from "@helpers/interactions";
+import { hasPermission, PermissionType } from "@helpers/permissions";
+import getImages from "@helpers/getImages";
+import versionRange from "@helpers/versionRange";
 
 import {
 	EmbedBuilder,
@@ -16,10 +22,6 @@ import {
 	Attachment,
 } from "discord.js";
 import { loadImage } from "@napi-rs/canvas";
-import type { MinecraftEdition, Texture } from "@interfaces/database";
-import instapass from "@submission/utility/instapass";
-import { hasPermission } from "@helpers/permissions";
-import versionRange from "@helpers/versionRange";
 
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
@@ -50,7 +52,7 @@ export default async function makeEmbed(
 	// one star only (prevents italicized contributions getting instapassed)
 	const doInstapass = description.startsWith("*") && description.match(/\*/g).length === 1;
 	const member = message.guild.members.cache.get(Array.from(authors)[0]);
-	const canInstapass = hasPermission(member, "submission");
+	const canInstapass = hasPermission(member, PermissionType.Submission);
 
 	// load previous contributions if applicable
 	if (description.startsWith("+") || (doInstapass && canInstapass)) {

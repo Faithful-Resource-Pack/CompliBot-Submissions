@@ -1,9 +1,10 @@
 import settings from "@resources/settings.json";
 import strings from "@resources/strings.json";
 
-import { EmbedBuilder, Message, MessageFlags } from "discord.js";
-import addDeleteButton from "@helpers/addDeleteButton";
 import type { AnyInteraction } from "@interfaces/discord";
+import addDeleteButton from "@helpers/addDeleteButton";
+
+import { EmbedBuilder, Message, MessageFlags } from "discord.js";
 
 /**
  * Generic error message for both interactions and messages

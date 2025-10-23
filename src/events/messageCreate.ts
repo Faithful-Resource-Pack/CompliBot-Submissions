@@ -1,10 +1,12 @@
 import settings from "@resources/settings.json";
 import strings from "@resources/strings.json";
 
-import submitTexture from "@submission/submitTexture";
-import cancelSubmission from "@functions/submission/utility/cancelSubmission";
-import type { PackFile } from "@interfaces/database";
 import type { Event } from "@interfaces/discord";
+import type { PackFile } from "@interfaces/database";
+
+import submitTexture from "@submission/creation/submitTexture";
+import cancelSubmission from "@submission/creation/cancelSubmission";
+
 import { Message } from "discord.js";
 
 export default {

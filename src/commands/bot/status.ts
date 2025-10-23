@@ -1,6 +1,8 @@
 import strings from "@resources/strings.json";
 import settings from "@resources/settings.json";
+import type { Command } from "@interfaces/discord";
 
+import addDeleteButton from "@helpers/addDeleteButton";
 import warnUser from "@helpers/warnUser";
 import {
 	ActivityType,
@@ -9,9 +11,6 @@ import {
 	PresenceStatusData,
 } from "discord.js";
 import { EmbedBuilder } from "discord.js";
-import addDeleteButton from "@helpers/addDeleteButton";
-
-import type { Command } from "@interfaces/discord";
 
 export default {
 	data: new SlashCommandBuilder()

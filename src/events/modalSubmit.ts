@@ -1,5 +1,6 @@
-import { feedbackBug, feedbackSuggestion } from "@functions/feedback";
 import type { Event } from "@interfaces/discord";
+import { feedbackBug, feedbackSuggestion } from "@functions/feedback";
+
 import { ModalSubmitInteraction } from "discord.js";
 
 export default {

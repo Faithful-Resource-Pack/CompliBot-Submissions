@@ -1,7 +1,8 @@
-import type { PackFile } from "@interfaces/database";
-import reactionMenu from "@submission/reactionMenu";
-import { MessageReaction, User } from "discord.js";
 import type { Event } from "@interfaces/discord";
+import type { PackFile } from "@interfaces/database";
+
+import reactionMenu from "@submission/actions/reactionMenu";
+import { MessageReaction, User } from "discord.js";
 
 export default {
 	name: "messageReactionAdd",

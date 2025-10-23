@@ -1,5 +1,5 @@
-import { Interaction } from "discord.js";
 import type { Event } from "@interfaces/discord";
+import { Interaction } from "discord.js";
 
 /** "real" event file that gets split into each component's specified usage */
 export default {

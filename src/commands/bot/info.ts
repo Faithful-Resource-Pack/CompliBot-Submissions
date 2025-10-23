@@ -1,6 +1,7 @@
 import settings from "@resources/settings.json";
 import strings from "@resources/strings.json";
 import type { Command } from "@interfaces/discord";
+
 import { EmbedBuilder, MessageFlags, SlashCommandBuilder } from "discord.js";
 
 export default {

@@ -1,9 +1,10 @@
-import type { AnyInteraction } from "@interfaces/discord";
-import type { ImageSource } from "@interfaces/images";
-import { createCanvas, loadImage } from "@napi-rs/canvas";
 import settings from "@resources/settings.json";
 import strings from "@resources/strings.json";
 
+import type { AnyInteraction } from "@interfaces/discord";
+import type { ImageSource } from "@interfaces/images";
+
+import { createCanvas, loadImage } from "@napi-rs/canvas";
 import { EmbedBuilder, AttachmentBuilder, MessageFlags } from "discord.js";
 
 const COOLORS_URL = "https://coolors.co/";

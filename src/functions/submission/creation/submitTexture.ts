@@ -1,17 +1,18 @@
 import strings from "@resources/strings.json";
 
-const DEBUG = process.env.DEBUG.toLowerCase() === "true";
+import type { Texture } from "@interfaces/database";
 
-import makeEmbed, { EmbedParams } from "@submission/makeEmbed";
-import cancelSubmission from "@submission/utility/cancelSubmission";
-import choiceEmbed from "@submission/utility/choiceEmbed";
+import makeEmbed, { EmbedParams } from "@submission/creation/makeEmbed";
+import cancelSubmission from "@submission/creation/cancelSubmission";
+import choiceEmbed from "@submission/creation/choiceEmbed";
+import getAuthors from "@submission/creation/getAuthors";
 
-import getAuthors from "@submission/utility/getAuthors";
 import versionRange from "@helpers/versionRange";
 
 import axios from "axios";
 import { Attachment, Message, SelectMenuComponentOptionData } from "discord.js";
-import type { Texture } from "@interfaces/database";
+
+const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
 /**
  * Create submission embeds from a message

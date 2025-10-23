@@ -1,9 +1,11 @@
-import { createCanvas, loadImage } from "@napi-rs/canvas";
-import { EmbedBuilder, MessageFlags } from "discord.js";
 import settings from "@resources/settings.json";
 import strings from "@resources/strings.json";
+
 import type { ImageSource } from "@interfaces/images";
 import type { AnyInteraction } from "@interfaces/discord";
+
+import { createCanvas, loadImage } from "@napi-rs/canvas";
+import { EmbedBuilder, MessageFlags } from "discord.js";
 
 /**
  * Tile an image

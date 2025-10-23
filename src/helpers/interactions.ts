@@ -1,5 +1,5 @@
-import { ButtonBuilder, ActionRowBuilder, ButtonStyle } from "discord.js";
 import settings from "@resources/settings.json";
+import { ButtonBuilder, ActionRowBuilder, ButtonStyle } from "discord.js";
 
 /**
  * Helper file to store button data and some reactions

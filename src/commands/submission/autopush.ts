@@ -1,14 +1,16 @@
 import settings from "@resources/settings.json";
 import strings from "@resources/strings.json";
 
-import { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } from "discord.js";
-
-import formattedDate from "@helpers/formattedDate";
-import pushTextures from "@submission/pushTextures";
-import { downloadResults } from "@submission/handleResults";
-import warnUser from "@helpers/warnUser";
 import type { Command } from "@interfaces/discord";
 import type { Pack, PackFile } from "@interfaces/database";
+
+import { handleResults } from "@submission/results/handleResults";
+import pushTextures from "@submission/results/pushTextures";
+
+import formattedDate from "@helpers/formattedDate";
+import warnUser from "@helpers/warnUser";
+
+import { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } from "discord.js";
 
 export default {
 	data: new SlashCommandBuilder()
@@ -56,7 +58,7 @@ export default {
 
 		await Promise.all(
 			packs.map((pack) =>
-				downloadResults(interaction.client, pack.submission.channels.results, addContributions),
+				handleResults(interaction.client, pack.submission.channels.results, addContributions),
 			),
 		);
 

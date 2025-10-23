@@ -1,7 +1,8 @@
-import { createCanvas, loadImage } from "@napi-rs/canvas";
-import GIFEncoder from "@images/GIFEncoder";
 import type { ImageSource } from "@interfaces/images";
 import type { MCMETA } from "@interfaces/database";
+
+import GIFEncoder from "@images/GIFEncoder";
+import { createCanvas, loadImage } from "@napi-rs/canvas";
 
 // same length as magma
 export const MAX_FRAMETIME = 8;

@@ -1,10 +1,11 @@
 import settings from "@resources/settings.json";
 import strings from "@resources/strings.json";
+import type { Event } from "@interfaces/discord";
 
 import addDeleteButton from "@helpers/addDeleteButton";
-import { EmbedBuilder, ChatInputCommandInteraction } from "discord.js";
 import handleError from "@functions/handleError";
-import type { Event } from "@interfaces/discord";
+
+import { EmbedBuilder, ChatInputCommandInteraction } from "discord.js";
 
 /** "fake" emitted event to split up interactionCreate */
 export default {

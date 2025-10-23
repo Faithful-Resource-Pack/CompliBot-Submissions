@@ -2,8 +2,9 @@ import settings from "@resources/settings.json";
 import strings from "@resources/strings.json";
 
 import addDeleteButton from "@helpers/addDeleteButton";
+import { hasPermission, PermissionType } from "@helpers/permissions";
+
 import { EmbedBuilder, Message } from "discord.js";
-import { hasPermission } from "@helpers/permissions";
 
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
@@ -18,7 +19,7 @@ const EMBED_VISIBLE_SECONDS = 30;
 export default async function cancelSubmission(message: Message<true>, error = "No error given!") {
 	// allow managers and council to talk in submit channels
 	if (
-		hasPermission(message.member, "submission") &&
+		hasPermission(message.member, PermissionType.Submission) &&
 		// fix no error messages showing for council+
 		error === strings.submission.image_not_attached
 	)
