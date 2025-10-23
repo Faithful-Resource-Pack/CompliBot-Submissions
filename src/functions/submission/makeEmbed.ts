@@ -17,7 +17,7 @@ import {
 } from "discord.js";
 import { loadImage } from "@napi-rs/canvas";
 import type { MinecraftEdition, Texture } from "@interfaces/database";
-import instapass from "./utility/instapass";
+import instapass from "@submission/utility/instapass";
 import { hasPermission } from "@helpers/permissions";
 import versionRange from "@helpers/versionRange";
 

@@ -55,12 +55,7 @@ export default async function instapass(message: Message, member: User | GuildMe
 	await Promise.allSettled([
 		pushTextures(basePath, pack.id, `Instapass ${textureInfo.name} from ${formattedDate()}`),
 		postContributions(generateContributionData(texture, pack)),
-		addContributorRole(
-			message.client,
-			pack,
-			(message.channel as TextChannel).guildId,
-			texture.authors,
-		),
+		addContributorRole(message.client, pack, channelOut.guildId, texture.authors),
 	]);
 
 	if (DEBUG) console.log(`Texture instapassed: ${message.embeds[0].title}`);

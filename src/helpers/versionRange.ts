@@ -1,4 +1,4 @@
-import versionSorter from "./versionSorter";
+import versionSorter from "@helpers/versionSorter";
 
 /**
  * Convert an array of versions into a formatted version range string
