@@ -16,7 +16,7 @@ export default {
 			return warnUser(interaction, strings.command.no_permission);
 
 		await interaction.reply({
-			embeds: [new EmbedBuilder().setTitle("Restarting...").setColor(settings.colors.blue)],
+			embeds: [new EmbedBuilder().setTitle("Restarting…").setColor(settings.colors.blue)],
 		});
 
 		interaction.client.destroy();

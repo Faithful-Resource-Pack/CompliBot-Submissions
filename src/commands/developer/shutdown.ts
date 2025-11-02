@@ -33,7 +33,7 @@ export default {
 		}
 
 		await interaction.reply({
-			embeds: [new EmbedBuilder().setTitle("Shutting down...").setColor(settings.colors.blue)],
+			embeds: [new EmbedBuilder().setTitle("Shutting down…").setColor(settings.colors.blue)],
 		});
 		return process.exit();
 	},

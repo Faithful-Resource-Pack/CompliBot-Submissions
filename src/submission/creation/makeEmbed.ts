@@ -67,9 +67,9 @@ export default async function makeEmbed(
 
 	// create base embed
 	const embed = new EmbedBuilder()
-		.setAuthor({ name: message.author.username, iconURL: message.author.displayAvatarURL() })
-		.setColor(settings.colors.blue)
 		.setTitle(`[#${texture.id}] ${texture.name}`)
+		.setColor(settings.colors.blue)
+		.setAuthor({ name: message.author.username, iconURL: message.author.displayAvatarURL() })
 		.setURL(
 			`https://webapp.faithfulpack.net/gallery/${texture.uses[0].edition}/${packName}/latest/all/?show=${texture.id}`,
 		)
@@ -81,7 +81,7 @@ export default async function makeEmbed(
 					.join("\n"),
 				inline: true,
 			},
-			{ name: "Status", value: `<:pending:${settings.emojis.pending}> Pending...`, inline: true },
+			{ name: "Status", value: `<:pending:${settings.emojis.pending}> Pending…`, inline: true },
 			...addPathsToEmbed(texture),
 		);
 

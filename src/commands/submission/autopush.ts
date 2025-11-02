@@ -48,12 +48,12 @@ export default {
 		const packs = choice === "all" ? Object.values(submissions) : [submissions[choice]];
 
 		const infoEmbed = new EmbedBuilder()
-			.setDescription("This can take some time, please wait...")
+			.setDescription("This can take some time, please wait…")
 			.setThumbnail(settings.images.loading)
 			.setColor(settings.colors.blue);
 
 		await interaction.reply({
-			embeds: [infoEmbed.setTitle("Downloading textures...")],
+			embeds: [infoEmbed.setTitle("Downloading textures…")],
 		});
 
 		await Promise.all(
@@ -63,7 +63,7 @@ export default {
 		);
 
 		await interaction.editReply({
-			embeds: [infoEmbed.setTitle("Pushing textures...")],
+			embeds: [infoEmbed.setTitle("Pushing textures…")],
 		});
 
 		await Promise.all(

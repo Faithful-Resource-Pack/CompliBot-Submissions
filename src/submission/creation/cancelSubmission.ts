@@ -28,10 +28,10 @@ export default async function cancelSubmission(message: Message<true>, error = "
 	if (DEBUG) console.log(`Submission cancelled with reason: ${error}`);
 
 	const embed = new EmbedBuilder()
-		.setColor(settings.colors.red)
 		.setTitle(strings.submission.cancelled.error_title)
-		.setThumbnail(settings.images.warning)
 		.setDescription(error)
+		.setColor(settings.colors.red)
+		.setThumbnail(settings.images.warning)
 		.setFooter({
 			text: strings.submission.cancelled.error_footer.replace(
 				"%SECONDS%",
