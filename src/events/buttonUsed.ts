@@ -70,10 +70,11 @@ export default {
 				return interaction.editReply({
 					embeds: [
 						new EmbedBuilder()
-							.setTitle("Image Difference")
+							.setTitle(`Texture Comparison for ${message.embeds[0].title}`)
 							.setDescription(
 								"- Blue: Changed pixels\n- Green: Added pixels\n- Red: Removed pixels",
 							)
+							.setFooter({ text: "Algorithm made by Ewan Howell" })
 							.setColor(settings.colors.blue)
 							.setImage("attachment://diff.png"),
 					],
