@@ -16,7 +16,10 @@ const EMBED_VISIBLE_SECONDS = 30;
  * @param message to check permissions of
  * @param error error message
  */
-export default async function cancelSubmission(message: Message<true>, error = "No error given!") {
+export default async function cancelSubmission(
+	message: Message<true>,
+	error: unknown = "No error given!",
+) {
 	// allow managers and council to talk in submit channels
 	if (
 		hasPermission(message.member, PermissionType.Submission) &&
@@ -29,7 +32,7 @@ export default async function cancelSubmission(message: Message<true>, error = "
 
 	const embed = new EmbedBuilder()
 		.setTitle(strings.submission.cancelled.error_title)
-		.setDescription(error)
+		.setDescription(String(error))
 		.setColor(settings.colors.red)
 		.setThumbnail(settings.images.warning)
 		.setFooter({
