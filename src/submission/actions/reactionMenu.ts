@@ -66,30 +66,27 @@ export default async function reactionMenu(openReaction: MessageReaction, user: 
 	// if there's no reaction collected just reset the message and return early
 	if (!actionReaction) return closeTray(message, trayReactions);
 
+	const isPrivileged = hasPermission(member, PermissionType.Submission);
 	// used to check permissions
 	const reactor = Array.from(actionReaction.users.cache.values()).find((user) => !user.bot);
+	const canDelete = reactor.id === submissionAuthorID || isPrivileged;
 
-	if (
-		actionReaction.emoji.id === settings.emojis.delete &&
-		// only admins can delete messages (prevent abuse)
-		(reactor.id === submissionAuthorID || hasPermission(member, PermissionType.Administrator)) &&
-		message.deletable
-	)
-		return message.delete();
-
-	// already confirmed it's the same user reacting
-	if (hasPermission(member, PermissionType.Submission)) {
-		switch (actionReaction.emoji.id) {
-			// flush votes and reaction menu
-			case settings.emojis.instapass:
-				message.reactions.removeAll();
-				instapass(message, member);
-				break;
-			case settings.emojis.invalid:
-				message.reactions.removeAll();
-				invalidate(message, member);
-				break;
-		}
+	switch (actionReaction.emoji.id) {
+		// flush votes and reaction menu
+		case settings.emojis.instapass:
+			if (!isPrivileged) break;
+			message.reactions.removeAll();
+			instapass(message, member);
+			break;
+		case settings.emojis.invalid:
+			if (!isPrivileged) break;
+			message.reactions.removeAll();
+			invalidate(message, member);
+			break;
+		case settings.emojis.delete:
+			if (!canDelete || !message.deletable) break;
+			// can't close tray when there's no message
+			return message.delete();
 	}
 
 	// reset after reaction chosen if possible
