@@ -7,7 +7,7 @@ import {
 	generateContributionData,
 	postContributions,
 } from "@submission/results/handleContributions";
-import { downloadTexture } from "@submission/results/downloadTexture";
+import downloadTexture from "@submission/results/downloadTexture";
 import getPackByChannel from "@submission/discord/getPackByChannel";
 
 import getMessages from "@helpers/getMessages";

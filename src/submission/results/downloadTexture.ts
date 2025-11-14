@@ -16,7 +16,7 @@ const DEBUG = process.env.DEBUG.toLowerCase() === "true";
  * @param baseFolder where to download the texture to
  * @returns found texture info
  */
-export async function downloadTexture(
+export default async function downloadTexture(
 	texture: DownloadableMessage,
 	pack: Pack,
 	baseFolder: string,

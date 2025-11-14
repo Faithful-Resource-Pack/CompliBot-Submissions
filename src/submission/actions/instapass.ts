@@ -9,7 +9,7 @@ import { mapSendableMessage } from "@submission/discord/retrieveSubmission";
 import { sendMessage } from "@submission/discord/sendToChannel";
 
 import { mapDownloadableMessage } from "@submission/results/handleResults";
-import { downloadTexture } from "@submission/results/downloadTexture";
+import downloadTexture from "@submission/results/downloadTexture";
 import {
 	addContributorRole,
 	generateContributionData,
