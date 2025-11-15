@@ -22,7 +22,7 @@ export default async function pushTextures(
 	commitMessage = `Autopush passed textures from ${formattedDate()}`,
 ) {
 	// declare settings inside so it gets refreshed if a version gets added (most other properties are static)
-	const settings = require("@resources/settings.json");
+	const settings: { versions: Record<string, string[]> } = require("@resources/settings.json");
 
 	const packs: PackFile = require("@resources/packs.json");
 	for (const edition of Object.keys(settings.versions)) {
@@ -32,23 +32,32 @@ export default async function pushTextures(
 			continue;
 		}
 		const conn = new GitHubRepository(packGitHub.org, packGitHub.repo);
-		for (const branch of settings.versions[edition] as string) {
-			const path = join(basePath, packGitHub.repo, branch);
 
-			// don't create empty commits
-			if (!existsSync(path)) continue;
-			try {
-				await conn.push(branch, commitMessage, path);
-				// only remove path if pushing succeeded, so the bot tries the next day too
-				rmSync(path, { recursive: true });
-				if (DEBUG) console.log(`Pushed: ${packGitHub.org}/${packGitHub.repo}:${branch}`);
-			} catch {
-				// can also be an auth error or really anything but this is most likely
-				if (DEBUG) console.log(`Branch ${branch} doesn't exist for pack ${packGitHub.repo}!`);
-			}
-		}
+		// sync since github can get cranky if you push too many commits too quickly
+		for (const branch of settings.versions[edition])
+			await pushTexture(basePath, conn, branch, commitMessage);
 	}
 
 	// prevent 5 morbillion empty hash folders (disabled in dev for download testing)
 	if (basePath.includes("instapass") && !DEV) rmSync(basePath, { recursive: true });
+}
+
+async function pushTexture(
+	basePath: string,
+	conn: GitHubRepository,
+	branch: string,
+	commitMessage: string,
+) {
+	const path = join(basePath, conn.repo, branch);
+	// don't create empty commits
+	if (!existsSync(path)) return;
+	try {
+		await conn.push(branch, commitMessage, path);
+		// only remove path if pushing succeeded, so the bot tries the next day too
+		rmSync(path, { recursive: true });
+		if (DEBUG) console.log(`Pushed: ${conn.org}/${conn.repo}:${branch}`);
+	} catch {
+		// can also be an auth error or really anything but this is most likely
+		if (DEBUG) console.log(`Branch ${branch} doesn't exist for pack ${conn.repo}!`);
+	}
 }
