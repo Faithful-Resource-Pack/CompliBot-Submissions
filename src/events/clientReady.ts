@@ -50,9 +50,13 @@ export default {
 		CronJob.from({
 			cronTime: "0 0 * * *",
 			async onTick() {
-				for (const pack of Object.values(packs)) {
-					await sendToResults(client, pack.submission);
-				}
+				await Promise.all(
+					Object.values(packs).map((pack) =>
+						sendToResults(client, pack.submission).catch((err: unknown) => {
+							handleError(client, err, `Failed to send results for ${pack.name}`);
+						}),
+					),
+				);
 			},
 			start: true,
 		});
@@ -64,12 +68,13 @@ export default {
 		CronJob.from({
 			cronTime: "15 0 * * *",
 			async onTick() {
-				for (const pack of Object.values(packs)) {
-					// errors don't stop the rest of the packs from downloading
-					await handleResults(client, pack.submission.channels.results).catch((err) => {
-						handleError(client, err, `Failed to download results for pack ${pack.name}`);
-					});
-				}
+				await Promise.all(
+					Object.values(packs).map((pack) =>
+						handleResults(client, pack.submission.channels.results).catch((err: unknown) => {
+							handleError(client, err, `Failed to download results for pack ${pack.name}`);
+						}),
+					),
+				);
 			},
 			start: true,
 		});
@@ -81,6 +86,7 @@ export default {
 		CronJob.from({
 			cronTime: "30 0 * * *",
 			async onTick() {
+				// sync since github can get cranky if you push too many commits too quickly
 				for (const pack of Object.keys(packs)) await pushTextures("./downloadedTextures", pack);
 				await saveDB(client);
 			},

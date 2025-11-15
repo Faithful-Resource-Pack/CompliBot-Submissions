@@ -88,9 +88,9 @@ export default {
 
 		for (const pack of packs) {
 			for (const [edition, versions] of Object.entries(groupedPaths)) {
-				const packGithub = pack.github[edition as MinecraftEdition];
-				if (!packGithub) continue;
-				const conn = new GitHubRepository(packGithub.org, packGithub.repo);
+				const packGitHub = pack.github[edition as MinecraftEdition];
+				if (!packGitHub) continue;
+				const conn = new GitHubRepository(packGitHub.org, packGitHub.repo);
 				for (const [version, paths] of Object.entries(versions)) {
 					try {
 						await conn.delete(
@@ -99,10 +99,10 @@ export default {
 							paths,
 						);
 						if (DEBUG)
-							console.log(`Deleted: ${packGithub.org}/${packGithub.repo}:${version} (${name})`);
+							console.log(`Deleted: ${packGitHub.org}/${packGitHub.repo}:${version} (${name})`);
 					} catch {
 						// can also be an auth error or really anything but this is most likely
-						if (DEBUG) console.log(`Branch ${version} doesn't exist for pack ${packGithub.repo}!`);
+						if (DEBUG) console.log(`Branch ${version} doesn't exist for pack ${packGitHub.repo}!`);
 					}
 				}
 			}

@@ -18,7 +18,7 @@ export default async function devLogger(
 	description: string,
 	{ color, title, codeBlocks }: LogParams = {},
 ) {
-	const settings = require("@resources/settings.json");
+	const settings: { colors: Record<string, string> } = require("@resources/settings.json");
 
 	const channel = client.channels.cache.get(process.env.LOG_CHANNEL) as TextChannel;
 	if (!channel) return; // avoid infinite loop when crash is outside of client
