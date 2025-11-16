@@ -22,6 +22,12 @@ import axios from "axios";
 
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
+// todo: look into the actual length (you can go a bit higher than this and it still works)
+export const MAX_LENGTH = 6000;
+// 5 - 1 for delete button row
+export const MAX_ROWS = 4;
+export const MAX_CHOICE_PER_ROW = 25;
+
 /**
  * Selection menu for dealing with multiple valid options
  * @author Juknum, Evorp
@@ -33,32 +39,43 @@ export default async function choiceEmbed(
 	choices: SelectMenuComponentOptionData[],
 ) {
 	const emojis = settings.emojis.default_select;
-	const components = [];
-	const choicesLength = choices.length; // we're modifying choices directly so it needs to be saved first
+	const menuLength = Math.min(MAX_CHOICE_PER_ROW, emojis.length);
 
-	const maxRows = 4; // actually 5 but - 1 because we are adding a delete button to it (the 5th one)
-	for (let currentRow = 0; currentRow < maxRows && choices.length; ++currentRow) {
-		const options: SelectMenuComponentOptionData[] = [];
-		for (let i = 0; i < emojis.length; ++i) {
-			if (choices[0] !== undefined) {
-				const choice = choices.shift();
-				choice.emoji = emojis[i % emojis.length];
-				options.push(choice);
-			}
-		}
+	let messageLength = 0;
+	let resultCount = 0;
+
+	const components: ActionRowBuilder<StringSelectMenuBuilder>[] = [];
+	for (let currentRow = 0; currentRow < MAX_ROWS; ++currentRow) {
+		const options = choices
+			// take relevant slice (end not included)
+			.slice(currentRow * menuLength, (1 + currentRow) * menuLength)
+			.reduce<SelectMenuComponentOptionData[]>((acc, cur, i) => {
+				messageLength += cur.label.length + cur.description.length;
+				// stop accepting new
+				if (messageLength > MAX_LENGTH) return acc;
+				acc.push({ ...cur, emoji: emojis[i] });
+				return acc;
+			}, []);
+
+		// hit char limit or all options have been exhausted
+		if (!options.length) break;
+		resultCount += options.length;
+
 		const menu = new StringSelectMenuBuilder()
 			.setCustomId(`choiceEmbed_${currentRow}`)
 			.setPlaceholder(strings.submission.choice_embed.placeholder)
 			.addOptions(options);
 
-		const row = new ActionRowBuilder().addComponents(menu);
-		components.push(row);
+		components.push(new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(menu));
 	}
 
 	const embed = new EmbedBuilder()
-		.setTitle(`${choicesLength} results found`)
+		.setTitle(`${choices.length} results found`)
 		.setDescription(strings.submission.choice_embed.description)
 		.setColor(settings.colors.blue);
+
+	if (messageLength > MAX_LENGTH)
+		embed.setTitle(`Showing 1–${resultCount} of ${choices.length} results`);
 
 	const choiceMessage = await message.reply({ embeds: [embed], components: components });
 	await addDeleteButton(choiceMessage);
