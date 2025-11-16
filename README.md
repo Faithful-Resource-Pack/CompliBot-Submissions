@@ -3,7 +3,7 @@
   alt="CompliBot Submissions Logo" 
   height="256"
   align="right"
->
+/>
 <div align="center">
   <h1>CompliBot Submissions</h1>
   <h3>Fully automated texture pushing and submission system for the Faithful Discord servers.</h3>
