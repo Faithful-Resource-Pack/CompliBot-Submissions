@@ -68,13 +68,13 @@ export default {
 		CronJob.from({
 			cronTime: "15 0 * * *",
 			async onTick() {
-				await Promise.all(
-					Object.values(packs).map((pack) =>
-						handleResults(client, pack.submission.channels.results).catch((err: unknown) => {
-							handleError(client, err, `Failed to download results for pack ${pack.name}`);
-						}),
-					),
-				);
+				// sync since contribution adding can cause race conditions
+				for (const pack of Object.values(packs)) {
+					// errors don't stop the rest of the packs from downloading
+					await handleResults(client, pack.submission.channels.results).catch((err: unknown) => {
+						handleError(client, err, `Failed to download results for pack ${pack.name}`);
+					});
+				}
 			},
 			start: true,
 		});
