@@ -18,6 +18,12 @@ export default {
 		.setDescription(strings.command.description.remove)
 		.addStringOption((option) =>
 			option
+				.setName("texture")
+				.setDescription("Texture name or ID to find (first name will be chosen so be careful).")
+				.setRequired(true),
+		)
+		.addStringOption((option) =>
+			option
 				.setName("pack")
 				.setDescription("Which pack to remove textures from.")
 				.addChoices(
@@ -27,12 +33,6 @@ export default {
 						value: pack.id,
 					})),
 				)
-				.setRequired(true),
-		)
-		.addStringOption((option) =>
-			option
-				.setName("texture")
-				.setDescription("Texture name or ID to find (first name will be chosen so be careful).")
 				.setRequired(true),
 		)
 		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
