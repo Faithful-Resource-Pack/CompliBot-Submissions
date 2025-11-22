@@ -18,23 +18,23 @@ export default {
 		.setDescription(strings.command.description.status)
 		.addStringOption((option) =>
 			option
-				.setName("activity")
-				.setDescription("What activity the bot is doing (e.g. playing, streaming)")
-				.addChoices(
-					...Object.values(ActivityType)
-						.filter((x) => typeof x === "string")
-						.map((i) => ({ name: i, value: i })),
-				)
-				.setRequired(true),
-		)
-		.addStringOption((option) =>
-			option
 				.setName("presence")
 				.setDescription("What presence the bot should have")
 				.addChoices(
 					{ name: "Online", value: "online" },
 					{ name: "Idle", value: "idle" },
 					{ name: "Do not Disturb", value: "dnd" },
+				)
+				.setRequired(true),
+		)
+		.addStringOption((option) =>
+			option
+				.setName("activity")
+				.setDescription("What activity the bot is doing (e.g. playing, streaming)")
+				.addChoices(
+					...Object.values(ActivityType)
+						.filter((x) => typeof x === "string")
+						.map((i) => ({ name: i, value: i })),
 				)
 				.setRequired(true),
 		)
