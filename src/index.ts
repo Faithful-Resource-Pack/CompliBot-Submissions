@@ -18,7 +18,7 @@ import { Client, GatewayIntentBits, Partials } from "discord.js";
 
 export default function startBot() {
 	const client = new Client({
-		// remove this line to die instantly ~JackDotJS 2021
+		// remove this line to die instantly ~sharkaccino, 2021
 		allowedMentions: { parse: ["users", "roles"], repliedUser: false },
 		partials: [
 			Partials.Channel,
