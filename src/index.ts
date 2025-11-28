@@ -1,10 +1,3 @@
-/**
- * COMPLIBOT SUBMISSIONS INDEX FILE:
- * - Developed by and for the Faithful Community.
- * - Please read our license first.
- * - If you find any bugs, please use our GitHub issue tracker
- */
-
 import "dotenv/config";
 
 import { readdirSync } from "fs";
@@ -16,7 +9,7 @@ import { fetchSettings } from "@functions/fetchSettings";
 import handleError from "@functions/handleError";
 import { Client, GatewayIntentBits, Partials } from "discord.js";
 
-export default function startBot() {
+export default function startClient() {
 	const client = new Client({
 		// remove this line to die instantly ~sharkaccino, 2021
 		allowedMentions: { parse: ["users", "roles"], repliedUser: false },
@@ -56,8 +49,8 @@ export default function startBot() {
 		// catch invalid events
 		if (typeof event !== "object") continue;
 
-		if (event.once) client.once<string>(event.name, event.execute);
-		else client.on<string>(event.name, event.execute);
+		if (event.once) client.once(event.name, event.execute);
+		else client.on(event.name, event.execute);
 	}
 
 	/**
@@ -68,12 +61,12 @@ export default function startBot() {
 	);
 	process.on("uncaughtException", (error) => handleError(client, error, "Uncaught Exception"));
 
-	client.login(process.env.CLIENT_TOKEN).catch(console.error);
+	return client.login(process.env.CLIENT_TOKEN).catch(console.error);
 }
 
 // IMPORTANT: you always need to fetch settings BEFORE you start the bot
 fetchSettings()
-	.then(startBot)
+	.then(startClient)
 	.catch((err) => {
 		console.error("An error occurred starting the bot!");
 		console.error(err.response?.data ?? err);
