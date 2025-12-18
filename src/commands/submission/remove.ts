@@ -71,7 +71,7 @@ export default {
 		if (!results.length) return interaction.editReply({ embeds: [noResultEmbed] });
 
 		// take first result
-		const { name, uses, paths } = results[0];
+		const { id, name, uses, paths } = results[0];
 
 		// grouped by edition -> version -> path name
 		const groupedPaths = uses.reduce<Record<string, Record<string, string[]>>>((acc, cur) => {
@@ -113,7 +113,7 @@ export default {
 				embeds: [
 					new EmbedBuilder()
 						.setTitle(
-							`Successfully removed texture ${name} from ${choice === "all" ? "all packs" : packs[0].name}`,
+							`Successfully removed [#${id}] ${name} from ${choice === "all" ? "all packs" : packs[0].name}!`,
 						)
 						.setDescription(
 							"Note that this does not remove contributions or other pack-specific data.",
