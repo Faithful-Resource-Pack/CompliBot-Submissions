@@ -19,13 +19,14 @@ const EMBED_VISIBLE_SECONDS = 30;
 export default async function cancelSubmission(
 	message: Message<true>,
 	error: unknown = "No error given!",
-) {
-	// allow managers and council to talk in submit channels
+	// returning undefined makes Promise.all behave better with types
+): Promise<undefined> {
 	if (
 		hasPermission(message.member, PermissionType.Submission) &&
 		// fix no error messages showing for council+
 		error === strings.submission.image_not_attached
 	)
+		// allow managers and council to talk in submit channels
 		return;
 
 	if (DEBUG) console.log(`Submission cancelled with reason: ${error}`);

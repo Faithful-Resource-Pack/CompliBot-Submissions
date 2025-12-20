@@ -25,7 +25,8 @@ import { loadImage } from "@napi-rs/canvas";
 
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
-export interface EmbedParams {
+export interface EmbedCreationParams {
+	attachment: Attachment;
 	description?: string;
 	authors: Set<string>;
 }
@@ -35,14 +36,12 @@ export interface EmbedParams {
  * @author Juknum, Evorp
  * @param message used for channel and author information
  * @param texture texture information
- * @param attachment raw texture to embed
- * @param params additional info (e.g. description, coauthors)
+ * @param params embed-specific data (e.g. attachment, description, coauthors)
  */
 export default async function makeEmbed(
 	message: Message<true>,
 	texture: Texture,
-	attachment: Attachment,
-	{ description, authors }: EmbedParams = { authors: new Set() },
+	{ attachment, description, authors }: EmbedCreationParams,
 ) {
 	// so the user doesn't think the bot is dead when it's loading a huge comparison
 	message.channel.sendTyping();
@@ -136,7 +135,7 @@ export default async function makeEmbed(
 	if (description) embed.setDescription(description);
 	if (authors.size > 1) embed.data.fields[0].name += "s";
 
-	const msg = await message.channel.send({
+	const embedMessage = await message.channel.send({
 		embeds: [embed],
 		components: imgButtons,
 	});
@@ -144,13 +143,13 @@ export default async function makeEmbed(
 	if (DEBUG) console.log(`Finished submission embed for texture: ${texture.name}`);
 
 	if (doInstapass && canInstapass) {
-		await instapass(msg, member);
-		await msg.delete();
+		await instapass(embedMessage, member);
+		await embedMessage.delete();
 		return;
 	}
 
 	// don't bother adding reactions if the message is instapassed and deleted anyways
-	for (const emoji of submissionReactions) await msg.react(emoji);
+	for (const emoji of submissionReactions) await embedMessage.react(emoji);
 }
 
 /**

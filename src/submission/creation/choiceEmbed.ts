@@ -4,7 +4,7 @@ import strings from "@resources/strings.json";
 import type { Texture } from "@interfaces/database";
 
 import getAuthors from "@submission/creation/getAuthors";
-import makeEmbed, { EmbedParams } from "@submission/creation/makeEmbed";
+import makeEmbed, { EmbedCreationParams } from "@submission/creation/makeEmbed";
 
 import addDeleteButton from "@helpers/addDeleteButton";
 import { hasPermission, PermissionType } from "@helpers/permissions";
@@ -35,6 +35,61 @@ export const MAX_CHOICE_PER_ROW = 25;
  * @param choices pre-mapped choices
  */
 export default async function choiceEmbed(
+	message: Message<true>,
+	choices: SelectMenuComponentOptionData[],
+) {
+	const choiceMessage = await sendChoiceEmbed(message, choices);
+	const filter = (interaction: StringSelectMenuInteraction) =>
+		// format is choiceEmbed_<ROWNUMBER> (needs unique ids)
+		interaction.customId.startsWith("choiceEmbed") &&
+		interaction.message.id === choiceMessage.id &&
+		// admins can interact with choice embeds always
+		(interaction.user.id === message.author.id ||
+			hasPermission(message.member, PermissionType.Administrator));
+
+	const collector = message.channel.createMessageComponentCollector<ComponentType.StringSelect>({
+		filter,
+		time: 60000,
+	});
+
+	collector.once("collect", async (interaction: StringSelectMenuInteraction) => {
+		if (!message.deletable) {
+			// message already deleted so we clean up and break early
+			if (choiceMessage.deletable) choiceMessage.delete();
+			return;
+		}
+
+		const [id, index] = interaction.values[0].split("__");
+		if (DEBUG) console.log(`Texture selected: ${id}`);
+		const attachments = Array.from(message.attachments.values());
+
+		const params: EmbedCreationParams = {
+			attachment: attachments[index],
+			description: message.content,
+			authors: await getAuthors(message),
+		};
+
+		const texture = (await axios.get<Texture>(`${process.env.API_URL}textures/${id}/all`)).data;
+
+		await makeEmbed(message, texture, params);
+		if (choiceMessage.deletable) return choiceMessage.delete();
+	});
+
+	collector.once("end", async () => {
+		// throws error if already deleted
+		message.delete().catch(() => {});
+		choiceMessage.delete().catch(() => {});
+	});
+}
+
+/**
+ * Create/send choice menu and return it
+ * @author Juknum, Evorp
+ * @param message message to reply to
+ * @param choices pre-mapped choices
+ * @returns
+ */
+export async function sendChoiceEmbed(
 	message: Message<true>,
 	choices: SelectMenuComponentOptionData[],
 ) {
@@ -79,45 +134,5 @@ export default async function choiceEmbed(
 
 	const choiceMessage = await message.reply({ embeds: [embed], components: components });
 	await addDeleteButton(choiceMessage);
-
-	const filter = (interaction: StringSelectMenuInteraction) =>
-		// format is choiceEmbed_<ROWNUMBER> (needs unique ids)
-		interaction.customId.startsWith("choiceEmbed") &&
-		interaction.message.id === choiceMessage.id &&
-		// admins can interact with choice embeds always
-		(interaction.user.id === message.author.id ||
-			hasPermission(message.member, PermissionType.Administrator));
-
-	const collector = message.channel.createMessageComponentCollector<ComponentType.StringSelect>({
-		filter,
-		time: 60000,
-	});
-
-	collector.once("collect", async (interaction: StringSelectMenuInteraction) => {
-		if (!message.deletable) {
-			// message already deleted so we clean up and break early
-			if (choiceMessage.deletable) choiceMessage.delete();
-			return;
-		}
-
-		const [id, index] = interaction.values[0].split("__");
-		if (DEBUG) console.log(`Texture selected: ${id}`);
-		const attachments = Array.from(message.attachments.values());
-
-		const params: EmbedParams = {
-			description: message.content,
-			authors: await getAuthors(message),
-		};
-
-		const texture = (await axios.get<Texture>(`${process.env.API_URL}textures/${id}/all`)).data;
-		if (choiceMessage.deletable) await choiceMessage.delete();
-
-		return makeEmbed(message, texture, attachments[index], params);
-	});
-
-	collector.once("end", async () => {
-		// throws error if already deleted
-		message.delete().catch(() => {});
-		choiceMessage.delete().catch(() => {});
-	});
+	return choiceMessage;
 }

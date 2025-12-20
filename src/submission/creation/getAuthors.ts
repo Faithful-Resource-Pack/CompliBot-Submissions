@@ -19,13 +19,13 @@ export default async function getAuthors(message: Message) {
 
 	if (names?.length) {
 		const users = (await axios.get<User[]>(`${process.env.API_URL}users/names`)).data;
-		// much faster to use a set since we don't have to filter duplicates
+		// cleaner to use a set since we don't have to filter duplicates
 		for (const user of users)
 			if (names.includes(user.username?.toLowerCase())) authors.add(user.id);
 	}
 
 	// detect by ping (using regex to ensure users not in the server get included)
-	const mentions = message.content.match(/(?<=<@|<@!)(\d*?)(?=>)/g) ?? [];
+	const mentions = message.content.match(/(?<=<@|<@!)(\d+?)(?=>)/g) ?? [];
 	for (const mention of mentions) authors.add(mention);
 
 	return authors;
