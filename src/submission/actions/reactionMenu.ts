@@ -23,12 +23,16 @@ export default async function reactionMenu(openReaction: MessageReaction, user: 
 		settings.emojis.invalid,
 	];
 
-	const message = await openReaction.message.fetch();
+	// we know it's in a guild because that's how the submission system works (lol)
+	const message = (await openReaction.message.fetch()) as Message<true>;
 
 	// not a submission
 	if (!message.author.bot) return;
 
 	const member = message.guild.members.cache.get(user.id);
+
+	// something has gone wrong, member can't be found
+	if (!member) return;
 
 	// first author in the author field is always the person who submitted
 	const submissionAuthorID = message.embeds[0].fields[0].value.split("\n")[0].replace(/\D+/g, "");
@@ -69,7 +73,7 @@ export default async function reactionMenu(openReaction: MessageReaction, user: 
 	const isPrivileged = hasPermission(member, PermissionType.Submission);
 	// used to check permissions
 	const reactor = Array.from(actionReaction.users.cache.values()).find((user) => !user.bot);
-	const canDelete = reactor.id === submissionAuthorID || isPrivileged;
+	const canDelete = reactor?.id === submissionAuthorID || isPrivileged;
 
 	switch (actionReaction.emoji.id) {
 		// flush votes and reaction menu

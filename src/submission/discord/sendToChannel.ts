@@ -2,12 +2,15 @@ import settings from "@resources/settings.json";
 
 import type { Submission } from "@interfaces/database";
 
-import retrieveSubmission, { type SendableMessage } from "@submission/discord/retrieveSubmission";
+import retrieveSubmission, {
+	DEFAULT_REACTION_COUNT,
+	type SendableMessage,
+} from "@submission/discord/retrieveSubmission";
 import changeStatus from "@submission/discord/changeStatus";
 
 import { submissionButtons } from "@helpers/interactions";
 
-import { BaseMessageOptions, Client, EmbedBuilder, MessageReaction, TextChannel } from "discord.js";
+import { BaseMessageOptions, Client, EmbedBuilder, TextChannel } from "discord.js";
 
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
@@ -103,10 +106,11 @@ export function sendMessage(
  * @param downvotes downvote objects
  * @returns formatted string (or an empty string if not possible)
  */
-export function getPercentage(upvotes: MessageReaction, downvotes: MessageReaction) {
+export function getPercentage(upvotes: number, downvotes: number) {
 	const upvotePercentage =
-		((upvotes?.count - 1) * 100) / (upvotes?.count - 1 + (downvotes?.count - 1));
-	// handle undefined vote counts (probably discord api problem)
-	if (isNaN(upvotePercentage)) return "";
+		((upvotes - DEFAULT_REACTION_COUNT) * 100) /
+		(upvotes - DEFAULT_REACTION_COUNT + (downvotes - DEFAULT_REACTION_COUNT));
+	// handle weird math edge cases
+	if (isNaN(upvotePercentage) || !isFinite(upvotePercentage)) return "";
 	return `(${Number(upvotePercentage.toFixed(2))}% upvoted)`;
 }

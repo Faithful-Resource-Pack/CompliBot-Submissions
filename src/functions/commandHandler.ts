@@ -10,7 +10,7 @@ import { Routes, REST, Collection, Client } from "discord.js";
  * @author RobertR11, Evorp
  * @param client client to load commands to
  */
-export async function loadCommands(client: Client) {
+export async function loadCommands(client: Client<true>) {
 	client.commands = new Collection();
 	const commandPaths = walkSync(join(__dirname, "..", "commands")).filter((f) => f.endsWith(".ts"));
 
@@ -36,7 +36,7 @@ export async function loadCommands(client: Client) {
  * @param client client to delete commands from
  * @param guildID guild to delete or all
  */
-export async function deleteCommands(client: Client, guildID: string | "global") {
+export async function deleteCommands(client: Client<true>, guildID: string | "global") {
 	const rest = new REST({ version: "10" }).setToken(process.env.CLIENT_TOKEN);
 
 	const data: any = await rest.get(

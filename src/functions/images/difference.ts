@@ -41,7 +41,7 @@ export async function difference(
 	firstUrl: string,
 	secondUrl: string,
 	tolerance = 0,
-): Promise<AttachmentBuilder> {
+): Promise<AttachmentBuilder | null> {
 	let images: MappedURL[];
 	try {
 		images = await Promise.all([mapURL(firstUrl), mapURL(secondUrl)]);

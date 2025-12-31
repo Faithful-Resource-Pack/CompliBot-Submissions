@@ -20,7 +20,7 @@ const MAINTENANCE = process.env.MAINTENANCE.toLowerCase() === "true";
 export default {
 	name: "clientReady",
 	once: true,
-	async execute(client: Client) {
+	async execute(client: Client<true>) {
 		console.log(`┌───────────────────────────────────────────────────┐`);
 		console.log(`│                                                   │`);
 		console.log(`│     ─=≡Σ((( つ◕ل͜◕)つ                              │`);

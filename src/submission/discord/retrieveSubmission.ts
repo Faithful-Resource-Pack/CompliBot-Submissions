@@ -2,22 +2,18 @@ import settings from "@resources/settings.json";
 
 import getMessages from "@helpers/getMessages";
 
-import {
-	ActionRow,
-	Client,
-	Embed,
-	Message,
-	MessageActionRowComponent,
-	MessageReaction,
-} from "discord.js";
+import { ActionRow, Client, Embed, Message, MessageActionRowComponent } from "discord.js";
 
 export interface SendableMessage {
-	upvote: MessageReaction;
-	downvote: MessageReaction;
+	upvote: number;
+	downvote: number;
 	embed: Embed;
 	components: ActionRow<MessageActionRowComponent>[];
 	message: Message;
 }
+
+// +1 for bot's own reaction
+export const DEFAULT_REACTION_COUNT = 1;
 
 /**
  * Filter submissions from a given date and split by vote counts
@@ -45,18 +41,12 @@ export default async function retrieveSubmission(client: Client, channelID: stri
 
 	const mappedMessages: SendableMessage[] = messages.map(mapSendableMessage);
 
-	const messagesUpvoted = mappedMessages.filter((message) => {
-		// handle undefined vote counts (probably discord api problem)
-		// fall back to one to account for bot reaction
-		const upvoteCount = message.upvote?.count ?? 1;
-		const downvoteCount = message.downvote?.count ?? 1;
-
-		return (
-			upvoteCount > downvoteCount ||
+	const messagesUpvoted = mappedMessages.filter(
+		({ upvote, downvote }) =>
+			upvote > downvote ||
 			// if nobody voted assume nobody cares
-			(upvoteCount === 1 && downvoteCount === 1)
-		);
-	});
+			(upvote === DEFAULT_REACTION_COUNT && downvote === DEFAULT_REACTION_COUNT),
+	);
 
 	return {
 		messagesUpvoted,
@@ -66,8 +56,10 @@ export default async function retrieveSubmission(client: Client, channelID: stri
 }
 
 export const mapSendableMessage = (message: Message): SendableMessage => ({
-	upvote: message.reactions.cache.get(settings.emojis.upvote),
-	downvote: message.reactions.cache.get(settings.emojis.downvote),
+	// sometimes cache misses cause some really strange bugs
+	// todo: investigate more robust way to deal with it
+	upvote: message.reactions.cache.get(settings.emojis.upvote)?.count ?? DEFAULT_REACTION_COUNT,
+	downvote: message.reactions.cache.get(settings.emojis.downvote)?.count ?? DEFAULT_REACTION_COUNT,
 	embed: message.embeds[0],
 	// djs v14.19 workaround
 	components: message.components as ActionRow<MessageActionRowComponent>[],

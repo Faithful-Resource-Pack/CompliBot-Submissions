@@ -20,7 +20,7 @@ export default async function downloadTexture(
 	texture: DownloadableMessage,
 	pack: Pack,
 	baseFolder: string,
-): Promise<Texture> {
+): Promise<Texture | undefined> {
 	if (!texture.id || isNaN(Number(texture.id))) {
 		if (DEBUG) console.error(`Non-numerical texture ID found: ${texture.id}`);
 		return;

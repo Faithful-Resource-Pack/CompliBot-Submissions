@@ -57,7 +57,7 @@ export default {
 				await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
 				const currentUrl = `${process.env.API_URL}textures/${id}/url/${packName}/latest`;
-				const proposedUrl = message.embeds[0].thumbnail?.url;
+				const proposedUrl = message.embeds[0].thumbnail?.url || "";
 
 				const diff = await difference(currentUrl, proposedUrl);
 				if (!diff || !proposedUrl) {

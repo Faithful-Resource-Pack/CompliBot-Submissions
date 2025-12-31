@@ -60,11 +60,11 @@ export default async function choiceEmbed(
 		}
 
 		const [id, index] = interaction.values[0].split("__");
-		if (DEBUG) console.log(`Texture selected: ${id}`);
+		if (DEBUG) console.log(`Texture selected: [#${id}]`);
 		const attachments = Array.from(message.attachments.values());
 
 		const params: EmbedCreationParams = {
-			attachment: attachments[index],
+			attachment: attachments[Number(index)],
 			description: message.content,
 			authors: await getAuthors(message),
 		};
@@ -105,7 +105,7 @@ export async function sendChoiceEmbed(
 			// take relevant slice (end not included)
 			.slice(currentRow * menuLength, (1 + currentRow) * menuLength)
 			.reduce<SelectMenuComponentOptionData[]>((acc, cur, i) => {
-				messageLength += cur.label.length + cur.description.length;
+				messageLength += cur.label.length + (cur.description?.length ?? 0);
 				// stop accepting new
 				if (messageLength > MAX_LENGTH) return acc;
 				acc.push({ ...cur, emoji: emojis[i] });

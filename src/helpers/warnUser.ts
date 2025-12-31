@@ -38,5 +38,5 @@ export default async function warnUser(
 			flags: MessageFlags.Ephemeral,
 			withResponse: true,
 		})
-		.then(({ resource }) => resource.message);
+		.then(({ resource }) => resource?.message);
 }

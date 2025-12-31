@@ -11,8 +11,8 @@ import { EmbedBuilder, ChatInputCommandInteraction } from "discord.js";
 export default {
 	name: "slashCommandUsed",
 	async execute(interaction: ChatInputCommandInteraction) {
-		if (!interaction.client.commands.has(interaction.commandName)) return;
 		const command = interaction.client.commands.get(interaction.commandName);
+		if (!command) return;
 
 		// ! await required for try catch support
 		try {

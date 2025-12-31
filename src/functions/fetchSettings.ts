@@ -13,7 +13,7 @@ const DEV = process.env.DEV.toLowerCase() === "true";
  * @param format whether to format the setting file being downloaded
  */
 export async function fetchFile(url: string, path: string, format = false) {
-	const { data: settings } = await axios.get(url);
+	const { data: settings } = await axios.get<unknown>(url);
 	const OUT_PATH = join(process.cwd(), path);
 	return writeFile(OUT_PATH, JSON.stringify(settings, null, format ? 4 : 0), {
 		flag: "w",

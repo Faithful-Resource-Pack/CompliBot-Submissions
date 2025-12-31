@@ -36,7 +36,11 @@ export default class GitHubRepository {
 	 * @param localPath Path to push from
 	 * @returns Sent commit SHA
 	 */
-	public async push(branch: string, commitMessage: string, localPath: string): Promise<string> {
+	public async push(
+		branch: string,
+		commitMessage: string,
+		localPath: string,
+	): Promise<string | undefined> {
 		const currentCommit = await this.getCurrentCommit(branch);
 		const filePaths = walkSync(localPath);
 		if (!filePaths.length) return;

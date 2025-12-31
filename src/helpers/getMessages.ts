@@ -32,6 +32,6 @@ export default async function getMessages(
 		fetchedMessages.push(...out);
 
 		// start fetching again from the last message if there were matches
-		options.before = messages.last().id;
+		options.before = messages.last()?.id;
 	}
 }

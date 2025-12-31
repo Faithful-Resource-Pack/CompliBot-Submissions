@@ -35,7 +35,7 @@ export async function handleResults(
 	addContributions = true,
 ) {
 	const packs: PackFile = require("@resources/packs.json");
-	const pack = packs[getPackByChannel(channelResultID, "results")];
+	const pack = packs[getPackByChannel(channelResultID)];
 
 	// get messages from the same day
 	const delayedDate = new Date();
@@ -99,9 +99,11 @@ export async function handleResults(
  * @returns downloadable message
  */
 export const mapDownloadableMessage = (message: Message): DownloadableMessage => ({
-	url: message.embeds[0].thumbnail.url,
+	url: message.embeds[0].thumbnail?.url || "",
 	// only get the numbers (discord id)
-	authors: message.embeds[0].fields[0].value.split("\n").map((author) => author.match(/\d+/g)?.[0]),
+	authors: message.embeds[0].fields[0].value
+		.split("\n")
+		.map((author) => author.match(/\d+/g)?.[0] || ""),
 	date: message.createdTimestamp,
-	id: message.embeds[0].title.match(/(?<=\[#)(.*?)(?=\])/)?.[0],
+	id: message.embeds[0].title?.match(/(?<=\[#)(.*?)(?=\])/)?.[0] || "",
 });

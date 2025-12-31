@@ -27,7 +27,7 @@ const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
 export interface EmbedCreationParams {
 	attachment: Attachment;
-	description?: string;
+	description: string;
 	authors: Set<string>;
 }
 
@@ -45,11 +45,11 @@ export default async function makeEmbed(
 ) {
 	// so the user doesn't think the bot is dead when it's loading a huge comparison
 	message.channel.sendTyping();
-	const packName = getPackByChannel(message.channel.id, "submit");
+	const packName = getPackByChannel(message.channel.id);
 	let imgButtons: ActionRowBuilder<ButtonBuilder>[];
 
 	// one star only (prevents italicized contributions getting instapassed)
-	const doInstapass = description.startsWith("*") && description.match(/\*/g).length === 1;
+	const doInstapass = description.startsWith("*") && description.match(/\*/g)?.length === 1;
 	const member = message.guild.members.cache.get(Array.from(authors)[0]);
 	const canInstapass = hasPermission(member, PermissionType.Submission);
 

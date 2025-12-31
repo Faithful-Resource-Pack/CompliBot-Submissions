@@ -1,7 +1,7 @@
 import { Contribution, Pack } from "@interfaces/database";
 import { DownloadableMessage } from "@submission/results/handleResults";
 
-import { Client } from "discord.js";
+import { Client, GuildMember } from "discord.js";
 import axios from "axios";
 
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
@@ -25,7 +25,7 @@ export function addContributorRole(client: Client, pack: Pack, guildID: string, 
 	return Promise.all(
 		authors
 			.map((author) => guild.members.cache.get(author))
-			.filter((user) => user && !user.roles.cache.has(role))
+			.filter((user): user is GuildMember => user !== undefined && !user.roles.cache.has(role))
 			.map((user) => user.roles.add(role).catch(() => {})),
 	);
 }
