@@ -14,7 +14,10 @@ export enum PermissionType {
  * @param type what type of role to check for
  * @returns whether the member has the permissions
  */
-export function hasPermission(member?: GuildMember | null, type = PermissionType.Submission): boolean {
+export function hasPermission(
+	member?: GuildMember | null,
+	type = PermissionType.Submission,
+): boolean {
 	// convenience feature since message.member is typed as optional for some reason
 	if (!member) return false;
 	const hasAdmin = member.permissions.has(PermissionFlagsBits.Administrator);

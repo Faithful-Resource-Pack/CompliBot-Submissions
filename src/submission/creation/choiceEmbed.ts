@@ -3,11 +3,12 @@ import strings from "@resources/strings.json";
 
 import type { Texture } from "@interfaces/database";
 
-import getAuthors from "@submission/creation/getAuthors";
 import makeEmbed, { EmbedCreationParams } from "@submission/creation/makeEmbed";
 
 import addDeleteButton from "@helpers/addDeleteButton";
 import { hasPermission, PermissionType } from "@helpers/permissions";
+import devLogger from "@helpers/devLogger";
+import versionRange from "@helpers/versionRange";
 
 import {
 	EmbedBuilder,
@@ -18,7 +19,6 @@ import {
 	StringSelectMenuInteraction,
 	ComponentType,
 } from "discord.js";
-import axios from "axios";
 
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
@@ -29,16 +29,19 @@ export const MAX_ROWS = 4;
 export const MAX_CHOICE_PER_ROW = 25;
 
 /**
- * Selection menu for dealing with multiple valid options
+ * Create a choice menu for multiple textures and listen for results
  * @author Juknum, Evorp
  * @param message message to reply to
- * @param choices pre-mapped choices
+ * @param results texture results to choose between
+ * @param params additional options for the submission embed
  */
 export default async function choiceEmbed(
 	message: Message<true>,
-	choices: SelectMenuComponentOptionData[],
+	results: Texture[],
+	params: EmbedCreationParams,
 ) {
-	const choiceMessage = await sendChoiceEmbed(message, choices);
+	const choiceMessage = await sendChoiceEmbed(message, results);
+
 	const filter = (interaction: StringSelectMenuInteraction) =>
 		// format is choiceEmbed_<ROWNUMBER> (needs unique ids)
 		interaction.customId.startsWith("choiceEmbed") &&
@@ -59,20 +62,16 @@ export default async function choiceEmbed(
 			return;
 		}
 
-		const [id, index] = interaction.values[0].split("__");
+		const id = interaction.values[0];
 		if (DEBUG) console.log(`Texture selected: [#${id}]`);
-		const attachments = Array.from(message.attachments.values());
 
-		const params: EmbedCreationParams = {
-			attachment: attachments[Number(index)],
-			description: message.content,
-			authors: await getAuthors(message),
-		};
+		const texture = results.find((r) => r.id === id);
+		if (!texture) return devLogger(message.client, `Failed to find ID [#${id}] in choice embed`);
 
-		const texture = (await axios.get<Texture>(`${process.env.API_URL}textures/${id}/all`)).data;
-
-		await makeEmbed(message, texture, params);
-		if (choiceMessage.deletable) return choiceMessage.delete();
+		return Promise.all([
+			makeEmbed(message, texture, params),
+			choiceMessage.deletable ? choiceMessage.delete() : Promise.resolve(),
+		]);
 	});
 
 	collector.once("end", async () => {
@@ -86,13 +85,16 @@ export default async function choiceEmbed(
  * Create/send choice menu and return it
  * @author Juknum, Evorp
  * @param message message to reply to
- * @param choices pre-mapped choices
- * @returns
+ * @param results texture results to choose between
  */
-export async function sendChoiceEmbed(
-	message: Message<true>,
-	choices: SelectMenuComponentOptionData[],
-) {
+export async function sendChoiceEmbed(message: Message<true>, results: Texture[]) {
+	const choices = results.map<SelectMenuComponentOptionData>(({ id, name, paths }) => ({
+		// usually the first path is the most important
+		label: `[#${id}] (${versionRange(paths[0].versions)}) ${name}`,
+		description: paths[0].name,
+		value: id,
+	}));
+
 	const emojis = settings.emojis.default_select;
 	const menuLength = Math.min(MAX_CHOICE_PER_ROW, emojis.length);
 

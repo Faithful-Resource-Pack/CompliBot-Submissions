@@ -1,13 +1,14 @@
 import strings from "@resources/strings.json";
 
-import getSubmissionData, { SubmissionCreationData } from "@submission/creation/getSubmissionData";
+import { Texture } from "@interfaces/database";
+
+import getTextureResults from "@submission/creation/getTextureResults";
 import cancelSubmission from "@submission/creation/cancelSubmission";
-import makeEmbed from "@submission/creation/makeEmbed";
+import makeEmbed, { EmbedCreationParams } from "@submission/creation/makeEmbed";
+import getAuthors from "@submission/creation/getAuthors";
 import choiceEmbed from "@submission/creation/choiceEmbed";
 
-import versionRange from "@helpers/versionRange";
-
-import { Message, SelectMenuComponentOptionData } from "discord.js";
+import { Message } from "discord.js";
 
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
@@ -20,43 +21,54 @@ export default async function submitTexture(message: Message<true>) {
 	if (!message.attachments.size)
 		return cancelSubmission(message, strings.submission.image_not_attached);
 
-	// process order doesn't matter as long as the index is known
-	const rawSubmissionData = await Promise.all(
-		Array.from(message.attachments.values(), (attachment, i) =>
-			getSubmissionData(message, attachment, i).catch((err: string) =>
-				cancelSubmission(message, err),
+	const textureResults = (
+		await Promise.all(
+			Array.from(message.attachments.values(), (attachment) =>
+				getTextureResults(message, attachment).catch((err: string) =>
+					cancelSubmission(message, err),
+				),
 			),
+		)
+	).filter((result) => result !== undefined);
+
+	// every attachment was invalid (lol)
+	if (!textureResults.length) return;
+
+	// only need to get once for all submissions (same message)
+	const authors = await getAuthors(message);
+	const description = message.content.replace(/\[#(.*?)\]/g, "");
+
+	await Promise.all(
+		textureResults.map(({ results, attachment }) =>
+			submitAttachment(message, results, {
+				attachment,
+				description,
+				authors,
+			}),
 		),
 	);
 
-	// filter images with errors
-	const submissionData = rawSubmissionData.filter((res) => res !== undefined);
-	await Promise.all(submissionData.map((data) => submitAttachment(message, data)));
-
 	// can only delete message if there are no choice menus anywhere
-	if (message.deletable && submissionData.every((data) => data.results.length === 1))
+	if (message.deletable && textureResults.every((data) => data.results.length === 1))
 		await message.delete();
 }
 
 /**
- * Create a submission embed from searched submission data
+ * Create a submission embed from an attachment and texture data
  * @author Juknum, Evorp
  * @param message message to embed
- * @param params which attachment/texture to make the embed for
+ * @param results found texture results for the attachment
+ * @param params additional options for the submission embed
  */
 export async function submitAttachment(
 	message: Message<true>,
-	{ results, index, name, ...params }: SubmissionCreationData,
+	results: Texture[],
+	params: EmbedCreationParams,
 ) {
 	if (results.length === 1) return makeEmbed(message, results[0], params);
-
-	if (DEBUG) console.log(`Generating choice embed for texture search: ${name}`);
-	const mappedResults = results.map<SelectMenuComponentOptionData>(({ id, name, paths }) => ({
-		// usually the first path is the most important
-		label: `[#${id}] (${versionRange(paths[0].versions)}) ${name}`,
-		description: paths[0].name,
-		value: `${id}__${index}`,
-	}));
-
-	return choiceEmbed(message, mappedResults);
+	if (DEBUG) {
+		const candidates = results.map((r, i) => `${i + 1}: [#${r.id}] ${r.name}`).join("\n");
+		console.log(`Generating choice embed for potential results:\n${candidates}`);
+	}
+	return choiceEmbed(message, results, params);
 }
