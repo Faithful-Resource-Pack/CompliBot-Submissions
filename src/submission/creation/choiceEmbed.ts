@@ -67,14 +67,15 @@ export default async function choiceEmbed(
 			if (!message.deletable) {
 				// message already deleted so we clean up and break early
 				if (choiceMessage.deletable) choiceMessage.delete();
-				return;
+				return resolve(null);
 			}
 
 			const id = interaction.values[0];
 			if (DEBUG) console.log(`Texture selected: [#${id}]`);
 
 			const texture = results.find((r) => r.id === id);
-			if (!texture) return devLogger(message.client, `Failed to find ID [#${id}] in choice embed`);
+			if (!texture)
+				return resolve(devLogger(message.client, `Failed to find ID [#${id}] in choice embed`));
 
 			resolve(
 				Promise.all([
