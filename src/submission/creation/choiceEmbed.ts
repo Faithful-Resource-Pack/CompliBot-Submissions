@@ -55,29 +55,34 @@ export default async function choiceEmbed(
 		time: 60000,
 	});
 
-	collector.once("collect", async (interaction: StringSelectMenuInteraction) => {
-		if (!message.deletable) {
-			// message already deleted so we clean up and break early
-			if (choiceMessage.deletable) choiceMessage.delete();
-			return;
-		}
-
-		const id = interaction.values[0];
-		if (DEBUG) console.log(`Texture selected: [#${id}]`);
-
-		const texture = results.find((r) => r.id === id);
-		if (!texture) return devLogger(message.client, `Failed to find ID [#${id}] in choice embed`);
-
-		return Promise.all([
-			makeEmbed(message, texture, params),
-			choiceMessage.deletable ? choiceMessage.delete() : Promise.resolve(),
-		]);
-	});
-
 	collector.once("end", async () => {
 		// throws error if already deleted
 		message.delete().catch(() => {});
 		choiceMessage.delete().catch(() => {});
+	});
+
+	// must promisify result for correct resolve behavior
+	return new Promise((resolve) => {
+		collector.once("collect", async (interaction: StringSelectMenuInteraction) => {
+			if (!message.deletable) {
+				// message already deleted so we clean up and break early
+				if (choiceMessage.deletable) choiceMessage.delete();
+				return;
+			}
+
+			const id = interaction.values[0];
+			if (DEBUG) console.log(`Texture selected: [#${id}]`);
+
+			const texture = results.find((r) => r.id === id);
+			if (!texture) return devLogger(message.client, `Failed to find ID [#${id}] in choice embed`);
+
+			resolve(
+				Promise.all([
+					makeEmbed(message, texture, params),
+					choiceMessage.deletable ? choiceMessage.delete() : Promise.resolve(),
+				]),
+			);
+		});
 	});
 }
 

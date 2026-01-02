@@ -48,9 +48,13 @@ export default async function submitTexture(message: Message<true>) {
 		),
 	);
 
-	// can only delete message if there are no choice menus anywhere
-	if (message.deletable && textureResults.every((data) => data.results.length === 1))
-		await message.delete();
+	if (DEBUG)
+		console.log(
+			`Created all submission embeds: ${textureResults.length} successful of ${message.attachments.size} total`,
+		);
+
+	// only delete message after every embed has been resolved
+	if (message.deletable) await message.delete();
 }
 
 /**
