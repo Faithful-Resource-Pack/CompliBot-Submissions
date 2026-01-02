@@ -8,6 +8,8 @@ import makeEmbed, { EmbedCreationParams } from "@submission/creation/makeEmbed";
 import getAuthors from "@submission/creation/getAuthors";
 import choiceEmbed from "@submission/creation/choiceEmbed";
 
+import { hasPermission, PermissionType } from "@helpers/permissions";
+
 import { Message } from "discord.js";
 
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
@@ -38,12 +40,21 @@ export default async function submitTexture(message: Message<true>) {
 	const authors = await getAuthors(message);
 	const description = message.content.replace(/\[#(.*?)\]/g, "");
 
+	const member = message.guild.members.cache.get(message.author.id);
+
+	// one star only (prevents italicized contributions getting instapassed)
+	const doInstapass =
+		description.startsWith("*") &&
+		description.match(/\*/g)?.length === 1 &&
+		hasPermission(member, PermissionType.Submission);
+
 	await Promise.all(
 		textureResults.map(({ results, attachment }) =>
 			submitAttachment(message, results, {
 				attachment,
 				description,
 				authors,
+				doInstapass,
 			}),
 		),
 	);

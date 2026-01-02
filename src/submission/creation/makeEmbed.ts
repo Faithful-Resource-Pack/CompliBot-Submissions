@@ -8,7 +8,6 @@ import instapass from "@submission/actions/instapass";
 import getPackByChannel from "@submission/discord/getPackByChannel";
 
 import { submissionButtons, diffableButtons, submissionReactions } from "@helpers/interactions";
-import { hasPermission, PermissionType } from "@helpers/permissions";
 import getImages from "@helpers/getImages";
 import versionRange from "@helpers/versionRange";
 
@@ -20,6 +19,7 @@ import {
 	ActionRowBuilder,
 	ButtonBuilder,
 	Attachment,
+	MessageCreateOptions,
 } from "discord.js";
 import { loadImage } from "@napi-rs/canvas";
 
@@ -29,32 +29,54 @@ export interface EmbedCreationParams {
 	attachment: Attachment;
 	description: string;
 	authors: Set<string>;
+	doInstapass: boolean; // kinda stupid disambiguation with the function instapass()
 }
 
 /**
- * Make a submission embed for a given texture and image
- * @author Juknum, Evorp
- * @param message used for channel and author information
+ * Make and post a submission embed, and instapass it if needed
+ * @author Evorp
+ * @param message message to
  * @param texture texture information
  * @param params embed-specific data (e.g. attachment, description, coauthors)
  */
 export default async function makeEmbed(
 	message: Message<true>,
 	texture: Texture,
-	{ attachment, description, authors }: EmbedCreationParams,
+	params: EmbedCreationParams,
 ) {
 	// so the user doesn't think the bot is dead when it's loading a huge comparison
 	message.channel.sendTyping();
-	const packName = getPackByChannel(message.channel.id);
-	let imgButtons: ActionRowBuilder<ButtonBuilder>[];
 
-	// one star only (prevents italicized contributions getting instapassed)
-	const doInstapass = description.startsWith("*") && description.match(/\*/g)?.length === 1;
-	const member = message.guild.members.cache.get(Array.from(authors)[0]);
-	const canInstapass = hasPermission(member, PermissionType.Submission);
+	const options = await generateEmbedData(message, texture, params);
+	const embedMessage = await message.channel.send(options);
+	if (DEBUG) console.log(`Sent submission embed for texture: ${texture.name}`);
+	if (!params.doInstapass) return addSubmissionReactions(embedMessage);
+
+	// skip adding reactions since the message is immediately deleted
+	await instapass(embedMessage, message.guild.members.cache.get(message.author.id));
+
+	// todo: remove dependency on actual message to instapass a texture
+	if (embedMessage.deletable) return embedMessage.delete();
+}
+
+/**
+ * Generate a submission embed for a given texture and image
+ * @author Juknum, Evorp
+ * @param message message to reference
+ * @param texture texture information
+ * @param params embed-specific data (e.g. attachment, description, coauthors)
+ * @returns embed and components to send
+ */
+export async function generateEmbedData(
+	message: Message<true>,
+	texture: Texture,
+	{ attachment, description, authors, doInstapass }: EmbedCreationParams,
+): Promise<MessageCreateOptions> {
+	const packName = getPackByChannel(message.channel.id);
+	let imgButtons: ActionRowBuilder<ButtonBuilder>;
 
 	// load previous contributions if applicable
-	if (description.startsWith("+") || (doInstapass && canInstapass)) {
+	if (description.startsWith("+") || doInstapass) {
 		const lastContribution = texture.contributions
 			.filter((contribution) => contribution.pack === packName)
 			.sort((a, b) => (a.date > b.date ? -1 : 1))?.[0];
@@ -115,7 +137,7 @@ export default async function makeEmbed(
 				value: `\`\`\`json\n${JSON.stringify(mcmeta.animation)}\`\`\``,
 			});
 
-		imgButtons = hasReference ? [diffableButtons] : [submissionButtons];
+		imgButtons = hasReference ? diffableButtons : submissionButtons;
 	} else {
 		if (DEBUG)
 			console.log(
@@ -129,27 +151,27 @@ export default async function makeEmbed(
 			.setThumbnail(imageUrl)
 			.setFooter({ text: strings.submission.cant_compare });
 
-		imgButtons = [submissionButtons];
+		imgButtons = submissionButtons;
 	}
 
 	if (description) embed.setDescription(description);
 	if (authors.size > 1) embed.data.fields[0].name += "s";
 
-	const embedMessage = await message.channel.send({
+	if (DEBUG) console.log(`Finished formatting submission embed for texture: ${texture.name}`);
+	return {
 		embeds: [embed],
-		components: imgButtons,
-	});
+		components: [doInstapass ? submissionButtons : imgButtons],
+	};
+}
 
-	if (DEBUG) console.log(`Finished submission embed for texture: ${texture.name}`);
-
-	if (doInstapass && canInstapass) {
-		await instapass(embedMessage, member);
-		await embedMessage.delete();
-		return;
-	}
-
-	// don't bother adding reactions if the message is instapassed and deleted anyways
-	for (const emoji of submissionReactions) await embedMessage.react(emoji);
+/**
+ * Add voting reactions in the correct order to a finished submission embed
+ * @author Evorp
+ * @param message message to add reactions to
+ */
+export async function addSubmissionReactions(message: Message<true>) {
+	// do synchronously to ensure correct order (run concurrently with other embeds anyways)
+	for (const emoji of submissionReactions) await message.react(emoji);
 }
 
 /**
