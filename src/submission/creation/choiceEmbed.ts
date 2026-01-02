@@ -96,10 +96,15 @@ export default async function choiceEmbed(
 export async function sendChoiceEmbed(message: Message<true>, results: Texture[]) {
 	const choices = results.map<SelectMenuComponentOptionData>(({ id, name, paths }) => ({
 		// usually the first path is the most important
-		label: `[#${id}] (${versionRange(paths[0].versions)}) ${name}`,
+		label: `[#${id}] ${name} (${versionRange(paths[0].versions)})`,
 		description: paths[0].name,
 		value: id,
 	}));
+
+	if (DEBUG) {
+		const candidates = choices.map((c, i) => `${i}: ${c.label}`).join("\n");
+		console.log(`Generating choice embed for potential results:\n${candidates}`);
+	}
 
 	const emojis = settings.emojis.default_select;
 	const menuLength = Math.min(MAX_CHOICE_PER_ROW, emojis.length);

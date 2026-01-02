@@ -81,9 +81,5 @@ export async function submitAttachment(
 	params: EmbedCreationParams,
 ) {
 	if (results.length === 1) return makeEmbed(message, results[0], params);
-	if (DEBUG) {
-		const candidates = results.map((r, i) => `${i + 1}: [#${r.id}] ${r.name}`).join("\n");
-		console.log(`Generating choice embed for potential results:\n${candidates}`);
-	}
 	return choiceEmbed(message, results, params);
 }
