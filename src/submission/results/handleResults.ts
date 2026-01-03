@@ -1,6 +1,6 @@
 import settings from "@resources/settings.json";
 
-import type { Contribution, PackFile } from "@interfaces/database";
+import type { Contribution } from "@interfaces/database";
 
 import {
 	addContributorRole,

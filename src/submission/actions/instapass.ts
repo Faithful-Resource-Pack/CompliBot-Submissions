@@ -2,7 +2,7 @@ import settings from "@resources/settings.json";
 
 import { randomBytes } from "crypto";
 
-import type { Pack, PackFile } from "@interfaces/database";
+import type { Pack } from "@interfaces/database";
 
 import getPackByChannel from "@submission/discord/getPackByChannel";
 import { mapSendableMessage } from "@submission/discord/retrieveSubmission";
