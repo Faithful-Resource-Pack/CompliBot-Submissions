@@ -26,21 +26,24 @@ export default {
 		// curly brackets used to fix scoping issues
 		switch (interaction.customId) {
 			case "magnifyButton": {
+				if (!image) break;
 				return interaction.reply({
 					files: [await magnifyToAttachment(image)],
 					flags: MessageFlags.Ephemeral,
 				});
 			}
 			case "tileButton": {
+				if (!image) break;
 				// tile + magnify
 				const tileBuffer = await tile(interaction, image);
-				if (!tileBuffer) return;
+				if (!tileBuffer) break;
 				return interaction.reply({
 					files: [await magnifyToAttachment(tileBuffer)],
 					flags: MessageFlags.Ephemeral,
 				});
 			}
 			case "paletteButton": {
+				if (!image) break;
 				// since there's multiple components in palette it's easier to reply there
 				return palette(interaction, image);
 			}
@@ -82,12 +85,14 @@ export default {
 				});
 			}
 			case "deleteButton": {
-				let original = interaction.message.interactionMetadata?.user;
+				let originalAuthor = interaction.message.interactionMetadata?.user;
 
 				// no interaction found, try replies instead
-				if (message?.reference && !original) {
+				if (message?.reference && !originalAuthor) {
 					try {
-						original = (await message.channel.messages.fetch(message.reference.messageId))?.author;
+						const originalID = message.reference.messageId;
+						if (originalID)
+							originalAuthor = (await message.channel.messages.fetch(originalID))?.author;
 					} catch {
 						// message deleted
 					}
@@ -96,13 +101,13 @@ export default {
 				// if there's no way to determine the author we can assume anyone can delete it
 				if (
 					message.deletable &&
-					(!original ||
+					(!originalAuthor ||
 						hasPermission(interaction.member as GuildMember, PermissionType.Moderator) ||
-						original.id === interaction.user.id)
+						originalAuthor.id === interaction.user.id)
 				)
 					return message.delete();
 
-				const user = original?.id ? `<@${original.id}>` : "another user";
+				const user = originalAuthor?.id ? `<@${originalAuthor.id}>` : "another user";
 
 				return interaction.reply({
 					content: `This interaction is reserved for ${user}!`,
