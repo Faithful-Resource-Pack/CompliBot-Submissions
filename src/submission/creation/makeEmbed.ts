@@ -4,10 +4,9 @@ import strings from "@resources/strings.json";
 import type { MinecraftEdition, Texture } from "@interfaces/database";
 
 import generateComparison from "@submission/creation/generateComparison";
-import instapass from "@submission/actions/instapass";
 import getPackByChannel from "@submission/discord/getPackByChannel";
 
-import { submissionButtons, diffableButtons, submissionReactions } from "@helpers/interactions";
+import { submissionButtons, diffableButtons } from "@helpers/interactions";
 import getImages from "@helpers/getImages";
 import versionRange from "@helpers/versionRange";
 
@@ -33,33 +32,6 @@ export interface EmbedCreationParams {
 }
 
 /**
- * Make and post a submission embed, and instapass it if needed
- * @author Evorp
- * @param message message to
- * @param texture texture information
- * @param params embed-specific data (e.g. attachment, description, coauthors)
- */
-export default async function makeEmbed(
-	message: Message<true>,
-	texture: Texture,
-	params: EmbedCreationParams,
-) {
-	// so the user doesn't think the bot is dead when it's loading a huge comparison
-	message.channel.sendTyping();
-
-	const options = await generateEmbedData(message, texture, params);
-	const embedMessage = await message.channel.send(options);
-	if (DEBUG) console.log(`Sent submission embed for texture: ${texture.name}`);
-	if (!params.doInstapass) return addSubmissionReactions(embedMessage);
-
-	// skip adding reactions since the message is immediately deleted
-	await instapass(embedMessage, message.guild.members.cache.get(message.author.id));
-
-	// todo: remove dependency on actual message to instapass a texture
-	if (embedMessage.deletable) return embedMessage.delete();
-}
-
-/**
  * Generate a submission embed for a given texture and image
  * @author Juknum, Evorp
  * @param message message to reference
@@ -67,7 +39,7 @@ export default async function makeEmbed(
  * @param params embed-specific data (e.g. attachment, description, coauthors)
  * @returns embed and components to send
  */
-export async function generateEmbedData(
+export default async function makeEmbed(
 	message: Message<true>,
 	texture: Texture,
 	{ attachment, description, authors, doInstapass }: EmbedCreationParams,
@@ -162,16 +134,6 @@ export async function generateEmbedData(
 		embeds: [embed],
 		components: [doInstapass ? submissionButtons : imgButtons],
 	};
-}
-
-/**
- * Add voting reactions in the correct order to a finished submission embed
- * @author Evorp
- * @param message message to add reactions to
- */
-export async function addSubmissionReactions(message: Message<true>) {
-	// do synchronously to ensure correct order (run concurrently with other embeds anyways)
-	for (const emoji of submissionReactions) await message.react(emoji);
 }
 
 /**

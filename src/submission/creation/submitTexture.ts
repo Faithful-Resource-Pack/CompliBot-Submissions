@@ -1,16 +1,22 @@
+import settings from "@resources/settings.json";
 import strings from "@resources/strings.json";
 
 import { Texture } from "@interfaces/database";
 
 import getTextureResults from "@submission/creation/getTextureResults";
 import cancelSubmission from "@submission/creation/cancelSubmission";
-import makeEmbed, { EmbedCreationParams } from "@submission/creation/makeEmbed";
 import getAuthors from "@submission/creation/getAuthors";
 import choiceEmbed from "@submission/creation/choiceEmbed";
+import makeEmbed, { EmbedCreationParams } from "@submission/creation/makeEmbed";
 
-import { hasPermission, PermissionType } from "@helpers/permissions";
+import { editEmbed } from "@submission/discord/changeStatus";
+import getPackByChannel from "@submission/discord/getPackByChannel";
 
-import { Message } from "discord.js";
+import { instapassEmbeds, isInstapassEmbed } from "@submission/actions/instapass";
+
+import { submissionButtons, submissionReactions } from "@helpers/interactions";
+
+import { Message, MessageCreateOptions, TextChannel } from "discord.js";
 
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
@@ -33,39 +39,59 @@ export default async function submitTexture(message: Message<true>) {
 		)
 	).filter((result) => result !== undefined);
 
+	if (DEBUG)
+		console.log(
+			`Loaded all submission results: ${textureResults.length} found of ${message.attachments.size} total`,
+		);
+
 	// every attachment was invalid (lol)
 	if (!textureResults.length) return;
 
 	// only need to get once for all submissions (same message)
 	const authors = await getAuthors(message);
 	const description = message.content.replace(/\[#(.*?)\]/g, "");
+	const doInstapass = isInstapassEmbed(message);
 
-	const member = message.guild.members.cache.get(message.author.id);
+	const embedsToInstapass = (
+		await Promise.all(
+			textureResults.map(({ results, attachment }) =>
+				submitAttachment(message, results, {
+					attachment,
+					description,
+					authors,
+					doInstapass,
+				}),
+			),
+		)
+	).filter((e) => e !== undefined);
 
-	// one star only (prevents italicized contributions getting instapassed)
-	const doInstapass =
-		description.startsWith("*") &&
-		description.match(/\*/g)?.length === 1 &&
-		hasPermission(member, PermissionType.Submission);
+	if (DEBUG) console.log("All submissions resolved, deleting message...");
 
-	await Promise.all(
-		textureResults.map(({ results, attachment }) =>
-			submitAttachment(message, results, {
-				attachment,
-				description,
-				authors,
-				doInstapass,
-			}),
-		),
+	// only delete message after every embed has been resolved (attachment urls can expire)
+	if (message.deletable) message.delete();
+
+	if (!doInstapass || !embedsToInstapass.length) return;
+
+	const pack = getPackByChannel(message.channel.id);
+	const resultChannel = message.client.channels.cache.get(
+		pack.submission.channels.results,
+	) as TextChannel;
+
+	const status = `Instapassed by <@${message.author.id}>`;
+	const resultMessagesToInstapass = await Promise.all(
+		embedsToInstapass.map((embed) => {
+			const edited = editEmbed(embed, {
+				color: settings.colors.yellow,
+				status: `<:instapass:${settings.emojis.instapass}> ${status}`,
+			});
+			return resultChannel.send({
+				embeds: [edited],
+				components: [submissionButtons],
+			});
+		}),
 	);
 
-	if (DEBUG)
-		console.log(
-			`Created all submission embeds: ${textureResults.length} successful of ${message.attachments.size} total`,
-		);
-
-	// only delete message after every embed has been resolved
-	if (message.deletable) await message.delete();
+	await instapassEmbeds(resultMessagesToInstapass, pack);
 }
 
 /**
@@ -74,12 +100,35 @@ export default async function submitTexture(message: Message<true>) {
  * @param message message to embed
  * @param results found texture results for the attachment
  * @param params additional options for the submission embed
+ * @returns embed to instapass if one exists
  */
-export async function submitAttachment(
+async function submitAttachment(
 	message: Message<true>,
 	results: Texture[],
 	params: EmbedCreationParams,
-) {
-	if (results.length === 1) return makeEmbed(message, results[0], params);
-	return choiceEmbed(message, results, params);
+): Promise<MessageCreateOptions["embeds"][number] | undefined> {
+	// so the user doesn't think the bot is dead when it's loading a huge comparison
+	if (!params.doInstapass) message.channel.sendTyping();
+	const options =
+		results.length === 1
+			? await makeEmbed(message, results[0], params)
+			: await choiceEmbed(message, results, params).catch<null>(() => null);
+
+	// choice embed timed out
+	if (!options) return;
+	if (params.doInstapass) return options.embeds[0];
+
+	// send message directly
+	const embedMessage = await message.channel.send(options);
+	addSubmissionReactions(embedMessage);
+}
+
+/**
+ * Add voting reactions in the correct order to a finished submission embed
+ * @author Evorp
+ * @param message message to add reactions to
+ */
+export async function addSubmissionReactions(message: Message<true>) {
+	// do synchronously to ensure correct order (run concurrently with other embeds anyways)
+	for (const emoji of submissionReactions) await message.react(emoji).catch(() => {});
 }

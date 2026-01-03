@@ -18,6 +18,7 @@ import {
 	SelectMenuComponentOptionData,
 	StringSelectMenuInteraction,
 	ComponentType,
+	MessageCreateOptions,
 } from "discord.js";
 
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
@@ -55,34 +56,31 @@ export default async function choiceEmbed(
 		time: 60000,
 	});
 
-	collector.once("end", async () => {
-		// throws error if already deleted
-		message.delete().catch(() => {});
-		choiceMessage.delete().catch(() => {});
-	});
-
-	// must promisify result for correct resolve behavior
-	return new Promise((resolve) => {
+	// only resolves once selected
+	return new Promise<MessageCreateOptions>((resolve, reject) => {
 		collector.once("collect", async (interaction: StringSelectMenuInteraction) => {
 			if (!message.deletable) {
-				// message already deleted so we clean up and break early
 				if (choiceMessage.deletable) choiceMessage.delete();
-				return resolve(null);
+				return reject("Submission message already deleted");
 			}
 
 			const id = interaction.values[0];
 			if (DEBUG) console.log(`Texture selected: [#${id}]`);
 
 			const texture = results.find((r) => r.id === id);
-			if (!texture)
-				return resolve(devLogger(message.client, `Failed to find ID [#${id}] in choice embed`));
+			if (!texture) {
+				await devLogger(message.client, `Failed to find ID [#${id}] in choice embed`);
+				return reject("Texture not found");
+			}
 
-			resolve(
-				Promise.all([
-					makeEmbed(message, texture, params),
-					choiceMessage.deletable ? choiceMessage.delete() : Promise.resolve(),
-				]),
-			);
+			const options = await makeEmbed(message, texture, params);
+			if (choiceMessage.deletable) choiceMessage.delete();
+			resolve(options);
+		});
+
+		collector.once("end", async () => {
+			choiceMessage.delete().catch(() => {});
+			reject("Timed out");
 		});
 	});
 }
@@ -94,6 +92,7 @@ export default async function choiceEmbed(
  * @param results texture results to choose between
  */
 export async function sendChoiceEmbed(message: Message<true>, results: Texture[]) {
+	message.channel.sendTyping();
 	const choices = results.map<SelectMenuComponentOptionData>(({ id, name, paths }) => ({
 		// usually the first path is the most important
 		label: `[#${id}] ${name} (${versionRange(paths[0].versions)})`,

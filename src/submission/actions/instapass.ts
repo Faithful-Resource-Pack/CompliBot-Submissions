@@ -17,6 +17,7 @@ import {
 } from "@submission/results/handleContributions";
 import pushTextures from "@submission/results/pushTextures";
 
+import { hasPermission, PermissionType } from "@helpers/permissions";
 import { submissionButtons } from "@helpers/interactions";
 import formattedDate from "@helpers/formattedDate";
 import listify from "@helpers/listify";
@@ -93,3 +94,8 @@ export async function instapassEmbeds(messages: Message<true>[], pack: Pack) {
 
 	if (DEBUG) console.log(`Textures instapassed:\n- ${names.join("\n- ")}`);
 }
+
+export const isInstapassEmbed = (message: Message<true>) =>
+	message.content.startsWith("*") &&
+	message.content.match(/\*/g)?.length === 1 &&
+	hasPermission(message.guild.members.cache.get(message.author.id), PermissionType.Submission);

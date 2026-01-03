@@ -28,7 +28,7 @@ export default async function changeStatus(
 	{ status, color, components, editOriginal = false }: StatusParams,
 ): Promise<EmbedBuilder> {
 	const embed = editEmbed(message.embeds[0], { status, color });
-	if (!components) components = Array.from(message.components);
+	components ||= Array.from(message.components);
 	await message.edit({ embeds: [embed], components });
 
 	// no need to check for original post, return early
