@@ -102,7 +102,7 @@ export async function sendChoiceEmbed(message: Message<true>, results: Texture[]
 	}));
 
 	if (DEBUG) {
-		const candidates = choices.map((c, i) => `${i}: ${c.label}`).join("\n");
+		const candidates = choices.map((c, i) => `${i + 1}: ${c.label}`).join("\n");
 		console.log(`Generating choice embed for potential results:\n${candidates}`);
 	}
 

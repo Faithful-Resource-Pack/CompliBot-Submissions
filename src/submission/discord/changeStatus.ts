@@ -1,4 +1,11 @@
-import { EmbedBuilder, Message, TextChannel, BaseMessageOptions, APIEmbed } from "discord.js";
+import {
+	EmbedBuilder,
+	Message,
+	TextChannel,
+	BaseMessageOptions,
+	APIEmbed,
+	JSONEncodable,
+} from "discord.js";
 
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
@@ -54,7 +61,10 @@ export default async function changeStatus(
  * @param params options to edit
  * @returns new EmbedBuilder to use
  */
-export function editEmbed(original: APIEmbed | EmbedBuilder, { status, color }: StatusParams) {
+export function editEmbed(
+	original: APIEmbed | JSONEncodable<APIEmbed>,
+	{ status, color }: StatusParams,
+) {
 	const embed = EmbedBuilder.from(original);
 	if (DEBUG)
 		console.log(
