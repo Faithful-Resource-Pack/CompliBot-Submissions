@@ -10,7 +10,7 @@ import changeStatus, { editEmbed } from "@submission/discord/changeStatus";
 
 import { submissionButtons } from "@helpers/interactions";
 
-import { APIEmbed, BaseMessageOptions, Client, EmbedBuilder, TextChannel } from "discord.js";
+import { BaseMessageOptions, Client, TextChannel } from "discord.js";
 
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 

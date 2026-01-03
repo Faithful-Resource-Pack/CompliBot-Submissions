@@ -1,4 +1,5 @@
 import "dotenv/config";
+import "@interfaces/environment";
 
 import { readdirSync } from "fs";
 import { join } from "path";
