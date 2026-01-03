@@ -1,4 +1,4 @@
-import { EmbedBuilder, Message, TextChannel, BaseMessageOptions } from "discord.js";
+import { EmbedBuilder, Message, TextChannel, BaseMessageOptions, APIEmbed } from "discord.js";
 
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
@@ -10,7 +10,7 @@ export interface StatusParams {
 }
 
 /**
- * Edit submission status
+ * Update an embed's status recursively
  * @author Evorp
  * @param message message to edit
  * @param params other options to edit
@@ -20,17 +20,7 @@ export default async function changeStatus(
 	message: Message,
 	{ status, color, components, editOriginal = false }: StatusParams,
 ): Promise<EmbedBuilder> {
-	if (DEBUG)
-		console.log(
-			`Changing status "${
-				message.embeds?.[0]?.fields?.[1]?.value.split("> ")[1]
-			}" to "${status.split("> ")[1]}" for texture: ${message.embeds?.[0]?.title}`,
-		);
-	const embed = EmbedBuilder.from(message.embeds[0]);
-	// fields[1] is always the status field in submissions
-	embed.data.fields[1].value = status;
-
-	if (color) embed.setColor(color);
+	const embed = editEmbed(message.embeds[0], { status, color });
 	if (!components) components = Array.from(message.components);
 	await message.edit({ embeds: [embed], components });
 
@@ -54,5 +44,26 @@ export default async function changeStatus(
 	} catch {
 		// message deleted or something
 	}
+	return embed;
+}
+
+/**
+ * Create a new embed with the specified status and color
+ * @author Evorp
+ * @param original Original embed to edit
+ * @param params options to edit
+ * @returns new EmbedBuilder to use
+ */
+export function editEmbed(original: APIEmbed | EmbedBuilder, { status, color }: StatusParams) {
+	const embed = EmbedBuilder.from(original);
+	if (DEBUG)
+		console.log(
+			`Changing status "${
+				embed.data.fields?.[1]?.value.split("> ")[1]
+			}" to "${status.split("> ")[1]}" for texture: ${embed.data.title}`,
+		);
+	// fields[1] is always the status field in submissions
+	embed.data.fields[1].value = status;
+	if (color) embed.setColor(color);
 	return embed;
 }

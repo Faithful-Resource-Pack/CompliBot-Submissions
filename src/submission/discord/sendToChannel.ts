@@ -6,11 +6,11 @@ import retrieveSubmission, {
 	DEFAULT_REACTION_COUNT,
 	type SendableMessage,
 } from "@submission/discord/retrieveSubmission";
-import changeStatus from "@submission/discord/changeStatus";
+import changeStatus, { editEmbed } from "@submission/discord/changeStatus";
 
 import { submissionButtons } from "@helpers/interactions";
 
-import { BaseMessageOptions, Client, EmbedBuilder, TextChannel } from "discord.js";
+import { APIEmbed, BaseMessageOptions, Client, EmbedBuilder, TextChannel } from "discord.js";
 
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
@@ -75,20 +75,16 @@ export function sendMessage(
 	channelOut: TextChannel,
 	{ color, emoji, components, originalStatus, resultStatus }: SubmissionStatusChange,
 ) {
-	// fallback if not provided
-	components ||= message.components;
-
-	const statusField = message.embed.fields[1];
-	statusField.value = emoji ? `${emoji} ${resultStatus}` : resultStatus;
-
-	const resultEmbed = EmbedBuilder.from(message.embed)
-		.spliceFields(1, 1, statusField)
-		.setColor(color);
-
+	const resultEmbed = editEmbed(message.embed, {
+		color,
+		status: emoji ? `${emoji} ${resultStatus}` : resultStatus,
+	});
 	resultEmbed.setDescription(
 		`[Original Post](${message.message.url})\n${message.embed.description ?? ""}`,
 	);
 
+	// fallback if not provided
+	components ||= message.components;
 	// this doesn't need to happen immediately
 	changeStatus(message.message, {
 		status: emoji ? `${emoji} ${originalStatus}` : originalStatus,
