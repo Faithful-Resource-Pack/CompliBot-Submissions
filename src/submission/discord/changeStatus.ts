@@ -43,7 +43,7 @@ export default async function changeStatus(
 		.slice(-2); // only take the last two ids (channel and message)
 
 	try {
-		const channel = (await message.client.channels.fetch(channelID)) as TextChannel;
+		const channel = message.client.channels.cache.get(channelID) as TextChannel;
 		const originalMessage = await channel.messages.fetch(messageID);
 
 		// recursive, but editOriginal disabled this time

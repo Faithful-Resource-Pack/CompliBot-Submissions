@@ -35,7 +35,7 @@ export default async function instapass(message: Message<true>, member: User | G
 	const pack = getPackByChannel(message.channel.id);
 
 	const channelOutID = pack.submission.channels.results;
-	const channelOut = (await message.client.channels.fetch(channelOutID)) as TextChannel;
+	const channelOut = message.client.channels.cache.get(channelOutID) as TextChannel;
 
 	const status = `Instapassed by <@${member.id}>`;
 	const resultMessage = await sendMessage(mapSendableMessage(message), channelOut, {
