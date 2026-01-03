@@ -73,7 +73,7 @@ export default async function reactionMenu(openReaction: MessageReaction, user: 
 	const isPrivileged = hasPermission(member, PermissionType.Submission);
 	// used to check permissions
 	const reactor = Array.from(actionReaction.users.cache.values()).find((user) => !user.bot);
-	const canDelete = reactor?.id === submissionAuthorID || isPrivileged;
+	const canDelete = isPrivileged || reactor?.id === submissionAuthorID;
 
 	switch (actionReaction.emoji.id) {
 		// flush votes and reaction menu

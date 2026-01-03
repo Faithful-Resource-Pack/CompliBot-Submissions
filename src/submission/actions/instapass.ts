@@ -32,8 +32,7 @@ const DEBUG = process.env.DEBUG.toLowerCase() === "true";
  * @param member who instapassed it
  */
 export default async function instapass(message: Message<true>, member: User | GuildMember) {
-	const packs: PackFile = require("@resources/packs.json");
-	const pack = packs[getPackByChannel(message.channel.id)];
+	const pack = getPackByChannel(message.channel.id);
 
 	const channelOutID = pack.submission.channels.results;
 	const channelOut = (await message.client.channels.fetch(channelOutID)) as TextChannel;

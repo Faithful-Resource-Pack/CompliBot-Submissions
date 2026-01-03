@@ -34,8 +34,7 @@ export async function handleResults(
 	channelResultID: string,
 	addContributions = true,
 ) {
-	const packs: PackFile = require("@resources/packs.json");
-	const pack = packs[getPackByChannel(channelResultID)];
+	const pack = getPackByChannel(channelResultID);
 
 	// get messages from the same day
 	const delayedDate = new Date();

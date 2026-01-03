@@ -72,13 +72,13 @@ export async function generateEmbedData(
 	texture: Texture,
 	{ attachment, description, authors, doInstapass }: EmbedCreationParams,
 ): Promise<MessageCreateOptions> {
-	const packName = getPackByChannel(message.channel.id);
+	const pack = getPackByChannel(message.channel.id);
 	let imgButtons: ActionRowBuilder<ButtonBuilder>;
 
 	// load previous contributions if applicable
 	if (description.startsWith("+") || doInstapass) {
 		const lastContribution = texture.contributions
-			.filter((contribution) => contribution.pack === packName)
+			.filter((contribution) => contribution.pack === pack.id)
 			.sort((a, b) => (a.date > b.date ? -1 : 1))?.[0];
 
 		if (lastContribution) {
@@ -92,7 +92,7 @@ export async function generateEmbedData(
 		.setColor(settings.colors.blue)
 		.setAuthor({ name: message.author.username, iconURL: message.author.displayAvatarURL() })
 		.setURL(
-			`https://webapp.faithfulpack.net/gallery/${texture.uses[0].edition}/${packName}/latest/all/?show=${texture.id}`,
+			`https://webapp.faithfulpack.net/gallery/${texture.uses[0].edition}/${pack.id}/latest/all/?show=${texture.id}`,
 		)
 		.addFields(
 			{
@@ -115,7 +115,7 @@ export async function generateEmbedData(
 		if (DEBUG) console.log(`Generating comparison image for texture: ${texture.name}`);
 
 		const { comparisonImage, hasReference, mcmeta } = await generateComparison(
-			packName,
+			pack.id,
 			attachment,
 			texture,
 		);

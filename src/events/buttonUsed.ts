@@ -53,13 +53,13 @@ export default {
 			}
 			case "viewRawButton": // compatibility with old submissions
 			case "diffButton": {
-				const packName = getPackByChannel(message.channel.id);
+				const pack = getPackByChannel(message.channel.id);
 
 				const id = message.embeds?.[0]?.title?.match(/(?<=\[#)(.*?)(?=\])/)?.[0];
 				if (!id) break;
 				await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
-				const currentUrl = `${process.env.API_URL}textures/${id}/url/${packName}/latest`;
+				const currentUrl = `${process.env.API_URL}textures/${id}/url/${pack.id}/latest`;
 				const proposedUrl = message.embeds[0].thumbnail?.url || "";
 
 				const diff = await difference(currentUrl, proposedUrl);
