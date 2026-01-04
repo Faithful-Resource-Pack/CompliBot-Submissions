@@ -95,7 +95,7 @@ export async function instapassEmbeds(messages: Message<true>[], pack: Pack) {
 	if (DEBUG) console.log(`Textures instapassed:\n- ${names.join("\n- ")}`);
 }
 
-export const isInstapassEmbed = (message: Message<true>) =>
+export const isInstapassMessage = (message: Message<true>) =>
 	message.content.startsWith("*") &&
 	message.content.match(/\*/g)?.length === 1 &&
 	hasPermission(message.guild.members.cache.get(message.author.id), PermissionType.Submission);

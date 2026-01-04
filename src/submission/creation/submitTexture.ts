@@ -12,7 +12,7 @@ import makeEmbed, { EmbedCreationParams } from "@submission/creation/makeEmbed";
 import { editEmbed } from "@submission/discord/changeStatus";
 import getPackByChannel from "@submission/discord/getPackByChannel";
 
-import { instapassEmbeds, isInstapassEmbed } from "@submission/actions/instapass";
+import { instapassEmbeds, isInstapassMessage } from "@submission/actions/instapass";
 
 import { submissionButtons, submissionReactions } from "@helpers/interactions";
 
@@ -50,7 +50,7 @@ export default async function submitTexture(message: Message<true>) {
 	// only need to get once for all submissions (same message)
 	const authors = await getAuthors(message);
 	const description = message.content.replace(/\[#(.*?)\]/g, "");
-	const doInstapass = isInstapassEmbed(message);
+	const doInstapass = isInstapassMessage(message);
 
 	const embedsToInstapass = (
 		await Promise.all(

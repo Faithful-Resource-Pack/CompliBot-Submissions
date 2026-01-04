@@ -1,10 +1,10 @@
 import type { Pack, PackFile } from "@interfaces/database";
 
 /**
- * Get pack id (e.g. faithful_32x, classic_faithful_64x) by a given channel id
+ * Get the corresponding pack data for a given submission channel ID
  * @author Evorp
  * @param channelID channel id to test
- * @returns key of pack
+ * @returns pack object
  */
 export default function getPackByChannel(channelID: string): Pack {
 	const packs: PackFile = require("@resources/packs.json");
