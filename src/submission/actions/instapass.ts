@@ -70,18 +70,13 @@ export async function instapassEmbeds(messages: Message<true>[], pack: Pack) {
 		textures.map((texture) => downloadTexture(texture, pack, basePath)),
 	);
 
-	const names = textureInformation.map((t) => `[#${t.id}] ${t.name}`);
-
-	// slice if too many
-	const commitNames = listify(
-		names.length > MAX_SHOWN_TEXTURES
-			? [...names.slice(0, MAX_SHOWN_TEXTURES), `${names.length - MAX_SHOWN_TEXTURES} more`]
-			: names,
-	);
+	const commitNames = textureInformation.map((t) => t.name).slice(0, MAX_SHOWN_TEXTURES);
+	if (textureInformation.length > MAX_SHOWN_TEXTURES)
+		commitNames.push(`${commitNames.length - MAX_SHOWN_TEXTURES} more`);
 
 	// use allSettled so if one throws the others don't abort
 	await Promise.allSettled([
-		pushTextures(basePath, pack.id, `Instapass ${commitNames} from ${formattedDate()}`),
+		pushTextures(basePath, pack.id, `Instapass ${listify(commitNames)} from ${formattedDate()}`),
 		textures.flatMap((texture) => postContributions(generateContributionData(texture, pack))),
 		// guaranteed at least one message from start check
 		addContributorRole(
@@ -92,7 +87,10 @@ export async function instapassEmbeds(messages: Message<true>[], pack: Pack) {
 		),
 	]);
 
-	if (DEBUG) console.log(`Textures instapassed:\n- ${names.join("\n- ")}`);
+	if (DEBUG)
+		console.log(
+			`Textures instapassed:\n- ${textureInformation.map((t) => `[#${t.id}] ${t.name}`).join("\n- ")}`,
+		);
 }
 
 export const isInstapassMessage = (message: Message<true>) =>
