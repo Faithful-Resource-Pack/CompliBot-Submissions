@@ -72,7 +72,7 @@ export async function instapassEmbeds(messages: Message<true>[], pack: Pack) {
 
 	const commitNames = textureInformation.map((t) => t.name).slice(0, MAX_SHOWN_TEXTURES);
 	if (textureInformation.length > MAX_SHOWN_TEXTURES)
-		commitNames.push(`${commitNames.length - MAX_SHOWN_TEXTURES} more`);
+		commitNames.push(`${textureInformation.length - MAX_SHOWN_TEXTURES} more`);
 
 	// use allSettled so if one throws the others don't abort
 	await Promise.allSettled([
@@ -89,7 +89,7 @@ export async function instapassEmbeds(messages: Message<true>[], pack: Pack) {
 
 	if (DEBUG)
 		console.log(
-			`Textures instapassed:\n- ${textureInformation.map((t) => `[#${t.id}] ${t.name}`).join("\n- ")}`,
+			`Textures instapassed:\n${textureInformation.map((t) => `- [#${t.id}] ${t.name}`).join("\n")}`,
 		);
 }
 
