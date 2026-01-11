@@ -55,6 +55,12 @@ export default async function retrieveSubmission(client: Client, channelID: stri
 	};
 }
 
+/**
+ * Map a texture to a sendable format
+ * @author Juknum
+ * @param message message to map
+ * @returns sendable message
+ */
 export const mapSendableMessage = (message: Message): SendableMessage => ({
 	// sometimes cache misses cause some really strange bugs
 	// todo: investigate more robust way to deal with it
