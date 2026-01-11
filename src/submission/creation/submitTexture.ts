@@ -16,7 +16,7 @@ import { instapassEmbeds, isInstapassMessage } from "@submission/actions/instapa
 
 import { submissionButtons, submissionReactions } from "@helpers/interactions";
 
-import { Message, MessageCreateOptions, TextChannel } from "discord.js";
+import { EmbedBuilder, Message, MessageCreateOptions, TextChannel } from "discord.js";
 
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
@@ -92,6 +92,22 @@ export default async function submitTexture(message: Message<true>) {
 	);
 
 	await instapassEmbeds(resultMessagesToInstapass, pack);
+	const notificationEmbed = new EmbedBuilder()
+		.setAuthor({ name: message.author.username, iconURL: message.author.displayAvatarURL() })
+		.setTitle(
+			`Instapassed ${embedsToInstapass.length} ${embedsToInstapass.length === 1 ? "texture" : "textures"}`,
+		)
+		.setDescription(
+			resultMessagesToInstapass
+				.map((message) => `[${EmbedBuilder.from(message.embeds[0]).data.title}](${message.url})`)
+				.join("\n"),
+		)
+		.setColor(settings.colors.yellow)
+		.addFields({
+			name: "Reason",
+			value: message.content.slice(1).trim() || "*No reason provided*",
+		});
+	return message.channel.send({ embeds: [notificationEmbed] });
 }
 
 /**

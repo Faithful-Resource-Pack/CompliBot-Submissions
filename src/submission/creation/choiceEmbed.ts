@@ -92,7 +92,6 @@ export default async function choiceEmbed(
  * @param results texture results to choose between
  */
 export async function sendChoiceEmbed(message: Message<true>, results: Texture[]) {
-	message.channel.sendTyping();
 	const choices = results.map<SelectMenuComponentOptionData>(({ id, name, paths }) => ({
 		// usually the first path is the most important
 		label: `[#${id}] ${name} (${versionRange(paths[0].versions)})`,
