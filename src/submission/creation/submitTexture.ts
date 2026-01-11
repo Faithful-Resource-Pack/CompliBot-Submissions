@@ -72,6 +72,18 @@ export default async function submitTexture(message: Message<true>) {
 
 	if (!doInstapass || !embedsToInstapass.length) return;
 
+	const textureStr = embedsToInstapass.length == 1 ? "texture" : "textures";
+
+	const statusMessage = await message.channel.send({
+		embeds: [
+			new EmbedBuilder()
+				.setTitle(`Instapassing ${embedsToInstapass.length} ${textureStr}…`)
+				.setDescription("This can take some time, please wait…")
+				.setThumbnail(settings.images.loading)
+				.setColor(settings.colors.blue),
+		],
+	});
+
 	const pack = getPackByChannel(message.channel.id);
 	const resultChannel = message.client.channels.cache.get(
 		pack.submission.channels.results,
@@ -94,9 +106,7 @@ export default async function submitTexture(message: Message<true>) {
 	await instapassEmbeds(resultMessagesToInstapass, pack);
 	const notificationEmbed = new EmbedBuilder()
 		.setAuthor({ name: message.author.username, iconURL: message.author.displayAvatarURL() })
-		.setTitle(
-			`Instapassed ${embedsToInstapass.length} ${embedsToInstapass.length === 1 ? "texture" : "textures"}`,
-		)
+		.setTitle(`Instapassed ${embedsToInstapass.length} ${textureStr}`)
 		.setDescription(
 			resultMessagesToInstapass
 				.map((message) => `[${EmbedBuilder.from(message.embeds[0]).data.title}](${message.url})`)
@@ -107,7 +117,8 @@ export default async function submitTexture(message: Message<true>) {
 			name: "Reason",
 			value: message.content.slice(1).trim() || "*No reason provided*",
 		});
-	return message.channel.send({ embeds: [notificationEmbed] });
+
+	return statusMessage.edit({ embeds: [notificationEmbed] });
 }
 
 /**
