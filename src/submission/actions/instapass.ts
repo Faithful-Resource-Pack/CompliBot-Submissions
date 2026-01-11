@@ -17,7 +17,6 @@ import {
 } from "@submission/results/handleContributions";
 import pushTextures from "@submission/results/pushTextures";
 
-import { hasPermission, PermissionType } from "@helpers/permissions";
 import { submissionButtons } from "@helpers/interactions";
 import formattedDate from "@helpers/formattedDate";
 import listify from "@helpers/listify";
@@ -48,7 +47,7 @@ export default async function instapass(message: Message<true>, member: User | G
 		resultStatus: status,
 	});
 
-	return instapassEmbeds([resultMessage], pack);
+	return instapassMessages([resultMessage], pack);
 }
 
 export const MAX_SHOWN_TEXTURES = 3;
@@ -59,7 +58,7 @@ export const MAX_SHOWN_TEXTURES = 3;
  * @param messages Messages to instapass
  * @param pack Pack to instapass to
  */
-export async function instapassEmbeds(messages: Message<true>[], pack: Pack) {
+export async function instapassMessages(messages: Message<true>[], pack: Pack) {
 	if (!messages.length) return;
 	const textures = messages.map(mapDownloadableMessage);
 
@@ -92,8 +91,3 @@ export async function instapassEmbeds(messages: Message<true>[], pack: Pack) {
 			`Textures instapassed:\n${textureInformation.map((t) => `- [#${t.id}] ${t.name}`).join("\n")}`,
 		);
 }
-
-export const isInstapassMessage = (message: Message<true>) =>
-	message.content.startsWith("*") &&
-	message.content.match(/\*/g)?.length === 1 &&
-	hasPermission(message.guild.members.cache.get(message.author.id), PermissionType.Submission);

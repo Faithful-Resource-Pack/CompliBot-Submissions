@@ -1,22 +1,17 @@
-import settings from "@resources/settings.json";
 import strings from "@resources/strings.json";
 
-import { Texture } from "@interfaces/database";
+import { Texture, User } from "@interfaces/database";
 
-import getTextureResults from "@submission/creation/getTextureResults";
 import cancelSubmission from "@submission/creation/cancelSubmission";
-import getAuthors from "@submission/creation/getAuthors";
+import getTextureResults from "@submission/creation/getTextureResults";
 import choiceEmbed from "@submission/creation/choiceEmbed";
 import makeEmbed, { EmbedCreationParams } from "@submission/creation/makeEmbed";
+import starpass, { canStarpass } from "@submission/actions/starpass";
 
-import { editEmbed } from "@submission/discord/changeStatus";
-import getPackByChannel from "@submission/discord/getPackByChannel";
+import { submissionReactions } from "@helpers/interactions";
 
-import { instapassEmbeds, isInstapassMessage } from "@submission/actions/instapass";
-
-import { submissionButtons, submissionReactions } from "@helpers/interactions";
-
-import { EmbedBuilder, Message, MessageCreateOptions, TextChannel } from "discord.js";
+import axios from "axios";
+import { Message, MessageCreateOptions } from "discord.js";
 
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
@@ -50,9 +45,9 @@ export default async function submitTexture(message: Message<true>) {
 	// only need to get once for all submissions (same message)
 	const authors = await getAuthors(message);
 	const description = message.content.replace(/\[#(.*?)\]/g, "");
-	const doInstapass = isInstapassMessage(message);
+	const doInstapass = canStarpass(message);
 
-	const embedsToInstapass = (
+	const starpassEmbeds = (
 		await Promise.all(
 			textureResults.map(({ results, attachment }) =>
 				submitAttachment(message, results, {
@@ -69,73 +64,24 @@ export default async function submitTexture(message: Message<true>) {
 
 	// only delete message after every embed has been resolved (attachment urls can expire)
 	if (message.deletable) message.delete();
-
-	if (!doInstapass || !embedsToInstapass.length) return;
-
-	const textureStr = embedsToInstapass.length == 1 ? "texture" : "textures";
-
-	const statusMessage = await message.channel.send({
-		embeds: [
-			new EmbedBuilder()
-				.setTitle(`Instapassing ${embedsToInstapass.length} ${textureStr}…`)
-				.setDescription("This can take some time, please wait…")
-				.setThumbnail(settings.images.loading)
-				.setColor(settings.colors.blue),
-		],
-	});
-
-	const pack = getPackByChannel(message.channel.id);
-	const resultChannel = message.client.channels.cache.get(
-		pack.submission.channels.results,
-	) as TextChannel;
-
-	const status = `Instapassed by <@${message.author.id}>`;
-	const resultMessagesToInstapass = await Promise.all(
-		embedsToInstapass.map((embed) => {
-			const edited = editEmbed(embed, {
-				color: settings.colors.yellow,
-				status: `<:instapass:${settings.emojis.instapass}> ${status}`,
-			});
-			return resultChannel.send({
-				embeds: [edited],
-				components: [submissionButtons],
-			});
-		}),
-	);
-
-	await instapassEmbeds(resultMessagesToInstapass, pack);
-	const notificationEmbed = new EmbedBuilder()
-		.setAuthor({ name: message.author.username, iconURL: message.author.displayAvatarURL() })
-		.setTitle(`Instapassed ${embedsToInstapass.length} ${textureStr}`)
-		.setDescription(
-			resultMessagesToInstapass
-				.map((message) => `[${EmbedBuilder.from(message.embeds[0]).data.title}](${message.url})`)
-				.join("\n"),
-		)
-		.setColor(settings.colors.yellow)
-		.addFields({
-			name: "Reason",
-			value: message.content.slice(1).trim() || "*No reason provided*",
-		});
-
-	return statusMessage.edit({ embeds: [notificationEmbed] });
+	if (doInstapass && starpassEmbeds.length) return starpass(message, starpassEmbeds);
 }
 
 /**
- * Create a submission embed from an attachment and texture data
+ * Sends a finished submission embed from an attachment and texture data
  * @author Juknum, Evorp
  * @param message message to embed
  * @param results found texture results for the attachment
  * @param params additional options for the submission embed
  * @returns embed to instapass if one exists
  */
-async function submitAttachment(
+export async function submitAttachment(
 	message: Message<true>,
 	results: Texture[],
 	params: EmbedCreationParams,
 ): Promise<MessageCreateOptions["embeds"][number] | undefined> {
 	// so the user doesn't think the bot is dead when it's loading a huge comparison
-	if (!params.doInstapass) message.channel.sendTyping();
+	message.channel.sendTyping();
 	const options =
 		results.length === 1
 			? await makeEmbed(message, results[0], params)
@@ -145,9 +91,38 @@ async function submitAttachment(
 	if (!options) return;
 	if (params.doInstapass) return options.embeds[0];
 
-	// send message directly
+	// don't bother awaiting reactions since it's not necessary to happen immediately
 	const embedMessage = await message.channel.send(options);
 	addSubmissionReactions(embedMessage);
+}
+
+/**
+ * Detects co-authors from pings and curly bracket syntax in a given message
+ * @author Evorp
+ * @param message message to detect co-authors from
+ * @returns array of author's discord IDs
+ */
+export async function getAuthors(message: Message) {
+	// submitter always goes first (sets maintain insertion order)
+	const authors = new Set([message.author.id]);
+
+	// detect text between curly brackets
+	const names = message.content
+		.match(/(?<=\{)(.*?)(?=\})/g)
+		?.map((name) => name.toLowerCase().trim());
+
+	if (names?.length) {
+		const users = (await axios.get<User[]>(`${process.env.API_URL}users/names`)).data;
+		// cleaner to use a set since we don't have to filter duplicates
+		for (const user of users)
+			if (names.includes(user.username?.toLowerCase() || "")) authors.add(user.id);
+	}
+
+	// detect by ping (using regex to ensure users not in the server get included)
+	const mentions = message.content.match(/(?<=<@|<@!)(\d+?)(?=>)/g) ?? [];
+	for (const mention of mentions) authors.add(mention);
+
+	return authors;
 }
 
 /**
