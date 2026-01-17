@@ -86,7 +86,12 @@ export async function handleResults(
 		const guildID = (client.channels.cache.get(channelResultID) as TextChannel).guildId;
 		return Promise.all([
 			postContributions(...addedContributions),
-			...addedContributions.map((c) => addContributorRole(client, pack, guildID, c.authors)),
+			addContributorRole(
+				client,
+				pack,
+				guildID,
+				addedContributions.flatMap((c) => c.authors),
+			),
 		]);
 	}
 }

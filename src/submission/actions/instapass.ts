@@ -76,7 +76,7 @@ export async function instapassMessages(messages: Message<true>[], pack: Pack) {
 	// use allSettled so if one throws the others don't abort
 	await Promise.allSettled([
 		pushTextures(basePath, pack.id, `Instapass ${listify(commitNames)} from ${formattedDate()}`),
-		textures.flatMap((texture) => postContributions(generateContributionData(texture, pack))),
+		postContributions(...textures.flatMap((texture) => generateContributionData(texture, pack))),
 		// guaranteed at least one message from start check
 		addContributorRole(
 			messages[0].client,
