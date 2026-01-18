@@ -50,11 +50,10 @@ export default async function submitTexture(message: Message<true>) {
 	const starpassEmbeds = (
 		await Promise.all(
 			textureResults.map(({ results, attachment }) =>
-				submitAttachment(message, results, {
+				submitAttachment(message, results, doInstapass, {
 					attachment,
 					description,
 					authors,
-					doInstapass,
 				}),
 			),
 		)
@@ -78,6 +77,7 @@ export default async function submitTexture(message: Message<true>) {
 export async function submitAttachment(
 	message: Message<true>,
 	results: Texture[],
+	doInstapass: boolean,
 	params: EmbedCreationParams,
 ): Promise<MessageCreateOptions["embeds"][number] | undefined> {
 	// so the user doesn't think the bot is dead when it's loading a huge comparison
@@ -89,7 +89,7 @@ export async function submitAttachment(
 
 	// choice embed timed out
 	if (!options) return;
-	if (params.doInstapass) return options.embeds[0];
+	if (doInstapass) return options.embeds[0];
 
 	// don't bother awaiting reactions since it's not necessary to happen immediately
 	const embedMessage = await message.channel.send(options);

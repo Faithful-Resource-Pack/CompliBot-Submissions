@@ -28,7 +28,6 @@ export interface EmbedCreationParams {
 	attachment: Attachment;
 	description: string;
 	authors: Set<string>;
-	doInstapass: boolean; // kinda stupid disambiguation with the function instapass()
 }
 
 /**
@@ -42,13 +41,13 @@ export interface EmbedCreationParams {
 export default async function makeEmbed(
 	message: Message<true>,
 	texture: Texture,
-	{ attachment, description, authors, doInstapass }: EmbedCreationParams,
+	{ attachment, description, authors }: EmbedCreationParams,
 ): Promise<MessageCreateOptions> {
 	const pack = getPackByChannel(message.channel.id);
-	let imgButtons: ActionRowBuilder<ButtonBuilder>;
+	const components: ActionRowBuilder<ButtonBuilder>[] = [];
 
 	// load previous contributions if applicable
-	if (description.startsWith("+") || doInstapass) {
+	if (description.startsWith("+") || description.startsWith("*+")) {
 		const lastContribution = texture.contributions
 			.filter((contribution) => contribution.pack === pack.id)
 			.sort((a, b) => (a.date > b.date ? -1 : 1))?.[0];
@@ -109,7 +108,7 @@ export default async function makeEmbed(
 				value: `\`\`\`json\n${JSON.stringify(mcmeta.animation)}\`\`\``,
 			});
 
-		imgButtons = hasReference ? diffableButtons : submissionButtons;
+		components.push(hasReference ? diffableButtons : submissionButtons);
 	} else {
 		if (DEBUG)
 			console.log(
@@ -123,7 +122,7 @@ export default async function makeEmbed(
 			.setThumbnail(imageUrl)
 			.setFooter({ text: strings.submission.cant_compare });
 
-		imgButtons = submissionButtons;
+		components.push(submissionButtons);
 	}
 
 	if (description) embed.setDescription(description);
@@ -132,7 +131,7 @@ export default async function makeEmbed(
 	if (DEBUG) console.log(`Finished formatting submission embed for texture: ${texture.name}`);
 	return {
 		embeds: [embed],
-		components: [doInstapass ? submissionButtons : imgButtons],
+		components,
 	};
 }
 
