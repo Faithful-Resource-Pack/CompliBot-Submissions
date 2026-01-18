@@ -10,8 +10,8 @@ import starpass, { canStarpass } from "@submission/actions/starpass";
 
 import { submissionReactions } from "@helpers/interactions";
 
-import axios from "axios";
 import { Message, MessageCreateOptions } from "discord.js";
+import axios from "axios";
 
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 

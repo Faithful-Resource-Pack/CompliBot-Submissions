@@ -1,4 +1,4 @@
-import type { MCMETA, Pack, Texture } from "@interfaces/database";
+import type { Pack, Texture } from "@interfaces/database";
 
 import { magnifyToAttachment, magnify } from "@images/magnify";
 import animate from "@images/animate";
@@ -10,21 +10,20 @@ import { Attachment, AttachmentBuilder } from "discord.js";
 interface ComparisonResults {
 	comparisonImage: AttachmentBuilder;
 	hasReference: boolean;
-	mcmeta?: MCMETA;
 }
 
 /**
  * Generate a submission comparison for a given texture, pack, and image
  * @author Evorp
- * @param pack pack to compare against
- * @param attachment raw texture being submitted
- * @param texture texture data
+ * @param attachment attachment to load
+ * @param texture texture to compare against
+ * @param pack pack to compare images against
  * @returns compared texture and info
  */
 export default async function generateComparison(
-	pack: Pack,
 	attachment: Attachment,
 	texture: Texture,
+	pack: Pack,
 ): Promise<ComparisonResults> {
 	const reference = pack.submission.reference || "default";
 	const baseURL = `${process.env.API_URL}textures/${texture.id}/url/`;
@@ -61,10 +60,8 @@ export default async function generateComparison(
 			hasReference: images.length === 3,
 		};
 
-	const { mcmeta } = texture;
-
-	// otherwise ugly width and height properties are always shown
-	const displayedMcmeta = structuredClone(mcmeta);
+	// prevents random internal properties possibly being added in the embed
+	const mcmeta = structuredClone(texture.mcmeta);
 
 	const { magnified, width, factor } = await magnify(stitched, true);
 
@@ -83,6 +80,5 @@ export default async function generateComparison(
 	return {
 		comparisonImage: new AttachmentBuilder(animated, { name: "compared.gif" }),
 		hasReference: images.length === 3,
-		mcmeta: displayedMcmeta,
 	};
 }
