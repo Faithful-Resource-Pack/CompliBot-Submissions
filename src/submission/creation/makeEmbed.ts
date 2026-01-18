@@ -86,7 +86,7 @@ export default async function makeEmbed(
 		if (DEBUG) console.log(`Generating comparison image for texture: ${texture.name}`);
 
 		const { comparisonImage, hasReference, mcmeta } = await generateComparison(
-			pack.id,
+			pack,
 			attachment,
 			texture,
 		);
@@ -129,10 +129,7 @@ export default async function makeEmbed(
 	if (authors.size > 1) embed.data.fields[0].name += "s";
 
 	if (DEBUG) console.log(`Finished formatting submission embed for texture: ${texture.name}`);
-	return {
-		embeds: [embed],
-		components,
-	};
+	return { embeds: [embed], components };
 }
 
 /**

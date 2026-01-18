@@ -1,4 +1,4 @@
-import type { MCMETA, Texture } from "@interfaces/database";
+import type { MCMETA, Pack, Texture } from "@interfaces/database";
 
 import { magnifyToAttachment, magnify } from "@images/magnify";
 import animate from "@images/animate";
@@ -16,18 +16,17 @@ interface ComparisonResults {
 /**
  * Generate a submission comparison for a given texture, pack, and image
  * @author Evorp
- * @param pack base pack ID
+ * @param pack pack to compare against
  * @param attachment raw texture being submitted
  * @param texture texture data
  * @returns compared texture and info
  */
 export default async function generateComparison(
-	pack: string,
+	pack: Pack,
 	attachment: Attachment,
 	texture: Texture,
 ): Promise<ComparisonResults> {
-	const reference: string =
-		require("@resources/packs.json")[pack].submission.reference ?? "default";
+	const reference = pack.submission.reference || "default";
 	const baseURL = `${process.env.API_URL}textures/${texture.id}/url/`;
 
 	/**
@@ -42,7 +41,7 @@ export default async function generateComparison(
 				.catch(() => null),
 			loadImage(attachment.url),
 			// may not be present and that's fine
-			loadImage(`${baseURL}${pack}/latest`).catch(() => null),
+			loadImage(`${baseURL}${pack.id}/latest`).catch(() => null),
 		])
 	).filter((img) => img !== null);
 
