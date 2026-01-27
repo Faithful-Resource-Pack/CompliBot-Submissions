@@ -31,25 +31,28 @@ export default async function cancelSubmission(
 
 	if (DEBUG) console.log(`Submission cancelled with reason: ${error}`);
 
-	const embed = new EmbedBuilder()
-		.setTitle(strings.submission.cancelled.error_title)
-		.setDescription(String(error))
-		.setColor(settings.colors.red)
-		.setThumbnail(settings.images.warning)
-		.setFooter({
-			text: strings.submission.cancelled.error_footer.replace(
-				"%SECONDS%",
-				String(EMBED_VISIBLE_SECONDS),
-			),
-			iconURL: message.client.user.displayAvatarURL(),
-		});
+	const options = {
+		embeds: [
+			new EmbedBuilder()
+				.setTitle(strings.submission.cancelled.error_title)
+				.setDescription(String(error))
+				.setColor(settings.colors.red)
+				.setThumbnail(settings.images.warning)
+				.setFooter({
+					text: strings.submission.cancelled.error_footer.replace(
+						"%SECONDS%",
+						String(EMBED_VISIBLE_SECONDS),
+					),
+					iconURL: message.client.user.displayAvatarURL(),
+				}),
+		],
+		components: addDeleteButton(),
+	};
 
 	try {
 		const noticeMessage = message.deletable
-			? await message.reply({ embeds: [embed] })
-			: await message.channel.send({ embeds: [embed] });
-
-		if (noticeMessage.deletable) addDeleteButton(noticeMessage);
+			? await message.reply(options)
+			: await message.channel.send(options);
 
 		setTimeout(() => {
 			// throws error if already deleted

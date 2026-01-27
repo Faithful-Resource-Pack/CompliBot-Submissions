@@ -64,15 +64,13 @@ export default {
 			status: presence,
 		});
 
-		await interaction
-			.reply({
-				embeds: [
-					new EmbedBuilder()
-						.setTitle("Bot status successfully changed!")
-						.setColor(settings.colors.green),
-				],
-				withResponse: true,
-			})
-			.then(({ resource }) => addDeleteButton(resource.message));
+		await interaction.reply({
+			embeds: [
+				new EmbedBuilder()
+					.setTitle("Bot status successfully changed!")
+					.setColor(settings.colors.green),
+			],
+			components: addDeleteButton(),
+		});
 	},
 } as Command;

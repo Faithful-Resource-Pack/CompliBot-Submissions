@@ -14,22 +14,20 @@ export default {
 		.setDMPermission(false),
 	async execute(interaction) {
 		if (process.env.DEVELOPERS.includes(interaction.user.id)) {
-			return interaction
-				.reply({
-					embeds: [
-						new EmbedBuilder()
-							.setAuthor({
-								name: "Member banned",
-								iconURL:
-									"https://raw.githubusercontent.com/Faithful-Resource-Pack/Branding/main/role%20icons/5%20-%20Moderator.png",
-							})
-							.setDescription(`<@${interaction.user.id}> has been banned`)
-							.addFields({ name: "Reason", value: "trying to stop me lmao" })
-							.setColor(settings.colors.red),
-					],
-					withResponse: true,
-				})
-				.then(({ resource }) => addDeleteButton(resource.message));
+			return interaction.reply({
+				embeds: [
+					new EmbedBuilder()
+						.setAuthor({
+							name: "Member banned",
+							iconURL:
+								"https://raw.githubusercontent.com/Faithful-Resource-Pack/Branding/main/role%20icons/5%20-%20Moderator.png",
+						})
+						.setDescription(`<@${interaction.user.id}> has been banned`)
+						.addFields({ name: "Reason", value: "trying to stop me lmao" })
+						.setColor(settings.colors.red),
+				],
+				components: addDeleteButton(),
+			});
 		}
 
 		await interaction.reply({

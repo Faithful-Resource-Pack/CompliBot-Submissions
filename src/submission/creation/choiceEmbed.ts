@@ -143,7 +143,10 @@ export async function sendChoiceEmbed(message: Message<true>, results: Texture[]
 	if (messageLength > MAX_LENGTH)
 		embed.setTitle(`Showing 1–${resultCount} of ${choices.length} results`);
 
-	const choiceMessage = await message.reply({ embeds: [embed], components: components });
-	await addDeleteButton(choiceMessage);
+	const choiceMessage = await message.reply({
+		embeds: [embed],
+		components: addDeleteButton(components),
+	});
+
 	return choiceMessage;
 }

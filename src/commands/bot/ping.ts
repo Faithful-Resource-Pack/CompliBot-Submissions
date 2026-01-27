@@ -19,23 +19,20 @@ export default {
 		const quote = quotes[Math.floor(Math.random() * quotes.length)];
 		// NEVER USE AWAIT ASYNC
 		// only send response to maximize response time
-		return interaction
-			.reply({ content: "** **", withResponse: true })
-			.then(({ resource }) => {
-				const apiPing = interaction.client.ws.ping;
-				const botPing = resource.message.createdTimestamp - interaction.createdTimestamp;
+		return interaction.reply({ content: "** **", withResponse: true }).then(({ resource }) => {
+			const apiPing = interaction.client.ws.ping;
+			const botPing = resource.message.createdTimestamp - interaction.createdTimestamp;
 
-				const embed = new EmbedBuilder()
-					.setTitle("Pong!")
-					.setDescription(`_${quote.replace("%YEAR%", String(new Date().getFullYear() + 2))}_`)
-					.setColor(settings.colors.blue)
-					.addFields(
-						{ name: "Bot Latency", value: `${botPing}ms`, inline: true },
-						{ name: "API Latency", value: `${Math.round(apiPing)}ms`, inline: true },
-					);
+			const embed = new EmbedBuilder()
+				.setTitle("Pong!")
+				.setDescription(`_${quote.replace("%YEAR%", String(new Date().getFullYear() + 2))}_`)
+				.setColor(settings.colors.blue)
+				.addFields(
+					{ name: "Bot Latency", value: `${botPing}ms`, inline: true },
+					{ name: "API Latency", value: `${Math.round(apiPing)}ms`, inline: true },
+				);
 
-				return interaction.editReply({ embeds: [embed] });
-			})
-			.then(addDeleteButton);
+			return interaction.editReply({ embeds: [embed], components: addDeleteButton() });
+		});
 	},
 } as Command;

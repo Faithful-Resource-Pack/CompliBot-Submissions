@@ -1,29 +1,34 @@
-import { ActionRow, ActionRowBuilder, ButtonBuilder, ComponentType, Message } from "discord.js";
+import {
+	ActionRowBuilder,
+	AnyComponentBuilder,
+	ButtonBuilder,
+	ComponentType,
+	MessageActionRowComponentBuilder,
+} from "discord.js";
 import { deleteButton } from "@helpers/interactions";
 
 /**
- * Add delete button to bot message
+ * Add delete button to message components
  * @author Evorp
- * @param message message sent by bot
+ * @param components message components to add delete button to
  */
-export default async function addDeleteButton(message: Message) {
-	// djs v14.19 workaround
-	const actionRow = message.components.at(-1) as ActionRow<any>;
-	if (
-		message.components[0] != undefined &&
-		actionRow.components.length < 5 && // check there aren't 5 buttons
-		actionRow.components[0].type === ComponentType.Button // checks there isn't a select menu
-	) {
-		const deleteRow = ActionRowBuilder.from<ButtonBuilder>(actionRow).addComponents(deleteButton);
+export default function addDeleteButton(
+	components: ActionRowBuilder<MessageActionRowComponentBuilder>[] = [],
+): ActionRowBuilder<MessageActionRowComponentBuilder>[] {
+	if (components.length >= 5) return components;
 
-		return message.edit({
-			components: [...message.components.slice(0, -1), deleteRow],
-		});
-	}
-	return message.edit({
-		components: [
-			...message.components,
-			new ActionRowBuilder<ButtonBuilder>().addComponents(deleteButton),
-		],
-	});
+	const lastRow = components.at(-1);
+	const canAppend =
+		lastRow !== undefined && // there is at least one existing row
+		lastRow.components.length < 5 && // check there aren't 5 buttons already
+		lastRow.components[0].data.type === ComponentType.Button; // not a select menu or something
+
+	if (canAppend)
+		return [
+			...components.slice(0, -1),
+			ActionRowBuilder.from<MessageActionRowComponentBuilder>(lastRow).addComponents(deleteButton),
+		];
+
+	// if there's no existing buttons it spreads an empty array so it works fine
+	return [...components, new ActionRowBuilder<ButtonBuilder>().addComponents(deleteButton)];
 }

@@ -108,19 +108,18 @@ export default {
 			}
 		}
 
-		return interaction
-			.editReply({
-				embeds: [
-					new EmbedBuilder()
-						.setTitle(
-							`Successfully removed [#${id}] ${name} from ${choice === "all" ? "all packs" : packs[0].name}!`,
-						)
-						.setDescription(
-							"Note that this does not remove contributions or other pack-specific data.",
-						)
-						.setColor(settings.colors.green),
-				],
-			})
-			.then((msg) => addDeleteButton(msg));
+		return interaction.editReply({
+			embeds: [
+				new EmbedBuilder()
+					.setTitle(
+						`Successfully removed [#${id}] ${name} from ${choice === "all" ? "all packs" : packs[0].name}!`,
+					)
+					.setDescription(
+						"Note that this does not remove contributions or other pack-specific data.",
+					)
+					.setColor(settings.colors.green),
+			],
+			components: addDeleteButton(),
+		});
 	},
 } as Command;

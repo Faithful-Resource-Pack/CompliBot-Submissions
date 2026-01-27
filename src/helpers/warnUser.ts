@@ -18,7 +18,7 @@ export default async function warnUser(
 	interaction: AnyInteraction | Message,
 	text = strings.bot.error,
 	deferred = false,
-): Promise<Message> {
+) {
 	const embed = new EmbedBuilder()
 		.setColor(settings.colors.red)
 		.setThumbnail(settings.images.warning)
@@ -26,17 +26,15 @@ export default async function warnUser(
 		.setDescription(text);
 
 	if (interaction instanceof Message)
-		return interaction.reply({ embeds: [embed] }).then(addDeleteButton);
+		return interaction.reply({ embeds: [embed], components: addDeleteButton() });
 
 	if (deferred) {
 		await interaction.deleteReply().catch(() => {});
 		return interaction.followUp({ embeds: [embed], flags: MessageFlags.Ephemeral });
 	}
-	return interaction
-		.reply({
-			embeds: [embed],
-			flags: MessageFlags.Ephemeral,
-			withResponse: true,
-		})
-		.then(({ resource }) => resource?.message);
+
+	return interaction.reply({
+		embeds: [embed],
+		flags: MessageFlags.Ephemeral,
+	});
 }

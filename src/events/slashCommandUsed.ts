@@ -20,21 +20,19 @@ export default {
 		} catch (error) {
 			handleError(interaction.client, error, "Slash Command Error");
 
-			const embed = new EmbedBuilder()
-				.setColor(settings.colors.red)
-				.setTitle(strings.bot.error)
-				.setThumbnail(settings.images.error)
-				.setDescription(
-					`${strings.command.error}\nError for the developers:\n\`\`\`${error}\`\`\``,
-				);
-
-			const msgEmbed = interaction.deferred
-				? await interaction.followUp({ embeds: [embed] })
-				: await interaction
-						.reply({ embeds: [embed], withResponse: true })
-						.then(({ resource }) => resource.message);
-
-			return addDeleteButton(msgEmbed);
+			const options = {
+				embeds: [
+					new EmbedBuilder()
+						.setColor(settings.colors.red)
+						.setTitle(strings.bot.error)
+						.setThumbnail(settings.images.error)
+						.setDescription(
+							`${strings.command.error}\nError for the developers:\n\`\`\`${error}\`\`\``,
+						),
+				],
+				components: addDeleteButton(),
+			};
+			return interaction.deferred ? interaction.followUp(options) : interaction.reply(options);
 		}
 	},
 } as Event;
