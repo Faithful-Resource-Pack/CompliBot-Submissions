@@ -19,7 +19,7 @@ export interface DownloadableMessage {
 	url: string;
 	authors: string[];
 	date: number;
-	id: string; // texture id
+	id: number; // texture id
 }
 
 /**
@@ -109,5 +109,5 @@ export const mapDownloadableMessage = (message: Message): DownloadableMessage =>
 		.split("\n")
 		.map((author) => author.match(/\d+/g)?.[0] || ""),
 	date: message.createdTimestamp,
-	id: message.embeds[0].title?.match(/(?<=\[#)(.*?)(?=\])/)?.[0] || "",
+	id: Number(message.embeds[0].title?.match(/(?<=\[#)(\d+)(?=\])/)?.[0]),
 });

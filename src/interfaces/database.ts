@@ -19,7 +19,7 @@ export interface Contribution {
 	// id not there when posting contribution
 	id?: string;
 	date: number;
-	texture: string;
+	texture: number;
 	pack: string;
 	authors: string[];
 }
