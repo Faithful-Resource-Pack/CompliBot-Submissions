@@ -1,6 +1,5 @@
 import {
 	ActionRowBuilder,
-	AnyComponentBuilder,
 	ButtonBuilder,
 	ComponentType,
 	MessageActionRowComponentBuilder,
@@ -11,6 +10,7 @@ import { deleteButton } from "@helpers/interactions";
  * Add delete button to message components
  * @author Evorp
  * @param components message components to add delete button to
+ * @returns edited component array with delete button added
  */
 export default function addDeleteButton(
 	components: ActionRowBuilder<MessageActionRowComponentBuilder>[] = [],
