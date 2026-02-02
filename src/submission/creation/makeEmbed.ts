@@ -65,7 +65,11 @@ export default async function makeEmbed(
 	}
 
 	const embed = new EmbedBuilder()
-		.setAuthor({ name: message.author.username, iconURL: message.author.displayAvatarURL() })
+		.setAuthor({
+			name: message.author.username,
+			iconURL: message.author.displayAvatarURL(),
+			url: `https://faithfulpack.net/user/${message.author.id}`,
+		})
 		.setTitle(`[#${texture.id}] ${texture.name}`)
 		.setColor(settings.colors.blue)
 		.setURL(
