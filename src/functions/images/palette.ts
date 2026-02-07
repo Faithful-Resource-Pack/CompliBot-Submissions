@@ -5,13 +5,12 @@ import type { AnyInteraction } from "@interfaces/discord";
 import type { ImageSource } from "@interfaces/images";
 
 import { createCanvas, loadImage } from "@napi-rs/canvas";
-import { EmbedBuilder, AttachmentBuilder, MessageFlags } from "discord.js";
+import { EmbedBuilder, AttachmentBuilder, MessageFlags, APIEmbedField } from "discord.js";
 
 const COOLORS_URL = "https://coolors.co/";
 
-const COLORS_PER_PALETTE = 9;
-const COLORS_PER_PALETTE_LINE = 3;
-const COLORS_TOP = COLORS_PER_PALETTE * 6;
+const COLORS_PER_FIELD = 10;
+const MAX_EMBED_COLORS = COLORS_PER_FIELD * 6;
 
 const GRADIENT_TOP = 250;
 const GRADIENT_SAT_THRESHOLD = 15 / 100;
@@ -73,7 +72,7 @@ export default async function palette(interaction: AnyInteraction, origin: Image
 	// convert back to array
 	const colors = Object.values(allColors)
 		.sort((a, b) => b.count - a.count)
-		.slice(0, COLORS_TOP)
+		.slice(0, MAX_EMBED_COLORS)
 		.map((el) => el.hex);
 
 	const embed = new EmbedBuilder()
@@ -81,44 +80,27 @@ export default async function palette(interaction: AnyInteraction, origin: Image
 		.setDescription(`Total: ${Object.keys(allColors).length}`)
 		.setColor(settings.colors.blue);
 
-	const fieldGroups: string[][][] = [];
-	let group: number;
-	for (let i = 0; i < colors.length; ++i) {
-		// create 9 groups
-		if (i % COLORS_PER_PALETTE === 0) {
-			fieldGroups.push([]);
-			group = 0;
-		}
-
-		// each groups has 3 lines
-		if (group % COLORS_PER_PALETTE_LINE === 0) fieldGroups.at(-1).push([]);
-
-		// add color to latest group latest line
-		fieldGroups.at(-1)[fieldGroups[fieldGroups.length - 1].length - 1].push(colors[i]);
-		++group;
-	}
-
-	fieldGroups.forEach((group, index) => {
-		const groupValue = group
-			.map((line) =>
-				line.map((color) => `[\`${color}\`](${COOLORS_URL}${color.replace("#", "")})`).join(" "),
-			)
-			.join(" ");
-
-		embed.addFields({
-			name: "Hex" + (fieldGroups.length > 1 ? ` part ${index + 1}` : "") + ": ",
-			value: groupValue,
+	const fields = colors
+		.reduce<string[][]>((acc, cur, i) => {
+			if (i % COLORS_PER_FIELD === 0) acc.push([]);
+			acc[acc.length - 1].push(cur);
+			return acc;
+		}, [])
+		.map<APIEmbedField>((colorGroup, i, self) => ({
+			name: `Hex ${self.length > 1 ? `part ${i + 1}` : ""}:`,
+			value: colorGroup.map((color) => `[\`#${color}\`](${COOLORS_URL}${color})`).join(" "),
 			inline: true,
-		});
-	});
+		}));
+
+	embed.addFields(fields);
 
 	// create palette links, 9 max per link
 	// make arrays of hex arrays
-	const paletteGroups: string[][] = [];
-	for (let i = 0; i < colors.length; ++i) {
-		if (i % COLORS_PER_PALETTE === 0) paletteGroups.push([]);
-		paletteGroups.at(-1).push(colors[i].replace("#", ""));
-	}
+	const paletteGroups = colors.reduce<string[][]>((acc, cur, i) => {
+		if (i % COLORS_PER_FIELD === 0) acc.push([]);
+		acc[acc.length - 1].push(cur);
+		return acc;
+	}, []);
 
 	// create urls
 	const paletteUrls: string[] = [];
@@ -170,7 +152,7 @@ export default async function palette(interaction: AnyInteraction, origin: Image
 	const outCtx = output.getContext("2d");
 
 	allColorsSorted.forEach((color, index) => {
-		outCtx.fillStyle = color.hex;
+		outCtx.fillStyle = `#${color.hex}`;
 		outCtx.globalAlpha = color.opacity.reduce((a, v, i) => (a * i + v) / (i + 1)); // average alpha
 		outCtx.fillRect(bandWidth * index, 0, bandWidth, GRADIENT_HEIGHT);
 	});
@@ -189,10 +171,9 @@ export default async function palette(interaction: AnyInteraction, origin: Image
 
 function rgbToHex(r: number, g: number, b: number) {
 	return (
-		"#" +
-		((r | (1 << 8)).toString(16).slice(1) +
-			(g | (1 << 8)).toString(16).slice(1) +
-			(b | (1 << 8)).toString(16).slice(1))
+		(r | (1 << 8)).toString(16).slice(1) +
+		(g | (1 << 8)).toString(16).slice(1) +
+		(b | (1 << 8)).toString(16).slice(1)
 	);
 }
 
