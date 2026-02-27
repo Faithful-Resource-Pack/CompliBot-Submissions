@@ -55,7 +55,7 @@ export default async function downloadTexture(
  */
 function generatePaths(textureInfo: Texture, pack: Pack, baseFolder: string) {
 	// flatMap is a one to many operation
-	return textureInfo.uses.flatMap((use) => {
+	return textureInfo.uses.flatMap<string>((use) => {
 		const paths = textureInfo.paths.filter((path) => path.use === use.id);
 		const packFolder = pack.github[use.edition]?.repo;
 		if (!packFolder) {

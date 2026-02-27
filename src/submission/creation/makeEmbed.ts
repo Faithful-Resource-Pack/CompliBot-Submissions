@@ -156,7 +156,7 @@ export async function createEmbedImages(
 	return {
 		image: comparedUrl,
 		thumbnail: thumbnailUrl,
-		footer: hasReference ? "Reference | Proposed | Current" : "Reference | Proposed",
+		footer: hasReference ? "Reference | Submitted | Current" : "Reference | Submitted",
 		buttons: hasReference ? diffableButtons : submissionButtons,
 	};
 }

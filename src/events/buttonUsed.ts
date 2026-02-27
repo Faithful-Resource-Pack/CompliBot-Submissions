@@ -60,10 +60,10 @@ export default {
 				await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 
 				const currentUrl = `${process.env.API_URL}textures/${id}/url/${pack.id}/latest`;
-				const proposedUrl = message.embeds[0].thumbnail?.url || "";
+				const submittedUrl = message.embeds[0].thumbnail?.url || "";
 
-				const diff = await difference(currentUrl, proposedUrl);
-				if (!diff || !proposedUrl) {
+				const diff = await difference(currentUrl, submittedUrl);
+				if (!diff || !submittedUrl) {
 					return warnUser(
 						interaction,
 						"There is no existing texture to find the difference of!",

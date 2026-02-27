@@ -6,6 +6,7 @@
 		"module": "commonjs",
 		"target": "ESNEXT",
 		"noEmit": true,
+		"strict": false,
 		"paths": {
 			"@functions/*": ["./src/functions/*"],
 			"@helpers/*": ["./src/helpers/*"],
