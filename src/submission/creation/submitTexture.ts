@@ -53,7 +53,8 @@ export default async function submitTexture(message: Message<true>) {
 				submitAttachment(message, results, doInstapass, {
 					attachment,
 					description,
-					authors,
+					// clone reference or authors start accumulating
+					authors: new Set(authors),
 				}),
 			),
 		)
