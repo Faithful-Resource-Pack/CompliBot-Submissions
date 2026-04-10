@@ -11,7 +11,7 @@ import { Attachment, Message } from "discord.js";
  * @author Juknum, Evorp
  * @param message message to embed
  * @param attachment image to process
- * @returns results or an error string
+ * @returns texture result array or an error string
  */
 export default async function getTextureResults(
 	message: Message<true>,
@@ -24,27 +24,38 @@ export default async function getTextureResults(
 	// throw the error string as copium for no result types
 	if (!url.endsWith(".png")) throw strings.submission.invalid_format;
 
-	// try and get the texture id from the message contents
+	// prioritize id if exists, otherwise use texture name
 	const id = message.content.match(/(?<=\[#)(.+?)(?=\])/)?.[0];
-
-	// if there's no id, take image url to get name of texture
 	const search = id ?? name;
 
 	// if there's no search and no id the submission can't be valid
 	if (!search) throw strings.submission.no_name_given;
 	const formattedSearch = id === search ? `[#${id}] ${name}` : search;
 
-	let results: Texture[] = [];
-	try {
-		results = (await axios.get<Texture[]>(`${process.env.API_URL}textures/${search}/all`)).data;
-	} catch {
-		throw `${strings.submission.does_not_exist}\`\`\`${formattedSearch}\`\`\``;
-	}
-
-	// if using texture id
-	if (!Array.isArray(results)) results = [results];
-	if (!results.length) throw `${strings.submission.does_not_exist}\`\`\`${formattedSearch}\`\`\``;
-
 	// keep attachment with results so if something gets cancelled things don't shift
-	return { results, attachment };
+	return {
+		results: await searchTextures(search, formattedSearch),
+		attachment,
+	};
+}
+
+/**
+ * Safe texture search with somewhat intelligent error messages
+ * @author Evorp
+ * @param search user search string
+ * @param formatted formatted search to show user if something goes wrong
+ * @returns texture results or error string if something goes wrong
+ */
+async function searchTextures(search: string, formatted?: string) {
+	try {
+		const results = (await axios.get<Texture[]>(`${process.env.API_URL}textures/${search}/all`))
+			.data;
+		const cleaned = Array.isArray(results) ? results : [results];
+
+		// passes into error handler
+		if (!cleaned.length) throw new Error("No results found");
+		return cleaned;
+	} catch {
+		throw `${strings.submission.does_not_exist}\n\`\`\`${formatted || search}\`\`\``;
+	}
 }
