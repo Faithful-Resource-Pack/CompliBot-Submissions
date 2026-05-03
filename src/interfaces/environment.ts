@@ -10,7 +10,7 @@ declare global {
 			readonly LOG_CHANNEL: string;
 
 			readonly MAINTENANCE: string;
-			readonly FETCH_SETTINGS: string;
+			readonly DYNAMIC_PACK_DATA: string;
 			readonly DEBUG: string;
 			readonly DEV: string;
 

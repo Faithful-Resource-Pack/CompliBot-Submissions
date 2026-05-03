@@ -56,9 +56,10 @@ export interface MCMETA {
 export interface Pack {
 	id: string;
 	name: string;
-	tags: string[];
-	logo: string;
-	resolution: number;
+	// makes typing custom packs less cumbersome (irrelevant)
+	tags?: string[];
+	logo?: string;
+	resolution?: number;
 	github: Record<MinecraftEdition, { org: string; repo: string }>;
 	submission: Submission;
 }
