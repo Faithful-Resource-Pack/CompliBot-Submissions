@@ -37,6 +37,13 @@ export default async function reactionMenu(openReaction: MessageReaction, user: 
 	// first author in the author field is always the person who submitted
 	const submissionAuthorID = message.embeds[0].fields[0].value.split("\n")[0].replace(/\D+/g, "");
 
+	// disable self-voting (way easier to do it here since we already have the submission author)
+	if (
+		user.id === submissionAuthorID &&
+		[settings.emojis.upvote, settings.emojis.downvote].includes(openReaction.emoji.id)
+	)
+		return openReaction.users.remove(submissionAuthorID);
+
 	// if you don't check to close tray first, the bot won't listen for reactions upon restart
 	if (openReaction.emoji.id === settings.emojis.see_less) return closeTray(message, allReactions);
 
