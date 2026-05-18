@@ -30,7 +30,7 @@ interface BackupResults {
  * @param params configure where to backup to
  * @returns which collections backed up and the git commit SHA
  */
-export default async function saveDB(
+export default async function backup(
 	client: Client,
 	commitMessage = "Daily Backup",
 	{ org, repo, branch, folder }: BackupParams = {},
@@ -48,26 +48,23 @@ export default async function saveDB(
 	const failedPushes: string[] = [];
 
 	await Promise.all(
-		Object.entries(backup.urls).map(([filename, url]) =>
-			axios
-				.get(process.env.API_URL + url, {
+		Object.entries(backup.urls).map(async ([filename, url]) => {
+			try {
+				const fetched = await axios.get<Record<string, unknown>>(process.env.API_URL + url, {
 					headers: {
 						// for privileged collections like addons, ignored if not needed
 						bot: process.env.API_TOKEN,
 					},
-				})
-				.then((fetched) => {
-					writeFile(join(folderPath, `${filename}.json`), JSON.stringify(fetched.data), {
-						flag: "w+",
-						encoding: "utf-8",
-					});
-				})
-				.then(() => successfulPushes.push(filename))
-				.catch((err) => {
-					failedPushes.push(filename);
-					handleError(client, err, `Failed to back up collection "${filename}"`);
-				}),
-		),
+				});
+				await writeFile(join(folderPath, `${filename}.json`), JSON.stringify(fetched.data), {
+					encoding: "utf-8",
+				});
+				successfulPushes.push(filename);
+			} catch (err: unknown) {
+				failedPushes.push(filename);
+				handleError(client, err, `Failed to back up collection "${filename}"`);
+			}
+		}),
 	);
 
 	if (DEBUG) console.log(`Downloaded database files: ${successfulPushes}`);

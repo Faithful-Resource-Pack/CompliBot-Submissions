@@ -2,7 +2,7 @@ import settings from "@resources/settings.json";
 import strings from "@resources/strings.json";
 import type { Command } from "@interfaces/discord";
 
-import saveDB from "@functions/saveDB";
+import backup from "@functions/backup";
 import warnUser from "@helpers/warnUser";
 import addDeleteButton from "@helpers/addDeleteButton";
 
@@ -20,7 +20,7 @@ export default {
 
 		await interaction.deferReply();
 
-		const { successfulPushes, failedPushes, commit } = await saveDB(
+		const { successfulPushes, failedPushes, commit } = await backup(
 			interaction.client,
 			`Manual backup executed by: ${interaction.user.displayName}`,
 		);

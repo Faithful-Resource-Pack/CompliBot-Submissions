@@ -8,7 +8,7 @@ import { sendToResults } from "@submission/discord/sendToChannel";
 import { handleResults } from "@submission/results/handleResults";
 import pushTextures from "@submission/results/pushTextures";
 
-import saveDB from "@functions/saveDB";
+import backup from "@functions/backup";
 import handleError from "@functions/handleError";
 
 import { CronJob } from "cron";
@@ -88,7 +88,7 @@ export default {
 			async onTick() {
 				// sync since github can get cranky if you push too many commits too quickly
 				for (const pack of Object.keys(packs)) await pushTextures("./downloadedTextures", pack);
-				await saveDB(client);
+				await backup(client);
 			},
 			start: true,
 		});
