@@ -4,7 +4,7 @@
 		"missing_interaction": "This %INTERACTION% doesn't have an event set up yet!"
 	},
 	"command": {
-		"error": "One of my developers made an error while making this command! Don't worry, the error is not on your side. Please contact <@360249987927638016>, <@473860522710794250>, or <@173336582265241601> if this keeps occurring.",
+		"error": "One of my developers made an error while making this command! Don't worry, the error is not on your side. Please contact <@360249987927638016> or <@173336582265241601> if this keeps occurring.",
 		"maintenance": "I'm currently under maintenance, please try again later.",
 		"description": {
 			"autopush": "Push textures from a result channel to GitHub.",
@@ -38,7 +38,7 @@
 			},
 			"developing": {
 				"title": "Developing",
-				"description": "I'm fully open source (written in TypeScript and Discord.js) and can be cloned at my GitHub repository [here](https://github.com/faithful-resource-pack/complibot-submissions).\n\nIf you're interested in developing, contact <@473860522710794250>, <@360249987927638016>, or <@173336582265241601> for more information."
+				"description": "I'm fully open source (written in TypeScript and Discord.js) and can be cloned at my GitHub repository [here](https://github.com/faithful-resource-pack/complibot-submissions).\n\nIf you're interested in developing, contact <@360249987927638016> or <@173336582265241601> for more information."
 			}
 		}
 	},

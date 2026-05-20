@@ -6,6 +6,7 @@ import handleError from "@functions/handleError";
 
 import axios from "axios";
 import { Client } from "discord.js";
+import formattedDate from "@helpers/formattedDate";
 
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
@@ -32,7 +33,7 @@ interface BackupResults {
  */
 export default async function backup(
 	client: Client,
-	commitMessage = "Daily Backup",
+	commitMessage = `Back up Firestorm collections from ${formattedDate()}`,
 	{ org, repo, branch, folder }: BackupParams = {},
 ): Promise<BackupResults> {
 	const { backup } = require("@resources/settings.json");
