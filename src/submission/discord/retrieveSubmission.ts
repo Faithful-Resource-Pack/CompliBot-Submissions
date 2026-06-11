@@ -1,8 +1,7 @@
-import settings from "@resources/settings.json";
-
-import getMessages from "@helpers/getMessages";
+import getSubmissions from "@helpers/getSubmissions";
 
 import { ActionRow, Client, Embed, Message, MessageActionRowComponent } from "discord.js";
+import { SubmissionStatus, TextureSubmission } from "@submission/TextureSubmission";
 
 export interface SendableMessage {
 	upvote: number;
@@ -27,47 +26,23 @@ export default async function retrieveSubmission(client: Client, channelID: stri
 	const delayedDate = new Date();
 	delayedDate.setDate(delayedDate.getDate() - delay);
 
-	const messages = await getMessages(client, channelID, (message) => {
-		const messageDate = new Date(message.createdTimestamp);
-		return (
-			// correct date
-			messageDate.getDate() === delayedDate.getDate() &&
-			messageDate.getMonth() === delayedDate.getMonth() &&
-			messageDate.getFullYear() === delayedDate.getFullYear() &&
-			// only get pending submissions
-			message.embeds?.[0]?.fields[1]?.value?.includes(settings.emojis.pending)
-		);
-	});
+	const submissions = await getSubmissions(
+		client,
+		channelID,
+		(submission) =>
+			submission.status === SubmissionStatus.Pending && submission.isFromDate(delayedDate),
+	);
 
-	const mappedMessages: SendableMessage[] = messages.map(mapSendableMessage);
-
-	const messagesUpvoted = mappedMessages.filter(
-		({ upvote, downvote }) =>
-			upvote > downvote ||
+	const upvotedSubmissions = submissions.filter(
+		({ votes }) =>
+			votes.upvotes > votes.upvotes ||
 			// if nobody voted assume nobody cares
-			(upvote === DEFAULT_REACTION_COUNT && downvote === DEFAULT_REACTION_COUNT),
+			(votes.upvotes === DEFAULT_REACTION_COUNT && votes.downvotes === DEFAULT_REACTION_COUNT),
 	);
 
 	return {
-		messagesUpvoted,
+		upvotedSubmissions,
 		// whatever isn't in messagesUpvoted is denied (reduces redundancy this way)
-		messagesDownvoted: mappedMessages.filter((msg) => !messagesUpvoted.includes(msg)),
+		downvotedSubmissions: submissions.filter((msg) => !upvotedSubmissions.includes(msg)),
 	};
 }
-
-/**
- * Map a texture to a sendable format
- * @author Juknum
- * @param message message to map
- * @returns sendable message
- */
-export const mapSendableMessage = (message: Message): SendableMessage => ({
-	// sometimes cache misses cause some really strange bugs
-	// todo: investigate more robust way to deal with it
-	upvote: message.reactions.cache.get(settings.emojis.upvote)?.count ?? DEFAULT_REACTION_COUNT,
-	downvote: message.reactions.cache.get(settings.emojis.downvote)?.count ?? DEFAULT_REACTION_COUNT,
-	embed: message.embeds[0],
-	// djs v14.19 workaround
-	components: message.components as ActionRow<MessageActionRowComponent>[],
-	message,
-});

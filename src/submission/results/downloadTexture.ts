@@ -2,44 +2,44 @@ import { mkdir, writeFile } from "fs/promises";
 import { join, sep } from "path";
 
 import type { Pack, Texture } from "@interfaces/database";
-import { DownloadableMessage } from "@submission/results/handleResults";
 
 import axios from "axios";
+import { TextureSubmission } from "@submission/TextureSubmission";
 
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
 /**
  * Download a single texture to all its paths locally
  * @author Evorp
- * @param texture message and texture info
+ * @param submission message and texture info
  * @param pack which pack to download it to
  * @param baseFolder where to download the texture to
  * @returns found texture info
  */
 export default async function downloadTexture(
-	texture: DownloadableMessage,
-	pack: Pack,
+	submission: TextureSubmission,
 	baseFolder: string,
 ): Promise<Texture | undefined> {
-	if (!texture.id || isNaN(Number(texture.id))) {
-		if (DEBUG) console.error(`Non-numerical texture ID found: ${texture.id}`);
+	if (!submission.id || isNaN(submission.id)) {
+		if (DEBUG) console.error(`Non-numerical texture ID found: ${submission.id}`);
 		return;
 	}
 
-	const imageFile = (await axios.get<Buffer>(texture.url, { responseType: "arraybuffer" })).data;
+	const imageFile = (await axios.get<Buffer>(submission.imageURL, { responseType: "arraybuffer" }))
+		.data;
 
 	let textureInfo: Texture;
 	try {
-		textureInfo = (await axios.get<Texture>(`${process.env.API_URL}textures/${texture.id}/all`))
+		textureInfo = (await axios.get<Texture>(`${process.env.API_URL}textures/${submission.id}/all`))
 			.data;
 	} catch {
 		// handles if texture gets deleted in the db between submission and results (merged, obsolete, etc)
-		if (DEBUG) console.error(`Could not find texture for ID: ${texture.id}`);
+		if (DEBUG) console.error(`Could not find texture for ID: ${submission.id}`);
 		return;
 	}
 
 	// instead of making a bunch of nested loops generate one flat array of paths and use that
-	const allPaths = generatePaths(textureInfo, pack, baseFolder);
+	const allPaths = generatePaths(textureInfo, submission.pack, baseFolder);
 
 	await Promise.all(allPaths.map((fullPath) => downloadToPath(fullPath, imageFile)));
 	return textureInfo;

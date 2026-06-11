@@ -26,7 +26,7 @@ export async function sendToResults(client: Client, pack: Submission, delay?: nu
 
 	if (DEBUG) console.log(`Sending textures to channel: #${channelOut.name}`);
 
-	const { messagesUpvoted, messagesDownvoted } = await retrieveSubmission(
+	const { upvotedSubmissions: messagesUpvoted, downvotedSubmissions: messagesDownvoted } = await retrieveSubmission(
 		client,
 		pack.channels.submit,
 		delay ?? pack.time_to_results,

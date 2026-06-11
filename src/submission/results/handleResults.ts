@@ -1,5 +1,3 @@
-import settings from "@resources/settings.json";
-
 import type { Contribution } from "@interfaces/database";
 
 import {
@@ -8,19 +6,12 @@ import {
 	postContributions,
 } from "@submission/results/handleContributions";
 import downloadTexture from "@submission/results/downloadTexture";
-import getPackByChannel from "@submission/discord/getPackByChannel";
 
-import getMessages from "@helpers/getMessages";
+import getSubmissions from "@helpers/getSubmissions";
 import handleError from "@functions/handleError";
 
-import { TextChannel, Client, Message } from "discord.js";
-
-export interface DownloadableMessage {
-	url: string;
-	authors: string[];
-	date: number;
-	id: number; // texture id
-}
+import { TextChannel, Client } from "discord.js";
+import { SubmissionStatus, TextureSubmission } from "@submission/TextureSubmission";
 
 /**
  * Download passed submissions and add contributions/roles
@@ -34,41 +25,34 @@ export async function handleResults(
 	channelResultID: string,
 	addContributions = true,
 ) {
-	const pack = getPackByChannel(channelResultID);
-
-	// get messages from the same day
-	const delayedDate = new Date();
-	const messages = await getMessages(client, channelResultID, (message) => {
-		const messageDate = new Date(message.createdTimestamp);
-		return (
-			// correct date
-			messageDate.getDate() === delayedDate.getDate() &&
-			messageDate.getMonth() === delayedDate.getMonth() &&
-			messageDate.getFullYear() === delayedDate.getFullYear() &&
-			// is an accepted submission
-			message.embeds?.[0]?.fields?.[1]?.value?.includes(settings.emojis.upvote)
-		);
-	});
+	// only read new messages
+	const currentDate = new Date();
+	const submissions = await getSubmissions(
+		client,
+		channelResultID,
+		(submission) =>
+			submission.isFromDate(currentDate) && submission.status === SubmissionStatus.Approved,
+	);
 
 	// filter out duplicates first based on date-sorted array so we can do everything concurrently
-	const uniqueTextures = Object.values(
-		messages.map(mapDownloadableMessage).reduce<Record<string, DownloadableMessage>>((acc, cur) => {
+	const uniqueSubmissions = Object.values(
+		submissions.reduce<Record<string, TextureSubmission>>((acc, cur) => {
 			acc[cur.id] = cur;
 			return acc;
 		}, {}),
 	);
 
 	const allContributions: (Contribution | undefined)[] = await Promise.all(
-		uniqueTextures.map((texture) =>
-			downloadTexture(texture, pack, "./downloadedTextures")
+		uniqueSubmissions.map((submission) =>
+			downloadTexture(submission, "./downloadedTextures")
 				// only create contribution data if the texture download succeeded
-				.then(() => generateContributionData(texture, pack))
+				.then(() => generateContributionData(submission))
 				.catch(
 					(err: unknown) =>
 						void handleError(
 							client,
 							err,
-							`Failed to download texture [#${texture.id}] for pack ${pack.name}`,
+							`Failed to download texture [#${submission.id}] for pack ${submission.pack.name}`,
 						),
 				),
 		),
@@ -84,30 +68,18 @@ export async function handleResults(
 	// post all contributions at once (saves on requests) only if there's something to post
 	if (addedContributions.length) {
 		const guildID = (client.channels.cache.get(channelResultID) as TextChannel).guildId;
+
+		// we know at least one submission exists if there's contributions to add
+		const roleID = uniqueSubmissions[0].pack.submission.contributor_role;
+
 		return Promise.all([
 			postContributions(...addedContributions),
 			addContributorRole(
 				client,
-				pack,
 				guildID,
+				roleID,
 				addedContributions.flatMap((c) => c.authors),
 			),
 		]);
 	}
 }
-
-/**
- * Map a texture to a downloadable format
- * @author Juknum
- * @param message message to map
- * @returns downloadable message
- */
-export const mapDownloadableMessage = (message: Message): DownloadableMessage => ({
-	url: message.embeds[0].thumbnail?.url || "",
-	// only get the numbers (discord id)
-	authors: message.embeds[0].fields[0].value
-		.split("\n")
-		.map((author) => author.match(/\d+/g)?.[0] || ""),
-	date: message.createdTimestamp,
-	id: Number(message.embeds[0].title?.match(/(?<=\[#)(\d+)(?=\])/)?.[0]),
-});

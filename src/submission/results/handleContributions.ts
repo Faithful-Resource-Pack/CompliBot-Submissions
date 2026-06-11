@@ -1,8 +1,8 @@
-import { Contribution, Pack } from "@interfaces/database";
-import { DownloadableMessage } from "@submission/results/handleResults";
+import { Contribution } from "@interfaces/database";
 
 import { Client, GuildMember } from "discord.js";
 import axios from "axios";
+import { TextureSubmission } from "@submission/TextureSubmission";
 
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
@@ -14,37 +14,38 @@ const DEBUG = process.env.DEBUG.toLowerCase() === "true";
  * @param guildID where to add the role to
  * @param authors which authors to add roles to
  */
-export function addContributorRole(client: Client, pack: Pack, guildID: string, authors: string[]) {
+export function addContributorRole(
+	client: Client,
+	guildID: string,
+	roleID: string,
+	authors: string[],
+) {
 	const guild = client.guilds.cache.get(guildID);
-	const role = pack.submission.contributor_role;
 
 	// guild couldn't be fetched or no role exists
-	if (!guild || !role) return;
+	if (!guild || !roleID) return;
 
 	// Promise.all is faster than awaiting separately + less error handling needed
 	return Promise.all(
 		authors
 			.map((author) => guild.members.cache.get(author))
-			.filter((user): user is GuildMember => user !== undefined && !user.roles.cache.has(role))
-			.map((user) => user.roles.add(role).catch(() => {})),
+			.filter((user): user is GuildMember => user !== undefined && !user.roles.cache.has(roleID))
+			.map((user) => user.roles.add(roleID).catch(() => {})),
 	);
 }
 
 /**
  * Converts a mapped message to a contribution
  * @author Juknum
- * @param texture texture message
+ * @param submission texture message
  * @param pack contribution pack
  * @returns postable contribution
  */
-export const generateContributionData = (
-	texture: DownloadableMessage,
-	pack: Pack,
-): Contribution => ({
-	date: texture.date,
-	pack: pack.id,
-	texture: texture.id,
-	authors: texture.authors,
+export const generateContributionData = (submission: TextureSubmission): Contribution => ({
+	date: submission.date.getTime(),
+	pack: submission.pack.id,
+	texture: submission.id,
+	authors: submission.authors,
 });
 
 /**
