@@ -6,12 +6,12 @@ import {
 	postContributions,
 } from "@submission/results/handleContributions";
 import downloadTexture from "@submission/results/downloadTexture";
+import { SubmissionStatus, TextureSubmission } from "@interfaces/submission";
 
 import getSubmissions from "@helpers/getSubmissions";
 import handleError from "@functions/handleError";
 
 import { TextChannel, Client } from "discord.js";
-import { SubmissionStatus, TextureSubmission } from "@submission/TextureSubmission";
 
 /**
  * Download passed submissions and add contributions/roles

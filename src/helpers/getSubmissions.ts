@@ -1,5 +1,7 @@
-import { DiscordTextureSubmission, TextureSubmission } from "@submission/TextureSubmission";
-import { TextChannel, Message, FetchMessagesOptions, Client } from "discord.js";
+import type { TextureSubmission } from "@interfaces/submission";
+
+import DiscordTextureSubmission from "@submission/discord/DiscordTextureSubmission";
+import { TextChannel, FetchMessagesOptions, Client } from "discord.js";
 
 export type MessageFilter = (submission: TextureSubmission) => boolean;
 

@@ -4,7 +4,7 @@ import { join, sep } from "path";
 import type { Pack, Texture } from "@interfaces/database";
 
 import axios from "axios";
-import { TextureSubmission } from "@submission/TextureSubmission";
+import { TextureSubmission } from "@interfaces/submission";
 
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 

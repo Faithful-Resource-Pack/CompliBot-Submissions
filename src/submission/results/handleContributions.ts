@@ -2,7 +2,7 @@ import { Contribution } from "@interfaces/database";
 
 import { Client, GuildMember } from "discord.js";
 import axios from "axios";
-import { TextureSubmission } from "@submission/TextureSubmission";
+import { TextureSubmission } from "@interfaces/submission";
 
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 

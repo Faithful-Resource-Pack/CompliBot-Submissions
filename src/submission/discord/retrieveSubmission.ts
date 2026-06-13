@@ -1,15 +1,7 @@
+import { SubmissionStatus } from "@interfaces/submission";
+
 import getSubmissions from "@helpers/getSubmissions";
-
-import { ActionRow, Client, Embed, Message, MessageActionRowComponent } from "discord.js";
-import { SubmissionStatus, TextureSubmission } from "@submission/TextureSubmission";
-
-export interface SendableMessage {
-	upvote: number;
-	downvote: number;
-	embed: Embed;
-	components: ActionRow<MessageActionRowComponent>[];
-	message: Message;
-}
+import { Client } from "discord.js";
 
 // +1 for bot's own reaction
 export const DEFAULT_REACTION_COUNT = 1;
