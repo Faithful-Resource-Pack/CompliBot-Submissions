@@ -51,7 +51,7 @@
 			"description": "If you can't find what you're looking for, please be more specific!",
 			"placeholder": "Select a texture…"
 		},
-		"no_result_channel": "Could not fetch corresponding result channel! Please make sure that the pack data has been set up correctly in the web app.",
+		"no_result_channel": "Could not fetch corresponding result channel! Please make sure that the pack data has been set up correctly on the Faithful Studio pack page.",
 		"image_not_attached": "Please attach an image to your message!",
 		"invalid_format": "Please provide a valid `.png` file. Other file formats like `.zip` or `.tga` are currently not supported.",
 		"does_not_exist": "The specified texture name or ID doesn't exist!",
