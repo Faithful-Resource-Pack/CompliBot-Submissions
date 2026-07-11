@@ -34,6 +34,7 @@ export interface EmbedCreationParams {
 export interface EmbedImageParams {
 	image: string;
 	thumbnail: string;
+	// dependent on images even though they aren't images per se
 	footer: string;
 	buttons: ActionRowBuilder<ButtonBuilder>;
 }
@@ -140,7 +141,7 @@ export async function createEmbedImages(
 		return {
 			image: imageUrl,
 			thumbnail: imageUrl,
-			footer: strings.submission.cant_compare,
+			footer: strings.submission.footer.cant_compare,
 			buttons: submissionButtons,
 		};
 	}
@@ -148,7 +149,7 @@ export async function createEmbedImages(
 	if (DEBUG) console.log(`Generating comparison image for texture: ${texture.name}`);
 
 	// reuse loaded image from bounds check (optimization)
-	const { comparisonImage, hasReference } = await generateComparison(image, texture, pack);
+	const { comparisonImage, isEdit } = await generateComparison(image, texture, pack);
 
 	// send to #submission-spam for permanent urls
 	const [thumbnailUrl, comparedUrl] = await createImageURLs(
@@ -160,8 +161,8 @@ export async function createEmbedImages(
 	return {
 		image: comparedUrl,
 		thumbnail: thumbnailUrl,
-		footer: hasReference ? "Reference | Submitted | Current" : "Reference | Submitted",
-		buttons: hasReference ? diffableButtons : submissionButtons,
+		footer: isEdit ? strings.submission.footer.texture_edit : strings.submission.footer.texture_add,
+		buttons: isEdit ? diffableButtons : submissionButtons,
 	};
 }
 

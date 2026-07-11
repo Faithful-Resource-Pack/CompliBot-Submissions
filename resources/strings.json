@@ -56,6 +56,10 @@
 		"invalid_format": "Please provide a valid `.png` file. Other file formats like `.zip` or `.tga` are currently not supported.",
 		"does_not_exist": "The specified texture name or ID doesn't exist!",
 		"no_name_given": "No texture name or ID was found in your submission message!",
-		"cant_compare": "This texture is too big to create a comparison image!"
+		"footer": {
+			"cant_compare": "This texture is too big to create a comparison image!",
+			"texture_edit": "Reference | Submitted | Current",
+			"texture_add": "Reference | Submitted"
+		}
 	}
 }

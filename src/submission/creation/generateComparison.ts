@@ -8,8 +8,10 @@ import { Image, loadImage } from "@napi-rs/canvas";
 import { AttachmentBuilder } from "discord.js";
 
 interface ComparisonResults {
+	/** Stitched comparison image */
 	comparisonImage: AttachmentBuilder;
-	hasReference: boolean;
+	/** Whether the image was previously present in the pack or not */
+	isEdit: boolean;
 }
 
 /**
@@ -48,7 +50,7 @@ export default async function generateComparison(
 	if (images.length === 1) {
 		return {
 			comparisonImage: await magnifyToAttachment(images[0], "magnified.png"),
-			hasReference: false,
+			isEdit: false,
 		};
 	}
 
@@ -57,7 +59,7 @@ export default async function generateComparison(
 	if (!texture.paths.some((p) => p.mcmeta === true))
 		return {
 			comparisonImage: await magnifyToAttachment(stitched, "compared.png"),
-			hasReference: images.length === 3,
+			isEdit: images.length === 3,
 		};
 
 	// prevents random internal properties possibly being added in the embed
@@ -79,6 +81,6 @@ export default async function generateComparison(
 
 	return {
 		comparisonImage: new AttachmentBuilder(animated, { name: "compared.gif" }),
-		hasReference: images.length === 3,
+		isEdit: images.length === 3,
 	};
 }
