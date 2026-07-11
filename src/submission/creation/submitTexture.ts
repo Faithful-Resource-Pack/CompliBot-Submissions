@@ -85,7 +85,9 @@ export async function submitAttachment(
 	message.channel.sendTyping();
 	const options =
 		results.length === 1
-			? await makeEmbed(message, results[0], params)
+			? await makeEmbed(message, results[0], params).catch((err: unknown) =>
+					cancelSubmission(message, err),
+				)
 			: await choiceEmbed(message, results, params).catch<null>(() => null);
 
 	// choice embed timed out
