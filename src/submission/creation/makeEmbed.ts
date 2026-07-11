@@ -7,7 +7,7 @@ import generateComparison from "@submission/creation/generateComparison";
 import getPackByChannel from "@submission/discord/getPackByChannel";
 
 import { submissionButtons, diffableButtons } from "@helpers/interactions";
-import getImages from "@helpers/getImages";
+import createImageURLs from "@helpers/createImageURLs";
 import versionRange from "@helpers/versionRange";
 
 import {
@@ -126,7 +126,6 @@ export async function createEmbedImages(
 	pack: Pack,
 ): Promise<EmbedImageParams> {
 	// load raw image to pull from
-	const rawImage = new AttachmentBuilder(attachment.url, { name: `${texture.name}.png` });
 	const image = await loadImage(attachment.url);
 
 	// image is too big, don't even bother magnifying since it's already big enough
@@ -137,7 +136,7 @@ export async function createEmbedImages(
 			);
 
 		// image is too big so we just add it directly to the embed without comparison
-		const [imageUrl] = await getImages(client, attachment);
+		const [imageUrl] = await createImageURLs(client, attachment);
 		return {
 			image: imageUrl,
 			thumbnail: imageUrl,
@@ -148,10 +147,15 @@ export async function createEmbedImages(
 
 	if (DEBUG) console.log(`Generating comparison image for texture: ${texture.name}`);
 
-	const { comparisonImage, hasReference } = await generateComparison(attachment, texture, pack);
+	// reuse loaded image from bounds check (optimization)
+	const { comparisonImage, hasReference } = await generateComparison(image, texture, pack);
 
 	// send to #submission-spam for permanent urls
-	const [thumbnailUrl, comparedUrl] = await getImages(client, rawImage, comparisonImage);
+	const [thumbnailUrl, comparedUrl] = await createImageURLs(
+		client,
+		new AttachmentBuilder(attachment.url, { name: `${texture.name}.png` }),
+		comparisonImage,
+	);
 
 	return {
 		image: comparedUrl,

@@ -8,7 +8,7 @@ import { Client, AttachmentBuilder, TextChannel, Attachment } from "discord.js";
  * @param files files to get urls from
  * @returns array of image urls
  */
-export default async function getImages(
+export default async function createImageURLs(
 	client: Client,
 	...files: (AttachmentBuilder | Attachment)[]
 ): Promise<string[]> {

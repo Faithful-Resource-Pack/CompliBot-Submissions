@@ -5,7 +5,7 @@ import animate from "@images/animate";
 import stitch from "@images/stitch";
 
 import { Image, loadImage } from "@napi-rs/canvas";
-import { Attachment, AttachmentBuilder } from "discord.js";
+import { AttachmentBuilder } from "discord.js";
 
 interface ComparisonResults {
 	comparisonImage: AttachmentBuilder;
@@ -15,13 +15,13 @@ interface ComparisonResults {
 /**
  * Generate a submission comparison for a given texture, pack, and image
  * @author Evorp
- * @param attachment attachment to load
+ * @param image loaded submitted attachment
  * @param texture texture to compare against
  * @param pack pack to compare images against
  * @returns compared texture and info
  */
 export default async function generateComparison(
-	attachment: Attachment,
+	image: Image,
 	texture: Texture,
 	pack: Pack,
 ): Promise<ComparisonResults> {
@@ -38,7 +38,7 @@ export default async function generateComparison(
 				.catch(() => loadImage(`${baseURL}default/latest`))
 				// default doesn't exist either
 				.catch(() => null),
-			loadImage(attachment.url),
+			image,
 			// may not be present and that's fine
 			loadImage(`${baseURL}${pack.id}/latest`).catch(() => null),
 		])
