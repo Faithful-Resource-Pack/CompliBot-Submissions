@@ -4,8 +4,8 @@ import type { PackFile } from "@interfaces/database";
 import { loadCommands } from "@functions/commandHandler";
 import { fetchSettings } from "@functions/fetchSettings";
 
-import sendToResults from "@submission/discord/sendToResults";
-import { handleResults } from "@submission/results/handleResults";
+import sendResults from "@submission/results/sendResults";
+import downloadResults from "@submission/results/downloadResults";
 import pushTextures from "@submission/results/pushTextures";
 
 import backup from "@functions/backup";
@@ -52,7 +52,7 @@ export default {
 			async onTick() {
 				await Promise.all(
 					Object.values(packs).map((pack) =>
-						sendToResults(client, pack.submission).catch((err: unknown) => {
+						sendResults(client, pack.submission).catch((err: unknown) => {
 							handleError(client, err, `Failed to send results for ${pack.name}`);
 						}),
 					),
@@ -71,7 +71,7 @@ export default {
 				// sync since contribution adding can cause race conditions
 				for (const pack of Object.values(packs)) {
 					// errors don't stop the rest of the packs from downloading
-					await handleResults(client, pack.submission.channels.results).catch((err: unknown) => {
+					await downloadResults(client, pack.submission.channels.results).catch((err: unknown) => {
 						handleError(client, err, `Failed to download results for pack ${pack.name}`);
 					});
 				}

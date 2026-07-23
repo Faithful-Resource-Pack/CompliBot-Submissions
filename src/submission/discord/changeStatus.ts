@@ -69,7 +69,7 @@ export function editEmbed(
 	if (DEBUG)
 		console.log(
 			`Changing status "${
-				embed.data.fields?.[1]?.value.split("> ")[1]
+				embed.data.fields[1]?.value.split("> ")[1]
 			}" to "${status.split("> ")[1]}" for texture: ${embed.data.title}`,
 		);
 	// fields[1] is always the status field in submissions

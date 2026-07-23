@@ -4,7 +4,7 @@ import strings from "@resources/strings.json";
 import type { Command } from "@interfaces/discord";
 import type { Pack, PackFile } from "@interfaces/database";
 
-import { handleResults } from "@submission/results/handleResults";
+import downloadResults from "@submission/results/downloadResults";
 import pushTextures from "@submission/results/pushTextures";
 
 import formattedDate from "@helpers/formattedDate";
@@ -58,7 +58,7 @@ export default {
 
 		await Promise.all(
 			packs.map((pack) =>
-				handleResults(interaction.client, pack.submission.channels.results, addContributions),
+				downloadResults(interaction.client, pack.submission.channels.results, addContributions),
 			),
 		);
 

@@ -4,7 +4,7 @@ import strings from "@resources/strings.json";
 import type { Command } from "@interfaces/discord";
 import type { Pack, PackFile } from "@interfaces/database";
 
-import sendToResults from "@submission/discord/sendToResults";
+import sendResults from "@submission/results/sendResults";
 import warnUser from "@helpers/warnUser";
 
 import { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } from "discord.js";
@@ -43,7 +43,7 @@ export default {
 		await interaction.deferReply();
 
 		for (const pack of packs) {
-			await sendToResults(interaction.client, pack.submission, delay);
+			await sendResults(interaction.client, pack.submission, delay);
 		}
 
 		await interaction.editReply({

@@ -1,7 +1,6 @@
-import settings from "@resources/settings.json";
-
 import type { Contribution } from "@interfaces/database";
 
+import { getEmbedStatus, SubmissionStatus } from "@submission/discord/getEmbedStatus";
 import {
 	addContributorRole,
 	generateContributionData,
@@ -29,7 +28,7 @@ export interface DownloadableMessage {
  * @param channelResultID result channel to download from
  * @param addContributions whether to add contributions or not
  */
-export async function handleResults(
+export default async function downloadResults(
 	client: Client,
 	channelResultID: string,
 	addContributions = true,
@@ -46,7 +45,7 @@ export async function handleResults(
 			messageDate.getMonth() === delayedDate.getMonth() &&
 			messageDate.getFullYear() === delayedDate.getFullYear() &&
 			// is an accepted submission
-			message.embeds?.[0]?.fields?.[1]?.value?.includes(settings.emojis.upvote)
+			getEmbedStatus(message.embeds[0]) === SubmissionStatus.Approved
 		);
 	});
 

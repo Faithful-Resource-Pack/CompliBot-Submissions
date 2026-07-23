@@ -1,5 +1,5 @@
 import { Contribution, Pack } from "@interfaces/database";
-import { DownloadableMessage } from "@submission/results/handleResults";
+import { DownloadableMessage } from "@submission/results/downloadResults";
 
 import { Client, GuildMember } from "discord.js";
 import axios from "axios";

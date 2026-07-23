@@ -5,10 +5,10 @@ import { randomBytes } from "crypto";
 import type { Pack } from "@interfaces/database";
 
 import getPackByChannel from "@submission/discord/getPackByChannel";
-import { mapSendableMessage } from "@submission/discord/retrieveSubmission";
-import { sendMessage } from "@submission/discord/sendToResults";
+import { mapSendableMessage } from "@submission/discord/retrieveSubmissions";
+import { sendMessage } from "@submission/results/sendResults";
 
-import { mapDownloadableMessage } from "@submission/results/handleResults";
+import { mapDownloadableMessage } from "@submission/results/downloadResults";
 import downloadTexture from "@submission/results/downloadTexture";
 import {
 	addContributorRole,

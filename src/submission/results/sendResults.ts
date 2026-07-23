@@ -2,10 +2,10 @@ import settings from "@resources/settings.json";
 
 import type { Submission } from "@interfaces/database";
 
-import retrieveSubmission, {
+import retrieveSubmissions, {
 	DEFAULT_REACTION_COUNT,
 	type SendableMessage,
-} from "@submission/discord/retrieveSubmission";
+} from "@submission/discord/retrieveSubmissions";
 import changeStatus, { editEmbed } from "@submission/discord/changeStatus";
 
 import { submissionButtons } from "@helpers/interactions";
@@ -21,35 +21,36 @@ const DEBUG = process.env.DEBUG.toLowerCase() === "true";
  * @param pack pack information
  * @param delay override delay
  */
-export default async function sendToResults(client: Client, pack: Submission, delay?: number) {
+export default async function sendResults(client: Client, pack: Submission, delay?: number) {
 	const channelOut = client.channels.cache.get(pack.channels.results) as TextChannel;
 
 	if (DEBUG) console.log(`Sending textures to channel: #${channelOut.name}`);
 
-	const { messagesUpvoted, messagesDownvoted } = await retrieveSubmission(
+	const { messagesUpvoted, messagesDownvoted } = await retrieveSubmissions(
 		client,
 		pack.channels.submit,
 		delay ?? pack.time_to_results,
 	);
 
-	// must be resolved synchronously for submission order to be respected
+	// handle synchronously to preserve submission order (important when processing multiple identical textures)
 	for (const message of messagesUpvoted)
 		await sendMessage(message, channelOut, {
 			color: settings.colors.green,
 			emoji: `<:upvote:${settings.emojis.upvote}>`,
 			components: [submissionButtons],
 			originalStatus: "Sent to results!",
-			resultStatus: `Will be added in a future version! ${getPercentage(message.upvote, message.downvote)}`,
+			resultStatus: `Will be added in a future version! ${getPercentage(message.upvotes, message.downvotes)}`,
 		});
 
+	// group denied submissions at bottom of channel (more important for contributors to see)
 	for (const message of messagesDownvoted)
 		await sendMessage(message, channelOut, {
 			color: settings.colors.red,
 			emoji: `<:downvote:${settings.emojis.downvote}>`,
 			originalStatus: "Not enough upvotes!",
 			resultStatus: `This texture did not pass voting and therefore will not be added. ${getPercentage(
-				message.upvote,
-				message.downvote,
+				message.upvotes,
+				message.downvotes,
 			)}`,
 		});
 }

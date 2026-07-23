@@ -2,7 +2,7 @@ import settings from "@resources/settings.json";
 
 import instapass from "@submission/actions/instapass";
 import invalidate from "@submission/actions/invalidate";
-
+import { getEmbedStatus, SubmissionStatus } from "@submission/discord/getEmbedStatus";
 import { hasPermission, PermissionType } from "@helpers/permissions";
 
 import { GuildMember, Message, MessageReaction, User } from "discord.js";
@@ -120,7 +120,7 @@ function canOpenTray(
 	submissionAuthorID: string,
 ): boolean {
 	// only accept submissions and the see_more reaction
-	if (openReaction.emoji.id !== settings.emojis.see_more || !message.embeds[0]?.fields?.length)
+	if (openReaction.emoji.id !== settings.emojis.see_more || !message.embeds[0]?.fields.length)
 		return false;
 
 	// user doesn't have permission
@@ -146,7 +146,7 @@ function filterReactions(message: Message, member: GuildMember, allReactions: st
 	// remove instapass/invalid if just the author is reacting or if submission is no longer pending
 	if (
 		!hasPermission(member, PermissionType.Submission) ||
-		!message.embeds[0].fields[1].value.includes(settings.emojis.pending)
+		getEmbedStatus(message.embeds[0]) !== SubmissionStatus.Pending
 	)
 		allReactions = allReactions.filter(
 			(emoji) => ![settings.emojis.instapass, settings.emojis.invalid].includes(emoji),

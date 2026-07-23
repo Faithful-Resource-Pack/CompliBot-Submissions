@@ -2,7 +2,7 @@ import { mkdir, writeFile } from "fs/promises";
 import { join, sep } from "path";
 
 import type { Pack, Texture } from "@interfaces/database";
-import { DownloadableMessage } from "@submission/results/handleResults";
+import { DownloadableMessage } from "@submission/results/downloadResults";
 
 import axios from "axios";
 
