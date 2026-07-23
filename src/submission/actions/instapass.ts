@@ -6,7 +6,7 @@ import type { Pack } from "@interfaces/database";
 
 import getPackByChannel from "@submission/discord/getPackByChannel";
 import { mapSendableMessage } from "@submission/discord/retrieveSubmission";
-import { sendMessage } from "@submission/discord/sendToChannel";
+import { sendMessage } from "@submission/discord/sendToResults";
 
 import { mapDownloadableMessage } from "@submission/results/handleResults";
 import downloadTexture from "@submission/results/downloadTexture";

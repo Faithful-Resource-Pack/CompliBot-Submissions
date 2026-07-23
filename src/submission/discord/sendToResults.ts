@@ -21,7 +21,7 @@ const DEBUG = process.env.DEBUG.toLowerCase() === "true";
  * @param pack pack information
  * @param delay override delay
  */
-export async function sendToResults(client: Client, pack: Submission, delay?: number) {
+export default async function sendToResults(client: Client, pack: Submission, delay?: number) {
 	const channelOut = client.channels.cache.get(pack.channels.results) as TextChannel;
 
 	if (DEBUG) console.log(`Sending textures to channel: #${channelOut.name}`);

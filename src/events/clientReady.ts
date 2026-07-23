@@ -4,7 +4,7 @@ import type { PackFile } from "@interfaces/database";
 import { loadCommands } from "@functions/commandHandler";
 import { fetchSettings } from "@functions/fetchSettings";
 
-import { sendToResults } from "@submission/discord/sendToChannel";
+import sendToResults from "@submission/discord/sendToResults";
 import { handleResults } from "@submission/results/handleResults";
 import pushTextures from "@submission/results/pushTextures";
 

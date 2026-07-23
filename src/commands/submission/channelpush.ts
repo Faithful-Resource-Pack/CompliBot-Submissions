@@ -4,7 +4,7 @@ import strings from "@resources/strings.json";
 import type { Command } from "@interfaces/discord";
 import type { Pack, PackFile } from "@interfaces/database";
 
-import { sendToResults } from "@submission/discord/sendToChannel";
+import sendToResults from "@submission/discord/sendToResults";
 import warnUser from "@helpers/warnUser";
 
 import { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } from "discord.js";
