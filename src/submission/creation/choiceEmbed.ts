@@ -17,8 +17,9 @@ import {
 	Message,
 	SelectMenuComponentOptionData,
 	StringSelectMenuInteraction,
-	ComponentType,
 	MessageCreateOptions,
+	type ComponentType,
+	type Attachment,
 } from "discord.js";
 
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
@@ -41,7 +42,7 @@ export default async function choiceEmbed(
 	results: Texture[],
 	params: EmbedCreationParams,
 ) {
-	const choiceMessage = await sendChoiceEmbed(message, results);
+	const choiceMessage = await sendChoiceEmbed(message, params.attachment, results);
 
 	const filter = (interaction: StringSelectMenuInteraction) =>
 		// format is choiceEmbed_<ROWNUMBER> (needs unique ids)
@@ -89,9 +90,14 @@ export default async function choiceEmbed(
  * Create/send choice menu and return it
  * @author Juknum, Evorp
  * @param message message to reply to
+ * @param attachment attachment to use
  * @param results texture results to choose between
  */
-export async function sendChoiceEmbed(message: Message<true>, results: Texture[]) {
+export async function sendChoiceEmbed(
+	message: Message<true>,
+	attachment: Attachment,
+	results: Texture[],
+) {
 	const choices = results.map<SelectMenuComponentOptionData>(({ id, name, paths }) => ({
 		// usually the first path is the most important
 		label: `[#${id}] ${name} (${versionRange(paths[0].versions)})`,
@@ -138,7 +144,8 @@ export async function sendChoiceEmbed(message: Message<true>, results: Texture[]
 	const embed = new EmbedBuilder()
 		.setTitle(`${choices.length} results found`)
 		.setDescription(strings.submission.choice_embed.description)
-		.setColor(settings.colors.blue);
+		.setColor(settings.colors.blue)
+		.setThumbnail(attachment.url);
 
 	if (messageLength > MAX_LENGTH)
 		embed.setTitle(`Showing 1–${resultCount} of ${choices.length} results`);

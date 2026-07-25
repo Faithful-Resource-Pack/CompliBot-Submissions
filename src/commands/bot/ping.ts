@@ -12,7 +12,7 @@ export default {
 	async execute(interaction) {
 		const quotes = (
 			await axios.get<Record<string, string[]>>(
-				`https://raw.githubusercontent.com/Faithful-Resource-Pack/CompliBot/main/json/quotes.json`,
+				`https://raw.githubusercontent.com/Faithful-Resource-Pack/CompliBot-Commands/main/json/quotes.json`,
 			)
 		).data.ping;
 
