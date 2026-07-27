@@ -57,7 +57,7 @@ export default async function starpass(
 		.setTitle(`Instapassed ${embedsToInstapass.length} ${textureStr}`)
 		.setDescription(
 			resultMessagesToInstapass
-				.map((message) => `[${EmbedBuilder.from(message.embeds[0]).data.title}](${message.url})`)
+				.map((message) => `[${message.embeds[0].title}](${message.url})`)
 				.join("\n"),
 		)
 		.setColor(settings.colors.yellow)
