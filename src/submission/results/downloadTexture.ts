@@ -1,5 +1,5 @@
 import { mkdir, writeFile } from "fs/promises";
-import { join, sep } from "path";
+import { dirname, join } from "path";
 
 import type { Pack, Texture } from "@interfaces/database";
 import { DownloadableMessage } from "@submission/results/downloadResults";
@@ -81,7 +81,7 @@ function generatePaths(textureInfo: Texture, pack: Pack, baseFolder: string) {
  */
 async function downloadToPath(fullPath: string, imageFile: Buffer) {
 	try {
-		await mkdir(fullPath.slice(0, fullPath.lastIndexOf(sep)), { recursive: true });
+		await mkdir(dirname(fullPath), { recursive: true });
 		await writeFile(fullPath, imageFile);
 		if (DEBUG) console.log(`Added texture to path ${fullPath}`);
 	} catch (err: unknown) {
