@@ -1,7 +1,7 @@
 import settings from "@resources/settings.json";
 import strings from "@resources/strings.json";
 
-import type { Event } from "@interfaces/discord";
+import { defineEvent } from "@interfaces/discord";
 import type { PackFile } from "@interfaces/database";
 
 import submitTexture from "@submission/creation/submitTexture";
@@ -9,7 +9,7 @@ import cancelSubmission from "@submission/creation/cancelSubmission";
 
 import { Message } from "discord.js";
 
-export default {
+export default defineEvent({
 	name: "messageCreate",
 	async execute(message: Message) {
 		// Ignore bot and DM messages
@@ -33,4 +33,4 @@ export default {
 			await message.react(settings.emojis.downvote);
 		}
 	},
-} as Event;
+});

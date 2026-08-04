@@ -1,6 +1,6 @@
 import strings from "@resources/strings.json";
 import settings from "@resources/settings.json";
-import type { Event } from "@interfaces/discord";
+import { defineEvent } from "@interfaces/discord";
 
 import { magnifyToAttachment } from "@images/magnify";
 import tile from "@images/tile";
@@ -15,7 +15,7 @@ import warnUser from "@helpers/warnUser";
 import { ButtonInteraction, EmbedBuilder, GuildMember, MessageFlags } from "discord.js";
 
 /** "fake" emitted event to split up interactionCreate */
-export default {
+export default defineEvent({
 	name: "buttonUsed",
 	async execute(interaction: ButtonInteraction) {
 		const message = interaction.message;
@@ -122,4 +122,4 @@ export default {
 			}
 		}
 	},
-} as Event;
+});

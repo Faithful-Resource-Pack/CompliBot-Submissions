@@ -1,12 +1,12 @@
 import strings from "@resources/strings.json";
-import type { Command } from "@interfaces/discord";
+import { defineCommand } from "@interfaces/discord";
 
 import { inspect } from "util";
 
 import warnUser from "@helpers/warnUser";
 import { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, MessageFlags } from "discord.js";
 
-export default {
+export default defineCommand({
 	data: new SlashCommandBuilder()
 		.setName("eval")
 		.setDescription("Evaluates a string of code.")
@@ -60,4 +60,4 @@ export default {
 			],
 		});
 	},
-} as Command;
+});

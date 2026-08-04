@@ -1,10 +1,10 @@
 import {
 	ChatInputCommandInteraction,
 	Collection,
-	SlashCommandBuilder,
 	ButtonInteraction,
 	ModalSubmitInteraction,
 	StringSelectMenuInteraction,
+	SlashCommandOptionsOnlyBuilder,
 } from "discord.js";
 
 declare module "discord.js" {
@@ -20,16 +20,17 @@ declare module "discord.js" {
 }
 
 export interface Command {
-	data: SlashCommandBuilder;
-	execute: CommandExecute;
+	// bot doesn't support subcommands so this is fine
+	readonly data: SlashCommandOptionsOnlyBuilder;
+	readonly execute: CommandExecute;
 }
 
-export type CommandExecute = (interaction: ChatInputCommandInteraction) => any;
+export type CommandExecute = (interaction: ChatInputCommandInteraction) => void;
 
 export interface Event {
-	name: string;
-	once?: boolean;
-	execute: () => any;
+	readonly name: string;
+	readonly once?: boolean;
+	readonly execute: (...args: any[]) => void;
 }
 
 export type AnyInteraction =
@@ -37,3 +38,7 @@ export type AnyInteraction =
 	| ButtonInteraction
 	| ModalSubmitInteraction
 	| StringSelectMenuInteraction;
+
+/** Useful macros for type-safe exports */
+export const defineCommand = (data: Command) => data;
+export const defineEvent = (data: Event) => data;

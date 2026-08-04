@@ -1,6 +1,6 @@
 import settings from "@resources/settings.json";
 import strings from "@resources/strings.json";
-import type { Command } from "@interfaces/discord";
+import { defineCommand } from "@interfaces/discord";
 
 import backup from "@functions/backup";
 import warnUser from "@helpers/warnUser";
@@ -8,7 +8,7 @@ import addDeleteButton from "@helpers/addDeleteButton";
 
 import { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } from "discord.js";
 
-export default {
+export default defineCommand({
 	data: new SlashCommandBuilder()
 		.setName("backup")
 		.setDescription(strings.command.description.backup)
@@ -54,4 +54,4 @@ export default {
 			components: addDeleteButton(),
 		});
 	},
-} as Command;
+});

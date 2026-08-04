@@ -1,7 +1,7 @@
 import settings from "@resources/settings.json";
 import strings from "@resources/strings.json";
 
-import type { Command } from "@interfaces/discord";
+import { defineCommand } from "@interfaces/discord";
 import type { Pack, PackFile } from "@interfaces/database";
 
 import downloadResults from "@submission/results/downloadResults";
@@ -12,7 +12,7 @@ import warnUser from "@helpers/warnUser";
 
 import { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } from "discord.js";
 
-export default {
+export default defineCommand({
 	data: new SlashCommandBuilder()
 		.setName("autopush")
 		.setDescription(strings.command.description.autopush)
@@ -84,4 +84,4 @@ export default {
 			],
 		});
 	},
-} as Command;
+});

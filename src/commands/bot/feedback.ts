@@ -1,5 +1,5 @@
 import strings from "@resources/strings.json";
-import type { Command } from "@interfaces/discord";
+import { defineCommand } from "@interfaces/discord";
 
 import {
 	ActionRowBuilder,
@@ -55,7 +55,7 @@ const feedbackFormat = {
 	],
 };
 
-export default {
+export default defineCommand({
 	data: new SlashCommandBuilder()
 		.setName("feedback")
 		.setDescription(strings.command.description.feedback)
@@ -82,4 +82,4 @@ export default {
 
 		await interaction.showModal(modal);
 	},
-} as Command;
+});

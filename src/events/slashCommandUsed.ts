@@ -1,6 +1,6 @@
 import settings from "@resources/settings.json";
 import strings from "@resources/strings.json";
-import type { Event } from "@interfaces/discord";
+import { defineEvent } from "@interfaces/discord";
 
 import addDeleteButton from "@helpers/addDeleteButton";
 import handleError from "@functions/handleError";
@@ -8,7 +8,7 @@ import handleError from "@functions/handleError";
 import { EmbedBuilder, ChatInputCommandInteraction } from "discord.js";
 
 /** "fake" emitted event to split up interactionCreate */
-export default {
+export default defineEvent({
 	name: "slashCommandUsed",
 	async execute(interaction: ChatInputCommandInteraction) {
 		const command = interaction.client.commands.get(interaction.commandName);
@@ -35,4 +35,4 @@ export default {
 			return interaction.deferred ? interaction.followUp(options) : interaction.reply(options);
 		}
 	},
-} as Event;
+});

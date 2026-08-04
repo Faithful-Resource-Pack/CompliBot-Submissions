@@ -1,11 +1,11 @@
 import settings from "@resources/settings.json";
 import strings from "@resources/strings.json";
-import type { Command } from "@interfaces/discord";
+import { defineCommand } from "@interfaces/discord";
 
 import warnUser from "@helpers/warnUser";
 import { EmbedBuilder, SlashCommandBuilder, PermissionFlagsBits } from "discord.js";
 
-export default {
+export default defineCommand({
 	data: new SlashCommandBuilder()
 		.setName("restart")
 		.setDescription(strings.command.description.restart)
@@ -26,4 +26,4 @@ export default {
 		// restart bot by launching index file
 		require("@index");
 	},
-} as Command;
+});

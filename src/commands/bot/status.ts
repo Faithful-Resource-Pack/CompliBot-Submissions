@@ -1,6 +1,6 @@
 import strings from "@resources/strings.json";
 import settings from "@resources/settings.json";
-import type { Command } from "@interfaces/discord";
+import { defineCommand } from "@interfaces/discord";
 
 import addDeleteButton from "@helpers/addDeleteButton";
 import warnUser from "@helpers/warnUser";
@@ -12,7 +12,7 @@ import {
 } from "discord.js";
 import { EmbedBuilder } from "discord.js";
 
-export default {
+export default defineCommand({
 	data: new SlashCommandBuilder()
 		.setName("status")
 		.setDescription(strings.command.description.status)
@@ -73,4 +73,4 @@ export default {
 			components: addDeleteButton(),
 		});
 	},
-} as Command;
+});

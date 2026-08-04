@@ -1,10 +1,10 @@
 import strings from "@resources/strings.json";
-import type { Command } from "@interfaces/discord";
+import { defineCommand } from "@interfaces/discord";
 
 import warnUser from "@helpers/warnUser";
 import { SlashCommandBuilder, PermissionFlagsBits } from "discord.js";
 
-export default {
+export default defineCommand({
 	data: new SlashCommandBuilder()
 		.setName("say")
 		.setDescription(strings.command.description.say)
@@ -23,4 +23,4 @@ export default {
 		if (resource.message.deletable) await resource.message.delete();
 		await interaction.channel.send({ content });
 	},
-} as Command;
+});

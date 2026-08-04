@@ -1,4 +1,4 @@
-import type { Event } from "@interfaces/discord";
+import { defineEvent } from "@interfaces/discord";
 import type { PackFile } from "@interfaces/database";
 
 import { loadCommands } from "@functions/commandHandler";
@@ -17,7 +17,7 @@ import { ActivityType, Client } from "discord.js";
 const DEV = process.env.DEV.toLowerCase() === "true";
 const MAINTENANCE = process.env.MAINTENANCE.toLowerCase() === "true";
 
-export default {
+export default defineEvent({
 	name: "clientReady",
 	once: true,
 	async execute(client: Client<true>) {
@@ -102,4 +102,4 @@ export default {
 			if (process.env.STATUS_URL) fetch(process.env.STATUS_URL + client.ws.ping).catch(() => {});
 		}, 900000); // 15 minutes
 	},
-} as Event;
+});

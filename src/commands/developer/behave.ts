@@ -1,9 +1,9 @@
 import strings from "@resources/strings.json";
-import type { Command } from "@interfaces/discord";
+import { defineCommand } from "@interfaces/discord";
 
 import { SlashCommandBuilder, PermissionFlagsBits } from "discord.js";
 
-export default {
+export default defineCommand({
 	data: new SlashCommandBuilder()
 		.setName("behave")
 		.setDescription(strings.command.description.behave)
@@ -30,4 +30,4 @@ export default {
 			return interaction.reply({ content: strings.command.behave });
 		}
 	},
-} as Command;
+});

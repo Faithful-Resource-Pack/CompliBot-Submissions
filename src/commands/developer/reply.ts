@@ -1,6 +1,6 @@
 import settings from "@resources/settings.json";
 import strings from "@resources/strings.json";
-import type { Command } from "@interfaces/discord";
+import { defineCommand } from "@interfaces/discord";
 
 import {
 	EmbedBuilder,
@@ -11,7 +11,7 @@ import {
 } from "discord.js";
 import warnUser from "@helpers/warnUser";
 
-export default {
+export default defineCommand({
 	data: new SlashCommandBuilder()
 		.setName("reply")
 		.setDescription(strings.command.description.reply)
@@ -51,4 +51,4 @@ export default {
 		if (resource.message.deletable) await resource.message.delete();
 		msg.reply({ content: interaction.options.getString("message", true) });
 	},
-} as Command;
+});

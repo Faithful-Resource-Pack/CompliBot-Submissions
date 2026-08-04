@@ -1,9 +1,9 @@
-import type { Event } from "@interfaces/discord";
+import { defineEvent } from "@interfaces/discord";
 import { feedbackBug, feedbackSuggestion } from "@functions/feedback";
 
 import { ModalSubmitInteraction } from "discord.js";
 
-export default {
+export default defineEvent({
 	name: "modalSubmit",
 	async execute(interaction: ModalSubmitInteraction) {
 		switch (interaction.customId) {
@@ -13,4 +13,4 @@ export default {
 				return feedbackSuggestion(interaction);
 		}
 	},
-} as Event;
+});

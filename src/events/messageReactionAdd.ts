@@ -1,10 +1,10 @@
-import type { Event } from "@interfaces/discord";
+import { defineEvent } from "@interfaces/discord";
 
 import reactionMenu from "@submission/actions/reactionMenu";
 import getPackByChannel from "@submission/discord/getPackByChannel";
 import { MessageReaction, User } from "discord.js";
 
-export default {
+export default defineEvent({
 	name: "messageReactionAdd",
 	async execute(reaction: MessageReaction, user: User) {
 		// Ignore bot reactions
@@ -13,4 +13,4 @@ export default {
 		if (getPackByChannel(reaction.message.channel.id) !== undefined)
 			return reactionMenu(reaction, user);
 	},
-} as Event;
+});

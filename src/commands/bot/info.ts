@@ -1,10 +1,10 @@
 import settings from "@resources/settings.json";
 import strings from "@resources/strings.json";
-import type { Command } from "@interfaces/discord";
+import { defineCommand } from "@interfaces/discord";
 
 import { EmbedBuilder, MessageFlags, SlashCommandBuilder } from "discord.js";
 
-export default {
+export default defineCommand({
 	data: new SlashCommandBuilder()
 		.setName("info")
 		.setDescription("General info about CompliBot Submissions."),
@@ -32,4 +32,4 @@ export default {
 
 		return interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
 	},
-} as Command;
+});

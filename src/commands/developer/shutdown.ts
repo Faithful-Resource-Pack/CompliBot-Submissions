@@ -1,12 +1,12 @@
 import settings from "@resources/settings.json";
 import strings from "@resources/strings.json";
-import type { Command } from "@interfaces/discord";
+import { defineCommand } from "@interfaces/discord";
 
 import addDeleteButton from "@helpers/addDeleteButton";
 
 import { EmbedBuilder, SlashCommandBuilder, PermissionFlagsBits } from "discord.js";
 
-export default {
+export default defineCommand({
 	data: new SlashCommandBuilder()
 		.setName("shutdown")
 		.setDescription(strings.command.description.shutdown)
@@ -35,4 +35,4 @@ export default {
 		});
 		return process.exit();
 	},
-} as Command;
+});

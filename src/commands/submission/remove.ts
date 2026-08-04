@@ -1,7 +1,7 @@
 import strings from "@resources/strings.json";
 import settings from "@resources/settings.json";
 
-import { Command } from "@interfaces/discord";
+import { defineCommand } from "@interfaces/discord";
 import { MinecraftEdition, Pack, PackFile, Texture } from "@interfaces/database";
 
 import GitHubRepository from "@functions/GitHubRepository";
@@ -12,7 +12,7 @@ import axios from "axios";
 
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
 
-export default {
+export default defineCommand({
 	data: new SlashCommandBuilder()
 		.setName("remove")
 		.setDescription(strings.command.description.remove)
@@ -122,4 +122,4 @@ export default {
 			components: addDeleteButton(),
 		});
 	},
-} as Command;
+});
