@@ -5,7 +5,7 @@ import type { Event } from "@interfaces/discord";
 import { magnifyToAttachment } from "@images/magnify";
 import tile from "@images/tile";
 import palette from "@images/palette";
-import { difference } from "@images/difference";
+import difference from "@images/difference";
 import info from "@commands/bot/info";
 
 import getPackByChannel from "@submission/discord/getPackByChannel";

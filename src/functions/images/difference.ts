@@ -37,7 +37,7 @@ export enum DiffType {
  * @param tolerance difference between colors considered acceptable
  * @returns compared image
  */
-export async function difference(
+export default async function difference(
 	firstUrl: string,
 	secondUrl: string,
 	tolerance = 0,
@@ -157,10 +157,7 @@ function diffPixel(
  * @returns Mapped URL
  */
 async function mapURL(url: string): Promise<MappedURL> {
-	const res = await magnify(url);
-
-	// we can only destructure after null check
-	const { magnified, width, height } = res;
+	const { magnified, width, height } = await magnify(url);
 
 	// convert image to canvas
 	const img = await loadImage(magnified);
