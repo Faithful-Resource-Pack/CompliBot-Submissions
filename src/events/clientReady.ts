@@ -12,15 +12,14 @@ import backup from "@functions/backup";
 import handleError from "@functions/handleError";
 
 import { CronJob } from "cron";
-import { ActivityType, Client } from "discord.js";
+import { ActivityType } from "discord.js";
 
 const DEV = process.env.DEV.toLowerCase() === "true";
 const MAINTENANCE = process.env.MAINTENANCE.toLowerCase() === "true";
 
 export default defineEvent({
 	name: "clientReady",
-	once: true,
-	async execute(client: Client<true>) {
+	async execute(client) {
 		console.log(`┌───────────────────────────────────────────────────┐`);
 		console.log(`│                                                   │`);
 		console.log(`│     ─=≡Σ((( つ◕ل͜◕)つ                              │`);

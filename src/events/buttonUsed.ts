@@ -12,12 +12,12 @@ import getPackByChannel from "@submission/discord/getPackByChannel";
 import { hasPermission, PermissionType } from "@helpers/permissions";
 import warnUser from "@helpers/warnUser";
 
-import { ButtonInteraction, EmbedBuilder, GuildMember, MessageFlags } from "discord.js";
+import { EmbedBuilder, GuildMember, MessageFlags } from "discord.js";
 
 /** "fake" emitted event to split up interactionCreate */
 export default defineEvent({
 	name: "buttonUsed",
-	async execute(interaction: ButtonInteraction) {
+	async execute(interaction) {
 		const message = interaction.message;
 		const image =
 			interaction.message?.embeds[0]?.thumbnail?.url ??

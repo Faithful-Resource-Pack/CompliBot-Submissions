@@ -45,13 +45,11 @@ export default function startClient() {
 	 */
 	const eventsFiles = readdirSync(join(__dirname, "events")).filter((f) => f.endsWith(".ts"));
 	for (const file of eventsFiles) {
-		const event: Event = require(join(__dirname, "events", file)).default;
+		const event: Event<any> = require(join(__dirname, "events", file)).default;
 
 		// catch invalid events
 		if (typeof event !== "object") continue;
-
-		if (event.once) client.once(event.name, event.execute);
-		else client.on(event.name, event.execute);
+		client.on(event.name, event.execute);
 	}
 
 	/**

@@ -5,19 +5,19 @@ import { defineEvent } from "@interfaces/discord";
 import addDeleteButton from "@helpers/addDeleteButton";
 import handleError from "@functions/handleError";
 
-import { EmbedBuilder, ChatInputCommandInteraction } from "discord.js";
+import { EmbedBuilder } from "discord.js";
 
 /** "fake" emitted event to split up interactionCreate */
 export default defineEvent({
 	name: "slashCommandUsed",
-	async execute(interaction: ChatInputCommandInteraction) {
+	async execute(interaction) {
 		const command = interaction.client.commands.get(interaction.commandName);
 		if (!command) return;
 
 		// ! await required for try catch support
 		try {
 			await command.execute(interaction);
-		} catch (error) {
+		} catch (error: unknown) {
 			handleError(interaction.client, error, "Slash Command Error");
 
 			const options = {

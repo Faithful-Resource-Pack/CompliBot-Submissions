@@ -1,10 +1,9 @@
 import { defineEvent } from "@interfaces/discord";
-import { Interaction } from "discord.js";
 
 /** "real" event file that gets split into each component's specified usage */
 export default defineEvent({
 	name: "interactionCreate",
-	async execute(interaction: Interaction) {
+	async execute(interaction) {
 		if (interaction.isButton()) return interaction.client.emit("buttonUsed", interaction);
 		if (interaction.isModalSubmit()) return interaction.client.emit("modalSubmit", interaction);
 		if (interaction.isChatInputCommand())

@@ -7,11 +7,9 @@ import type { PackFile } from "@interfaces/database";
 import submitTexture from "@submission/creation/submitTexture";
 import cancelSubmission from "@submission/creation/cancelSubmission";
 
-import { Message } from "discord.js";
-
 export default defineEvent({
 	name: "messageCreate",
-	async execute(message: Message) {
+	async execute(message) {
 		// Ignore bot and DM messages
 		if (message.author.bot || !message.inGuild()) return;
 		const packs: PackFile = require("@resources/packs.json");
