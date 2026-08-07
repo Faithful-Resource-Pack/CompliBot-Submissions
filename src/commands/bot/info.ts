@@ -5,9 +5,7 @@ import { defineCommand } from "@interfaces/discord";
 import { EmbedBuilder, MessageFlags, SlashCommandBuilder } from "discord.js";
 
 export default defineCommand({
-	data: new SlashCommandBuilder()
-		.setName("info")
-		.setDescription("General info about CompliBot Submissions."),
+	data: new SlashCommandBuilder().setName("info").setDescription(strings.command.description.info),
 	async execute(interaction) {
 		const image = settings.images.bot;
 		const info = strings.command.info;

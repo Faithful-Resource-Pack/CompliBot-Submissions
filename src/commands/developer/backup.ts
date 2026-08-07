@@ -7,6 +7,7 @@ import warnUser from "@helpers/warnUser";
 import addDeleteButton from "@helpers/addDeleteButton";
 
 import { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } from "discord.js";
+import formattedDate from "@helpers/formattedDate";
 
 export default defineCommand({
 	data: new SlashCommandBuilder()
@@ -22,7 +23,9 @@ export default defineCommand({
 
 		const { successfulPushes, failedPushes, commit } = await backup(
 			interaction.client,
-			`Manual backup executed by: ${interaction.user.displayName}`,
+			strings.github.commit_message.manual_backup
+				.replace("%USER%", interaction.user.displayName)
+				.replace("%DATE%", formattedDate()),
 		);
 
 		const url = `https://github.com/${settings.backup.git.org}/${settings.backup.git.repo}/${
@@ -30,24 +33,24 @@ export default defineCommand({
 		}`;
 
 		const embed = new EmbedBuilder()
-			.setTitle(commit ? "Database backed up!" : "Database could not be backed up.")
+			.setTitle(strings.command.backup[commit ? "success_title" : "failure_title"])
 			.setURL(url)
 			.addFields(
 				{
-					name: "Successful",
-					value: successfulPushes.join("\n") || "*None*",
+					name: strings.command.backup.successful_field,
+					value: successfulPushes.join("\n") || strings.global.none,
 					inline: true,
 				},
 				{
-					name: "Failed",
-					value: failedPushes.join("\n") || "*None*",
+					name: strings.command.backup.failed_field,
+					value: failedPushes.join("\n") || strings.global.none,
 					inline: true,
 				},
 			)
 			.setColor(commit ? settings.colors.green : settings.colors.red);
 
 		if (!commit || failedPushes.length)
-			embed.setDescription("*Check developer logs for potential failure reasons!*");
+			embed.setDescription(strings.command.backup.failure_description);
 
 		return interaction.editReply({
 			embeds: [embed],

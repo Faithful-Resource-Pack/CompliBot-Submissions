@@ -7,11 +7,13 @@ import type { PackFile } from "@interfaces/database";
 import submitTexture from "@submission/creation/submitTexture";
 import cancelSubmission from "@submission/creation/cancelSubmission";
 
+const MAINTENANCE = process.env.MAINTENANCE.toLowerCase() === "true";
+
 export default defineEvent({
 	name: "messageCreate",
 	async execute(message) {
-		// Ignore bot and DM messages
-		if (message.author.bot || !message.inGuild()) return;
+		// Ignore bot, DM messages, and messages in maintenance mode
+		if (message.author.bot || !message.inGuild() || MAINTENANCE) return;
 		const packs: PackFile = require("@resources/packs.json");
 
 		/**
@@ -25,7 +27,7 @@ export default defineEvent({
 		 */
 		if (settings.discord.channels.autoreact.includes(message.channel.id)) {
 			if (!message.attachments.size)
-				return cancelSubmission(message, strings.submission.image_not_attached);
+				return cancelSubmission(message, strings.submission.error.image_not_attached);
 
 			await message.react(settings.emojis.upvote);
 			await message.react(settings.emojis.downvote);

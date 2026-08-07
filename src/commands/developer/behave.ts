@@ -14,20 +14,20 @@ export default defineCommand({
 		.setDMPermission(false),
 	async execute(interaction) {
 		if (!process.env.DEVELOPERS.includes(interaction.user.id))
-			return interaction.reply({ content: "lol no" });
+			return interaction.reply({ content: strings.command.behave.failure });
 
 		const msgID = interaction.options.getString("message");
 
-		if (!msgID) return interaction.reply({ content: strings.command.behave });
+		if (!msgID) return interaction.reply({ content: strings.command.behave.success });
 
 		try {
 			const message = await interaction.channel.messages.fetch(msgID);
 			const { resource } = await interaction.reply({ content: "** **", withResponse: true });
 			resource.message.delete();
 
-			return message.reply({ content: strings.command.behave });
+			return message.reply({ content: strings.command.behave.success });
 		} catch {
-			return interaction.reply({ content: strings.command.behave });
+			return interaction.reply({ content: strings.command.behave.success });
 		}
 	},
 });

@@ -78,23 +78,26 @@ export default async function makeEmbed(
 		)
 		.addFields(
 			{
-				name: "Author",
+				name: strings.submission.field[authors.size === 1 ? "author_singular" : "author_plural"],
 				value: Array.from(authors)
 					.map((id) => `<@${id}>`)
 					.join("\n"),
 				inline: true,
 			},
-			{ name: "Status", value: `<:pending:${settings.emojis.pending}> Pending…`, inline: true },
+			{
+				name: strings.submission.field.status,
+				value: `<:pending:${settings.emojis.pending}> ${strings.submission.status.pending}`,
+				inline: true,
+			},
 			...addPathsToEmbed(texture),
 		);
 
 	if (description) embed.setDescription(description);
-	if (authors.size > 1) embed.data.fields[0].name += "s";
 
 	// if it's a blank mcmeta there's no point adding a whole field for it
 	if (Object.keys(texture.mcmeta?.animation ?? {}).length)
 		embed.addFields({
-			name: "MCMETA",
+			name: strings.submission.field.mcmeta,
 			value: `\`\`\`json\n${JSON.stringify(texture.mcmeta.animation)}\`\`\``,
 		});
 
@@ -141,7 +144,7 @@ export async function createEmbedImages(
 		return {
 			image: imageUrl,
 			thumbnail: imageUrl,
-			footer: strings.submission.footer.cant_compare,
+			footer: strings.submission.footer.cannot_compare,
 			buttons: submissionButtons,
 		};
 	}

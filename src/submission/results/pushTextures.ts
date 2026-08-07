@@ -3,7 +3,6 @@ import { join } from "path";
 
 import type { MinecraftEdition, PackFile } from "@interfaces/database";
 
-import formattedDate from "@helpers/formattedDate";
 import GitHubRepository from "@functions/GitHubRepository";
 
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
@@ -20,7 +19,7 @@ const DEV = process.env.DEV.toLowerCase() === "true";
 export default async function pushTextures(
 	basePath: string,
 	pack: string,
-	commitMessage = `Autopush passed textures from ${formattedDate()}`,
+	commitMessage: string,
 ): Promise<string[]> {
 	// declare settings inside so it gets refreshed if a version gets added (most other properties are static)
 	const settings: { versions: Record<string, string[]> } = require("@resources/settings.json");

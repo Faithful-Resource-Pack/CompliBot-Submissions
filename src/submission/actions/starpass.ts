@@ -1,4 +1,5 @@
 import settings from "@resources/settings.json";
+import strings from "@resources/strings.json";
 
 import { instapassMessages } from "@submission/actions/instapass";
 import { editEmbed } from "@submission/discord/changeStatus";
@@ -19,13 +20,17 @@ export default async function starpass(
 	message: Message<true>,
 	embedsToInstapass: MessageCreateOptions["embeds"],
 ) {
-	const textureStr = embedsToInstapass.length == 1 ? "texture" : "textures";
-
+	const style = embedsToInstapass.length === 1 ? "singular" : "plural";
 	const statusMessage = await message.channel.send({
 		embeds: [
 			new EmbedBuilder()
-				.setTitle(`Instapassing ${textureStr}…`)
-				.setDescription("This can take some time, please wait…")
+				.setTitle(
+					strings.submission.starpass.progress_title[style].replace(
+						"%COUNT%",
+						String(embedsToInstapass.length),
+					),
+				)
+				.setDescription(strings.global.progress_description)
 				.setThumbnail(settings.images.loading)
 				.setColor(settings.colors.blue),
 		],
@@ -36,7 +41,7 @@ export default async function starpass(
 		pack.submission.channels.results,
 	) as TextChannel;
 
-	const status = `Instapassed by <@${message.author.id}>`;
+	const status = strings.submission.status.instapassed.replace("%USER%", `<@${message.author.id}>`);
 	const resultMessagesToInstapass = await Promise.all(
 		embedsToInstapass.map((embed) => {
 			// todo: try to merge this with the instapass action
@@ -54,7 +59,12 @@ export default async function starpass(
 	await instapassMessages(resultMessagesToInstapass, pack);
 	const notificationEmbed = new EmbedBuilder()
 		.setAuthor({ name: message.author.username, iconURL: message.author.displayAvatarURL() })
-		.setTitle(`Instapassed ${embedsToInstapass.length} ${textureStr}`)
+		.setTitle(
+			strings.submission.starpass.finished_title[style].replace(
+				"%COUNT%",
+				String(embedsToInstapass.length),
+			),
+		)
 		.setDescription(
 			resultMessagesToInstapass
 				.map((message) => `[${message.embeds[0].title}](${message.url})`)
@@ -62,8 +72,8 @@ export default async function starpass(
 		)
 		.setColor(settings.colors.yellow)
 		.addFields({
-			name: "Reason",
-			value: message.content.slice(1).trim() || "*No reason provided*",
+			name: strings.submission.field.reason,
+			value: message.content.slice(1).trim() || strings.submission.starpass.no_reason,
 		});
 
 	return statusMessage.edit({ embeds: [notificationEmbed] });

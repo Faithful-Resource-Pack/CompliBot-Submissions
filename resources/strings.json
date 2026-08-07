@@ -1,32 +1,87 @@
 {
-	"bot": {
-		"error": "Action Failed",
-		"missing_interaction": "This %INTERACTION% doesn't have an event set up yet!"
+	"global": {
+		"error_title": "Action Failed",
+		"error_description": "Error for the developers: ```%ERROR%```",
+		"missing_interaction": "This %INTERACTION% doesn't have an event set up yet!",
+		"reserved_interaction": "This interaction is reserved for %USER%!",
+		"progress_description": "This can take some time, please wait…",
+		"maintenance": "I'm currently under maintenance. Please try again later!",
+		"invalid_message": "Could not find message ID %ID%!",
+		"none": "*None*"
 	},
 	"command": {
 		"error": "One of my developers made an error while making this command! Don't worry, the error is not on your side. Please contact <@360249987927638016> or <@173336582265241601> if this keeps occurring.",
-		"maintenance": "I'm currently under maintenance, please try again later.",
+		"no_permission": "You don't have permission to run this command!",
 		"description": {
 			"autopush": "Push textures from a result channel to GitHub.",
 			"channelpush": "Send textures to result channels.",
 			"behave": "(⌯˃̶᷄ ﹏ ˂̶᷄⌯)",
+			"eval": "Evaluate a string of code.",
 			"feedback": "Create a new suggestion or bug report on our GitHub bug tracker.",
 			"backup": "Back up all files to the GitHub Database repository.",
 			"hotfix": "Fix something (may change at any time).",
+			"info": "General info about CompliBot Submissions.",
 			"ping": "Pong!",
 			"reload": "Reloads all commands.",
 			"restart": "Restart the bot.",
 			"say": "Make the bot say something.",
-			"reply": "Reply to a message with the bot",
+			"remove": "Remove files from a pack repository. This does not remove contributions or other pack-specific data.",
+			"reply": "Reply to a message with the bot.",
 			"shutdown": "Stops the bot.",
-			"status": "Changes the bot's status.",
-			"remove": "Remove files from a pack repository. This does not remove contributions or other pack-specific data."
+			"status": "Changes the bot's status."
 		},
-		"feedback_sent": "Your ticket will be created shortly on GitHub. Thank you for helping us improve the bot!",
-		"backup_failed": "At least one collection could not be backed up. Please check the developer logs for more information.",
-		"behave": "I'm so sorry! (⌯˃̶᷄ ﹏ ˂̶᷄⌯)",
-		"no_permission": "You don't have permission to run this command!",
-		"invalid_message": "Could not find message id %ID%",
+		"feedback": {
+			"success_bug": "Bug report received!",
+			"success_feedback": "Feature request received!",
+			"success_description": "Your ticket will be created shortly on GitHub. Thank you for helping us improve the bot!",
+			"failure_title": "Feedback could not be sent!"
+		},
+		"remove": {
+			"removed_single": "Successfully removed %TEXTURE% from %PACK%!",
+			"removed_all": "Successfully removed %TEXTURE% from all packs!",
+			"notice": "Note that this does not remove contributions or other pack-specific data.",
+			"no_results_found": "No results found"
+		},
+		"push": {
+			"autopush_download": "Downloading textures…",
+			"autopush_pushing": "Pushing textures…",
+			"autopush_success": "Successfully pushed all textures!",
+			"channelpush_success": "Successfully sent all submissions!"
+		},
+		"shutdown": "Shutting down…",
+		"restart": "Restarting…",
+		"backup": {
+			"success_title": "Database backed up!",
+			"successful_field": "Successful",
+			"failure_title": "Database could not be backed up.",
+			"failure_description": "*Check developer logs for potential failure reasons!*",
+			"failed_field": "Failed"
+		},
+		"ping": {
+			"title": "Pong!",
+			"bot_field": "Bot Latency",
+			"api_field": "API Latency"
+		},
+		"behave": {
+			"success": "I'm so sorry! (⌯˃̶᷄ ﹏ ˂̶᷄⌯)",
+			"failure": "lol no"
+		},
+		"status_changed": "Bot status successfully changed!",
+		"palette": {
+			"title": "Palette Results",
+			"total": "Total: %COUNT%",
+			"list_title": "List of colors",
+			"list_multiple": "Palette part %d",
+			"list_singular": "Palette",
+			"hex_multiple": "Hex part %d",
+			"hex_singular": "Hex"
+		},
+		"difference": {
+			"title": "Texture Comparison for %TEXTURE%",
+			"description": "- Blue: Changed pixels\n- Green: Added pixels\n- Red: Removed pixels",
+			"footer": "Algorithm made by Ewan Howell",
+			"no_texture": "There is no existing texture to diff against!"
+		},
 		"image": {
 			"input_too_big": "The input picture is too big!",
 			"output_too_big": "The output picture will be too big!"
@@ -45,23 +100,66 @@
 		}
 	},
 	"submission": {
-		"cancelled": {
-			"error_title": "Submission Error",
-			"error_footer": "This message will self-destruct in %SECONDS% seconds!"
+		"error": {
+			"title": "Submission Error",
+			"footer": "This message will self-destruct in %SECONDS% seconds!",
+			"unknown": "An unknown error occurred while creating the texture submission!",
+			"no_name_given": "No texture name or ID was found in your submission message!",
+			"does_not_exist": "The specified texture name or ID doesn't exist!",
+			"image_not_attached": "Please attach an image to your message!",
+			"invalid_format": "Please provide a valid `.png` file. Other file formats like `.zip` or `.tga` are currently not supported.",
+			"already_deleted": "Could not find original submission message.",
+			"no_result_channel": "Could not fetch corresponding result channel! Please make sure that the pack data has been set up correctly on the Faithful Studio pack page.",
+			"timed_out": "Select menu timed out, canceling submission…"
+		},
+		"starpass": {
+			"progress_title": {
+				"singular": "Instapassing %COUNT% texture…",
+				"plural": "Instapassing %COUNT% textures…"
+			},
+			"finished_title": {
+				"singular": "Instapassed %COUNT% texture…",
+				"plural": "Instapassed %COUNT% textures…"
+			},
+			"no_reason": "*No reason provided*"
 		},
 		"choice_embed": {
+			"short_title": "%COUNT% results found",
+			"long_title": "Showing 1–%SHOWN% of %COUNT% results",
 			"description": "If you can't find what you're looking for, please be more specific!",
 			"placeholder": "Select a texture…"
 		},
-		"no_result_channel": "Could not fetch corresponding result channel! Please make sure that the pack data has been set up correctly on the Faithful Studio pack page.",
-		"image_not_attached": "Please attach an image to your message!",
-		"invalid_format": "Please provide a valid `.png` file. Other file formats like `.zip` or `.tga` are currently not supported.",
-		"does_not_exist": "The specified texture name or ID doesn't exist!",
-		"no_name_given": "No texture name or ID was found in your submission message!",
+		"field": {
+			"author_singular": "Author",
+			"author_plural": "Authors",
+			"status": "Status",
+			"mcmeta": "MCMETA",
+			"reason": "Reason",
+			"original_post": "Original Post"
+		},
+		"status": {
+			"pending": "Pending…",
+			"original_approved": "Passed voting!",
+			"original_denied": "Not enough upvotes!",
+			"results_approved": "Will be added in a future version!",
+			"results_denied": "Failed community vote and will not be added.",
+			"instapassed": "Instapassed by %USER%",
+			"invalidated": "Invalidated by %USER%"
+		},
 		"footer": {
-			"cant_compare": "This texture is too big to create a comparison image!",
+			"cannot_compare": "This texture is too big to create a comparison image!",
 			"texture_edit": "Reference | Submitted | Current",
 			"texture_add": "Reference | Submitted"
+		}
+	},
+	"github": {
+		"commit_message": {
+			"autopush": "Autopush passed textures from %DATE%",
+			"instapass": "Instapass %TEXTURES% from %DATE%",
+			"manual_push": "Manually push textures from %DATE%, executed by %USER%",
+			"remove": "Remove %TEXTURES%, executed by %USER%",
+			"backup": "Back up Firestorm collections from %DATE%",
+			"manual_backup": "Manually back up Firestorm collections from %DATE%, executed by %USER%"
 		}
 	}
 }

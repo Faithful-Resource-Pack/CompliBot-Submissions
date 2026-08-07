@@ -20,10 +20,10 @@ export default defineCommand({
 						.setAuthor({
 							name: "Member banned",
 							iconURL:
-								"https://raw.githubusercontent.com/Faithful-Resource-Pack/Branding/main/role%20icons/5%20-%20Moderator.png",
+								"https://raw.githubusercontent.com/Faithful-Resource-Pack/Branding/main/role_icons/moderator/moderator.png",
 						})
 						.setDescription(`<@${interaction.user.id}> has been banned`)
-						.addFields({ name: "Reason", value: "trying to stop me lmao" })
+						.addFields({ name: strings.submission.field.reason, value: "trying to stop me lmao" })
 						.setColor(settings.colors.red),
 				],
 				components: addDeleteButton(),
@@ -31,7 +31,9 @@ export default defineCommand({
 		}
 
 		await interaction.reply({
-			embeds: [new EmbedBuilder().setTitle("Shutting down…").setColor(settings.colors.blue)],
+			embeds: [
+				new EmbedBuilder().setTitle(strings.command.shutdown).setColor(settings.colors.blue),
+			],
 		});
 		return process.exit();
 	},

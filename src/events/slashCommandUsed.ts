@@ -17,17 +17,17 @@ export default defineEvent({
 		// ! await required for try catch support
 		try {
 			await command.execute(interaction);
-		} catch (error: unknown) {
+		} catch (error) {
 			handleError(interaction.client, error, "Slash Command Error");
 
 			const options = {
 				embeds: [
 					new EmbedBuilder()
 						.setColor(settings.colors.red)
-						.setTitle(strings.bot.error)
+						.setTitle(strings.global.error_title)
 						.setThumbnail(settings.images.error)
 						.setDescription(
-							`${strings.command.error}\nError for the developers:\n\`\`\`${error}\`\`\``,
+							`${strings.command.error}\n${strings.global.error_description.replace("%ERROR%", error)}`,
 						),
 				],
 				components: addDeleteButton(),

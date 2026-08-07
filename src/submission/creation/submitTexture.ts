@@ -22,7 +22,7 @@ const DEBUG = process.env.DEBUG.toLowerCase() === "true";
  */
 export default async function submitTexture(message: Message<true>) {
 	if (!message.attachments.size)
-		return cancelSubmission(message, strings.submission.image_not_attached);
+		return cancelSubmission(message, strings.submission.error.image_not_attached);
 
 	const textureResults = (
 		await Promise.all(

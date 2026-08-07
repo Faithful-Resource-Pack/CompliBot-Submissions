@@ -49,7 +49,7 @@ export default defineCommand({
 		await interaction.editReply({
 			embeds: [
 				new EmbedBuilder()
-					.setTitle("Successfully sent all submissions!")
+					.setTitle(strings.command.push.channelpush_success)
 					.setColor(settings.colors.green),
 			],
 		});

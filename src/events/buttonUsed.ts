@@ -1,5 +1,5 @@
-import strings from "@resources/strings.json";
 import settings from "@resources/settings.json";
+import strings from "@resources/strings.json";
 import { defineEvent } from "@interfaces/discord";
 
 import { magnifyToAttachment } from "@images/magnify";
@@ -64,20 +64,16 @@ export default defineEvent({
 
 				const diff = await difference(currentUrl, submittedUrl);
 				if (!diff || !submittedUrl) {
-					return warnUser(
-						interaction,
-						"There is no existing texture to find the difference of!",
-						true,
-					);
+					return warnUser(interaction, strings.command.difference.no_texture, true);
 				}
 				return interaction.editReply({
 					embeds: [
 						new EmbedBuilder()
-							.setTitle(`Texture Comparison for ${message.embeds[0].title}`)
-							.setDescription(
-								"- Blue: Changed pixels\n- Green: Added pixels\n- Red: Removed pixels",
+							.setTitle(
+								strings.command.difference.title.replace("%TEXTURE%", message.embeds[0].title),
 							)
-							.setFooter({ text: "Algorithm made by Ewan Howell" })
+							.setDescription(strings.command.difference.description)
+							.setFooter({ text: strings.command.difference.footer })
 							.setColor(settings.colors.blue)
 							.setImage("attachment://diff.png"),
 					],
@@ -110,14 +106,14 @@ export default defineEvent({
 				const user = originalAuthor?.id ? `<@${originalAuthor.id}>` : "another user";
 
 				return interaction.reply({
-					content: `This interaction is reserved for ${user}!`,
+					content: strings.global.reserved_interaction.replace("%USER%", user),
 					flags: MessageFlags.Ephemeral,
 				});
 			}
 			default: {
 				return warnUser(
 					interaction,
-					strings.bot.missing_interaction.replace("%INTERACTION%", "button"),
+					strings.global.missing_interaction.replace("%INTERACTION%", "button"),
 				);
 			}
 		}

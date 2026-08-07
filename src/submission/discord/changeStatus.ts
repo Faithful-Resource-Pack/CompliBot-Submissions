@@ -1,3 +1,5 @@
+import strings from "@resources/strings.json";
+
 import {
 	EmbedBuilder,
 	Message,
@@ -32,15 +34,14 @@ export default async function changeStatus(
 	await message.edit({ embeds: [embed], components });
 
 	// no need to check for original post, return early
-	if (!editOriginal || !embed.data.description?.startsWith("[Original Post](")) return embed;
+	if (
+		!editOriginal ||
+		!embed.data.description?.startsWith(`[${strings.submission.field.original_post}](`)
+	)
+		return embed;
 
 	// get original message id from submission description (pain)
-	const [channelID, messageID] = embed.data.description
-		.replace("[Original Post](", "") // remove markdown links
-		.replace(")", "") // should probably be done with match() and regex
-		.split(/\s+/g)[0] // get just the url
-		.split("/") // split url into ids
-		.slice(-2); // only take the last two ids (channel and message)
+	const [channelID, messageID] = getOriginalMessage(embed.data.description);
 
 	try {
 		const channel = message.client.channels.cache.get(channelID) as TextChannel;
@@ -77,3 +78,21 @@ export function editEmbed(
 	if (color) embed.setColor(color);
 	return embed;
 }
+
+/**
+ * Get the original message from a submission description using the "Original Post" field
+ * @author Evorp
+ * @param description Description to read
+ * @returns Tuple of found channel and message ID if exists
+ */
+export const getOriginalMessage = (description: string) =>
+	description
+		// get just the first line
+		.split(/\s+/g)[0]
+		// remove link, this should really be done with one big regex
+		.replace(`[${strings.submission.field.original_post}](`, "")
+		.replace(")", "")
+		// split url into ids
+		.split("/")
+		// only take the last two ids (channel and message)
+		.slice(-2) as [channel: string, message: string];

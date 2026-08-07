@@ -9,7 +9,7 @@ import { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, MessageFlags } 
 export default defineCommand({
 	data: new SlashCommandBuilder()
 		.setName("eval")
-		.setDescription("Evaluates a string of code.")
+		.setDescription(strings.command.description.eval)
 		.addStringOption((option) =>
 			option.setName("code").setDescription("The code to evaluate.").setRequired(true),
 		)

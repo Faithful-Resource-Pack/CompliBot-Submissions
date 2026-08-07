@@ -13,8 +13,8 @@ export async function feedbackBug(interaction: ModalSubmitInteraction) {
 	await interaction.reply({
 		embeds: [
 			new EmbedBuilder()
-				.setTitle("Bug report received!")
-				.setDescription(strings.command.feedback_sent)
+				.setTitle(strings.command.feedback.success_bug)
+				.setDescription(strings.command.feedback.success_description)
 				.setColor(settings.colors.blue),
 		],
 	});
@@ -42,8 +42,8 @@ export async function feedbackSuggestion(interaction: ModalSubmitInteraction) {
 	await interaction.reply({
 		embeds: [
 			new EmbedBuilder()
-				.setTitle("Feature request received!")
-				.setDescription(strings.command.feedback_sent)
+				.setTitle(strings.command.feedback.success_feedback)
+				.setDescription(strings.command.feedback.success_description)
 				.setColor(settings.colors.blue),
 		],
 	});
@@ -88,8 +88,8 @@ export async function feedbackSend(
 		interaction.followUp({
 			embeds: [
 				new EmbedBuilder()
-					.setTitle("Feedback could not be sent!")
-					.setDescription(`Error for the developers: \`\`\`${err}\`\`\``)
+					.setTitle(strings.command.feedback.failure_title)
+					.setDescription(strings.global.error_description.replace("%ERROR%", err))
 					.setColor(settings.colors.red),
 			],
 		});

@@ -76,8 +76,10 @@ export default async function palette(interaction: AnyInteraction, origin: Image
 		.map((el) => el.hex);
 
 	const embed = new EmbedBuilder()
-		.setTitle("Palette results")
-		.setDescription(`Total: ${Object.keys(allColors).length}`)
+		.setTitle(strings.command.palette.title)
+		.setDescription(
+			strings.command.palette.total.replace("%COUNT%", String(Object.keys(allColors).length)),
+		)
 		.setColor(settings.colors.blue);
 
 	const fields = colors
@@ -87,7 +89,10 @@ export default async function palette(interaction: AnyInteraction, origin: Image
 			return acc;
 		}, [])
 		.map<APIEmbedField>((colorGroup, i, self) => ({
-			name: `Hex ${self.length > 1 ? `part ${i + 1}` : ""}:`,
+			name: strings.command.palette[self.length === 1 ? "hex_singular" : "hex_multiple"].replace(
+				"%d",
+				String(i + 1),
+			),
 			value: colorGroup.map((color) => `[\`#${color}\`](${COOLORS_URL}${color})`).join(" "),
 			inline: true,
 		}));
@@ -107,20 +112,19 @@ export default async function palette(interaction: AnyInteraction, origin: Image
 	let groupLength = 0;
 
 	for (let i = 0; i < paletteGroups.length; ++i) {
-		const link = `**[Palette${
-			paletteGroups.length > 1 ? " part " + (i + 1) : ""
-		}](${COOLORS_URL}${paletteGroups[i].join("-")})** `;
+		const link = strings.command.palette[
+			paletteGroups.length === 1 ? "list_singular" : "list_multiple"
+		].replace("%d", String(i + 1));
 
 		// too long
 		if (groupLength + link.length + 3 > 1024) break;
-
-		paletteUrls.push(link);
+		paletteUrls.push(`**[${link}](${COOLORS_URL}${paletteGroups[i].join("-")})**`);
 		groupLength += link.length;
 	}
 
 	// add field at top
 	embed.spliceFields(0, 0, {
-		name: "List of colors:",
+		name: strings.command.palette.list_title,
 		value: paletteUrls.join(" - "),
 		inline: false,
 	});

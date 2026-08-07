@@ -1,3 +1,5 @@
+import strings from "@resources/strings.json";
+
 import { defineEvent } from "@interfaces/discord";
 import type { PackFile } from "@interfaces/database";
 
@@ -13,6 +15,7 @@ import handleError from "@functions/handleError";
 
 import { CronJob } from "cron";
 import { ActivityType } from "discord.js";
+import formattedDate from "@helpers/formattedDate";
 
 const DEV = process.env.DEV.toLowerCase() === "true";
 const MAINTENANCE = process.env.MAINTENANCE.toLowerCase() === "true";
@@ -79,15 +82,23 @@ export default defineEvent({
 		});
 
 		/**
-		 * Push downloaded textures to GitHub, and back up database files
+		 * Push downloaded textures and Firestorm collection files to GitHub
 		 * Runs each day at 12:30 AM
 		 */
 		CronJob.from({
 			cronTime: "30 0 * * *",
 			async onTick() {
 				// sync since github can get cranky if you push too many commits too quickly
-				for (const pack of Object.keys(packs)) await pushTextures("./downloadedTextures", pack);
-				await backup(client);
+				for (const pack of Object.keys(packs))
+					await pushTextures(
+						"./downloadedTextures",
+						pack,
+						strings.github.commit_message.autopush.replace("%DATE%", formattedDate()),
+					);
+				await backup(
+					client,
+					strings.github.commit_message.backup.replace("%DATE%", formattedDate()),
+				);
 			},
 			start: true,
 		});

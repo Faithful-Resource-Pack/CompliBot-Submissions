@@ -39,8 +39,8 @@ export default defineCommand({
 			return interaction.reply({
 				embeds: [
 					new EmbedBuilder()
-						.setTitle(strings.bot.error)
-						.setDescription(strings.command.invalid_message.replace("%ID%", replyID))
+						.setTitle(strings.global.error_title)
+						.setDescription(strings.global.invalid_message.replace("%ID%", replyID))
 						.setColor(settings.colors.red),
 				],
 				flags: MessageFlags.Ephemeral,

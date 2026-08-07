@@ -1,4 +1,5 @@
 import settings from "@resources/settings.json";
+import strings from "@resources/strings.json";
 
 import type { Submission } from "@interfaces/database";
 
@@ -38,8 +39,8 @@ export default async function sendResults(client: Client, pack: Submission, dela
 			color: settings.colors.green,
 			emoji: `<:upvote:${settings.emojis.upvote}>`,
 			components: [submissionButtons],
-			originalStatus: "Sent to results!",
-			resultStatus: `Will be added in a future version! ${getPercentage(message.upvotes, message.downvotes)}`,
+			originalStatus: strings.submission.status.original_approved,
+			resultStatus: `${strings.submission.status.results_approved} ${getPercentage(message.upvotes, message.downvotes)}`,
 		});
 
 	// group denied submissions at bottom of channel (more important for contributors to see)
@@ -47,8 +48,8 @@ export default async function sendResults(client: Client, pack: Submission, dela
 		await sendMessage(message, channelOut, {
 			color: settings.colors.red,
 			emoji: `<:downvote:${settings.emojis.downvote}>`,
-			originalStatus: "Not enough upvotes!",
-			resultStatus: `This texture did not pass voting and therefore will not be added. ${getPercentage(
+			originalStatus: strings.submission.status.original_denied,
+			resultStatus: `${strings.submission.status.results_denied} ${getPercentage(
 				message.upvotes,
 				message.downvotes,
 			)}`,
@@ -81,7 +82,7 @@ export function sendMessage(
 		status: emoji ? `${emoji} ${resultStatus}` : resultStatus,
 	});
 	resultEmbed.setDescription(
-		`[Original Post](${message.message.url})\n${message.embed.description ?? ""}`,
+		`[${strings.submission.field.original_post}](${message.message.url})\n${message.embed.description ?? ""}`,
 	);
 
 	// fallback if not provided

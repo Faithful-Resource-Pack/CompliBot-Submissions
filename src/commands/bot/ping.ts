@@ -24,12 +24,12 @@ export default defineCommand({
 			const botPing = resource.message.createdTimestamp - interaction.createdTimestamp;
 
 			const embed = new EmbedBuilder()
-				.setTitle("Pong!")
+				.setTitle(strings.command.ping.title)
 				.setDescription(`_${quote.replace("%YEAR%", String(new Date().getFullYear() + 2))}_`)
 				.setColor(settings.colors.blue)
 				.addFields(
-					{ name: "Bot Latency", value: `${botPing}ms`, inline: true },
-					{ name: "API Latency", value: `${Math.round(apiPing)}ms`, inline: true },
+					{ name: strings.command.ping.bot_field, value: `${botPing}ms`, inline: true },
+					{ name: strings.command.ping.api_field, value: `${Math.round(apiPing)}ms`, inline: true },
 				);
 
 			return interaction.editReply({ embeds: [embed], components: addDeleteButton() });

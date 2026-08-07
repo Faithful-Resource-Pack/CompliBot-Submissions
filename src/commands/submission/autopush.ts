@@ -48,12 +48,12 @@ export default defineCommand({
 		const packs = choice === "all" ? Object.values(submissions) : [submissions[choice]];
 
 		const infoEmbed = new EmbedBuilder()
-			.setDescription("This can take some time, please wait…")
+			.setDescription(strings.global.progress_description)
 			.setThumbnail(settings.images.loading)
 			.setColor(settings.colors.blue);
 
 		await interaction.reply({
-			embeds: [infoEmbed.setTitle("Downloading textures…")],
+			embeds: [infoEmbed.setTitle(strings.command.push.autopush_download)],
 		});
 
 		await Promise.all(
@@ -63,7 +63,7 @@ export default defineCommand({
 		);
 
 		await interaction.editReply({
-			embeds: [infoEmbed.setTitle("Pushing textures…")],
+			embeds: [infoEmbed.setTitle(strings.command.push.autopush_pushing)],
 		});
 
 		await Promise.all(
@@ -71,7 +71,9 @@ export default defineCommand({
 				pushTextures(
 					"./downloadedTextures",
 					pack,
-					`Manual push executed by ${interaction.user.displayName} on ${formattedDate()}`,
+					strings.github.commit_message.manual_push
+						.replace("%USER", interaction.user.displayName)
+						.replace("%DATE%", formattedDate()),
 				),
 			),
 		);
@@ -79,7 +81,7 @@ export default defineCommand({
 		await interaction.editReply({
 			embeds: [
 				new EmbedBuilder()
-					.setTitle("Successfully pushed all textures!")
+					.setTitle(strings.command.push.autopush_success)
 					.setColor(settings.colors.green),
 			],
 		});

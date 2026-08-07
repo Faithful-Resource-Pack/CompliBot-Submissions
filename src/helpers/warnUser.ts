@@ -16,13 +16,13 @@ import { EmbedBuilder, Message, MessageFlags } from "discord.js";
  */
 export default async function warnUser(
 	interaction: AnyInteraction | Message,
-	text = strings.bot.error,
+	text = strings.global.error_title,
 	deferred = false,
 ) {
 	const embed = new EmbedBuilder()
 		.setColor(settings.colors.red)
 		.setThumbnail(settings.images.warning)
-		.setTitle(strings.bot.error)
+		.setTitle(strings.global.error_title)
 		.setDescription(text);
 
 	if (interaction instanceof Message)

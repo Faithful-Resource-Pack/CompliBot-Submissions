@@ -1,4 +1,5 @@
 import settings from "@resources/settings.json";
+import strings from "@resources/strings.json";
 
 import { randomBytes } from "crypto";
 
@@ -37,7 +38,7 @@ export default async function instapass(message: Message<true>, member: User | G
 	const channelOutID = pack.submission.channels.results;
 	const channelOut = message.client.channels.cache.get(channelOutID) as TextChannel;
 
-	const status = `Instapassed by <@${member.id}>`;
+	const status = strings.submission.status.instapassed.replace("%USER%", `<@${member.id}>`);
 	const resultMessage = await sendMessage(mapSendableMessage(message), channelOut, {
 		color: settings.colors.yellow,
 		emoji: `<:instapass:${settings.emojis.instapass}>`,
@@ -75,7 +76,13 @@ export async function instapassMessages(messages: Message<true>[], pack: Pack) {
 
 	// use allSettled so if one throws the others don't abort
 	await Promise.allSettled([
-		pushTextures(basePath, pack.id, `Instapass ${listify(commitNames)} from ${formattedDate()}`),
+		pushTextures(
+			basePath,
+			pack.id,
+			strings.github.commit_message.instapass
+				.replace("%TEXTURES%", listify(commitNames))
+				.replace("%DATE%", formattedDate()),
+		),
 		postContributions(...textures.flatMap((texture) => generateContributionData(texture, pack))),
 		// guaranteed at least one message from start check
 		addContributorRole(

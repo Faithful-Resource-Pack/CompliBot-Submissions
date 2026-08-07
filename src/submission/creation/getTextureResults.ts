@@ -22,14 +22,14 @@ export default async function getTextureResults(
 	const name = url.split("/").slice(-1)[0].replace(".png", "");
 
 	// throw the error string as copium for no result types
-	if (!url.endsWith(".png")) throw strings.submission.invalid_format;
+	if (!url.endsWith(".png")) throw strings.submission.error.invalid_format;
 
 	// prioritize id if exists, otherwise use texture name
 	const id = message.content.match(/(?<=\[#)(.+?)(?=\])/)?.[0];
 	const search = id ?? name;
 
 	// if there's no search and no id the submission can't be valid
-	if (!search) throw strings.submission.no_name_given;
+	if (!search) throw strings.submission.error.no_name_given;
 	const formattedSearch = id === search ? `[#${id}] ${name}` : search;
 
 	// keep attachment with results so if something gets cancelled things don't shift
@@ -53,9 +53,9 @@ async function searchTextures(search: string, formatted?: string) {
 		const cleaned = Array.isArray(results) ? results : [results];
 
 		// passes into error handler
-		if (!cleaned.length) throw new Error("No results found");
+		if (!cleaned.length) throw new Error(strings.submission.error.does_not_exist);
 		return cleaned;
 	} catch {
-		throw `${strings.submission.does_not_exist}\n\`\`\`${formatted || search}\`\`\``;
+		throw `${strings.submission.error.does_not_exist}\n\`\`\`${formatted || search}\`\`\``;
 	}
 }

@@ -66,9 +66,7 @@ export default defineCommand({
 
 		await interaction.reply({
 			embeds: [
-				new EmbedBuilder()
-					.setTitle("Bot status successfully changed!")
-					.setColor(settings.colors.green),
+				new EmbedBuilder().setTitle(strings.command.status_changed).setColor(settings.colors.green),
 			],
 			components: addDeleteButton(),
 		});

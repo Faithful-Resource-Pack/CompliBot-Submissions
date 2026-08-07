@@ -62,7 +62,7 @@ export default async function choiceEmbed(
 		collector.once("collect", async (interaction: StringSelectMenuInteraction) => {
 			if (!message.deletable) {
 				if (choiceMessage.deletable) choiceMessage.delete();
-				return reject("Submission message already deleted");
+				return reject(strings.submission.error.already_deleted);
 			}
 
 			const id = interaction.values[0];
@@ -71,7 +71,7 @@ export default async function choiceEmbed(
 			const texture = results.find((r) => r.id === id);
 			if (!texture) {
 				await devLogger(message.client, `Failed to find ID [#${id}] in choice embed`);
-				return reject("Texture not found");
+				return reject(strings.submission.error.no_name_given);
 			}
 
 			const options = await makeEmbed(message, texture, params);
@@ -81,7 +81,7 @@ export default async function choiceEmbed(
 
 		collector.once("end", async () => {
 			choiceMessage.delete().catch(() => {});
-			reject("Timed out");
+			reject(strings.submission.error.timed_out);
 		});
 	});
 }
@@ -142,13 +142,14 @@ export async function sendChoiceEmbed(
 	}
 
 	const embed = new EmbedBuilder()
-		.setTitle(`${choices.length} results found`)
+		.setTitle(
+			strings.submission.choice_embed[messageLength > MAX_LENGTH ? "long_title" : "short_title"]
+				.replace("%SHOWN%", String(resultCount))
+				.replace("%COUNT%", String(choices.length)),
+		)
 		.setDescription(strings.submission.choice_embed.description)
 		.setColor(settings.colors.blue)
 		.setThumbnail(attachment.url);
-
-	if (messageLength > MAX_LENGTH)
-		embed.setTitle(`Showing 1–${resultCount} of ${choices.length} results`);
 
 	const choiceMessage = await message.reply({
 		embeds: [embed],

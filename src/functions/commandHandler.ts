@@ -49,7 +49,7 @@ export async function deleteCommands(client: Client<true>, guildID: string | "gl
 		data.map((command: any) =>
 			rest.delete(
 				guildID === "global"
-					? `${Routes.applicationCommand(client.user.id, command.id)}`
+					? Routes.applicationCommand(client.user.id, command.id)
 					: `${Routes.applicationGuildCommands(client.user.id, guildID)}/${command.id}`,
 			),
 		),

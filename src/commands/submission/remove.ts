@@ -52,14 +52,16 @@ export default defineCommand({
 			.replace(/ /g, "_");
 
 		const noResultEmbed = new EmbedBuilder()
-			.setTitle("No results found!")
-			.setDescription(`No results were found for ${cleanedTextureName}. Have you made a typo?`)
+			.setTitle(strings.command.remove.no_results_found)
+			.setDescription(
+				`${strings.submission.error.does_not_exist}\n\`\`\`${cleanedTextureName}\`\`\``,
+			)
 			.setColor(settings.colors.red);
 
 		let results: Texture | Texture[];
 		try {
 			results = (
-				await axios.get(
+				await axios.get<Texture | Texture[]>(
 					`${process.env.API_URL}textures/${encodeURIComponent(cleanedTextureName)}/all`,
 				)
 			).data;
@@ -95,7 +97,9 @@ export default defineCommand({
 					try {
 						await conn.delete(
 							version,
-							`Delete ${name} executed by ${interaction.user.displayName}`,
+							strings.github.commit_message.remove
+								.replace("%TEXTURES%", name)
+								.replace("%USER%", interaction.user.displayName),
 							paths,
 						);
 						if (DEBUG)
@@ -112,11 +116,11 @@ export default defineCommand({
 			embeds: [
 				new EmbedBuilder()
 					.setTitle(
-						`Successfully removed [#${id}] ${name} from ${choice === "all" ? "all packs" : packs[0].name}!`,
+						strings.command.remove[choice === "all" ? "removed_all" : "removed_single"]
+							.replace("%TEXTURE%", `[#${id}] ${name}`)
+							.replace("%PACK%", packs[0].name),
 					)
-					.setDescription(
-						"Note that this does not remove contributions or other pack-specific data.",
-					)
+					.setDescription(strings.command.remove.notice)
 					.setColor(settings.colors.green),
 			],
 			components: addDeleteButton(),
