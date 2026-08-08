@@ -38,7 +38,7 @@ export default defineCommand({
 		.setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
 		.setDMPermission(false),
 	async execute(interaction) {
-		interaction.deferReply();
+		await interaction.deferReply();
 		const submissions: PackFile = require("@resources/packs.json");
 		const choice = interaction.options.getString("pack", true);
 		const texture = interaction.options.getString("texture", true);
