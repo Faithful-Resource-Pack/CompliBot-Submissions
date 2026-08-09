@@ -108,7 +108,10 @@ export function getPercentage(upvotes: number, downvotes: number) {
 	const upvotePercentage =
 		((upvotes - DEFAULT_REACTION_COUNT) * 100) /
 		(upvotes - DEFAULT_REACTION_COUNT + (downvotes - DEFAULT_REACTION_COUNT));
-	// handle weird math edge cases
+	// handle division by zero and cache issues
 	if (isNaN(upvotePercentage) || !isFinite(upvotePercentage)) return "";
-	return `(${Number(upvotePercentage.toFixed(2))}% upvoted)`;
+	return strings.submission.status.upvote_percentage.replace(
+		"%d",
+		String(Number(upvotePercentage.toFixed(2))),
+	);
 }

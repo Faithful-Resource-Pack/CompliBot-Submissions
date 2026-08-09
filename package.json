@@ -18,7 +18,7 @@
         "typescript-eslint": "^8.66.0"
     },
     "dependencies": {
-        "@napi-rs/canvas": "^1.0.3",
+        "@napi-rs/canvas": "^1.0.5",
         "@octokit/rest": "^22.0.1",
         "axios": "^1.19.0",
         "cron": "^4.4.0",
