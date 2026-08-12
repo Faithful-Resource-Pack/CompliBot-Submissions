@@ -145,7 +145,8 @@
 			"results_denied": "Failed community vote and will not be added.",
 			"instapassed": "Instapassed by %USER%",
 			"invalidated": "Invalidated by %USER%",
-			"upvote_percentage": "(%d% upvoted)"
+			"upvote_percentage": "(%d% upvoted)",
+			"no_votes": "(Nobody voted…)"
 		},
 		"footer": {
 			"texture_edit": "Reference | Submitted | Current",

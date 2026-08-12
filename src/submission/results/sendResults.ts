@@ -107,13 +107,16 @@ export function sendMessage(
  * @returns formatted string (or an empty string if not possible)
  */
 export function getPercentage(upvotes: number, downvotes: number) {
-	const upvotePercentage =
-		((upvotes - DEFAULT_REACTION_COUNT) * 100) /
-		(upvotes - DEFAULT_REACTION_COUNT + (downvotes - DEFAULT_REACTION_COUNT));
-	// handle division by zero and cache issues
-	if (isNaN(upvotePercentage) || !isFinite(upvotePercentage)) return "";
-	return strings.submission.status.upvote_percentage.replace(
-		"%d",
-		String(Number(upvotePercentage.toFixed(2))),
-	);
+	// normalize
+	upvotes -= DEFAULT_REACTION_COUNT;
+	downvotes -= DEFAULT_REACTION_COUNT;
+
+	// prevent division by zero if nobody voted
+	if (upvotes === 0 && downvotes === 0) return strings.submission.status.no_votes;
+
+	const upvoteRatio = upvotes / (upvotes + downvotes);
+
+	// re-cast to number to remove unnecessary decimals (100.00 -> 100)
+	const upvotePercentage = Number((upvoteRatio * 100).toFixed(2));
+	return strings.submission.status.upvote_percentage.replace("%d", String(upvotePercentage));
 }
