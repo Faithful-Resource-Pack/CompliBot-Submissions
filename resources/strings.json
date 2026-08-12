@@ -151,9 +151,7 @@
 			"texture_edit": "Reference | Submitted | Current",
 			"texture_add": "Reference | Submitted",
 			"cannot_compare": "This texture is too big to create a comparison image!"
-		}
-	},
-	"github": {
+		},
 		"commit_message": {
 			"autopush": "Autopush passed textures from %DATE%",
 			"instapass": "Instapass %TEXTURES% from %DATE%",

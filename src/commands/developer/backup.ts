@@ -23,7 +23,7 @@ export default defineCommand({
 
 		const { successfulPushes, failedPushes, commit } = await backup(
 			interaction.client,
-			strings.github.commit_message.manual_backup
+			strings.submission.commit_message.manual_backup
 				.replace("%USER%", interaction.user.displayName)
 				.replace("%DATE%", formattedDate()),
 		);

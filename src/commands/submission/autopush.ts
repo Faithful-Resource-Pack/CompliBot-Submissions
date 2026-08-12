@@ -71,7 +71,7 @@ export default defineCommand({
 				pushTextures(
 					"./downloadedTextures",
 					pack,
-					strings.github.commit_message.manual_push
+					strings.submission.commit_message.manual_push
 						.replace("%USER", interaction.user.displayName)
 						.replace("%DATE%", formattedDate()),
 				),

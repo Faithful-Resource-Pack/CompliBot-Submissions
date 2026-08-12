@@ -34,7 +34,7 @@ export default async function sendResults(client: Client, pack: Submission, dela
 	);
 
 	// handle synchronously to preserve submission order (important when processing multiple identical textures)
-	for (const message of messagesUpvoted)
+	for (const message of messagesUpvoted) {
 		await sendMessage(message, channelOut, {
 			color: settings.colors.green,
 			emoji: `<:upvote:${settings.emojis.upvote}>`,
@@ -42,9 +42,10 @@ export default async function sendResults(client: Client, pack: Submission, dela
 			originalStatus: strings.submission.status.original_approved,
 			resultStatus: `${strings.submission.status.results_approved} ${getPercentage(message.upvotes, message.downvotes)}`,
 		});
+	}
 
 	// group denied submissions at bottom of channel (more important for contributors to see)
-	for (const message of messagesDownvoted)
+	for (const message of messagesDownvoted) {
 		await sendMessage(message, channelOut, {
 			color: settings.colors.red,
 			emoji: `<:downvote:${settings.emojis.downvote}>`,
@@ -54,6 +55,7 @@ export default async function sendResults(client: Client, pack: Submission, dela
 				message.downvotes,
 			)}`,
 		});
+	}
 }
 
 export interface SubmissionStatusChange {

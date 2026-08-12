@@ -97,7 +97,7 @@ export default defineCommand({
 					try {
 						await conn.delete(
 							version,
-							strings.github.commit_message.remove
+							strings.submission.commit_message.remove
 								.replace("%TEXTURES%", name)
 								.replace("%USER%", interaction.user.displayName),
 							paths,

@@ -89,15 +89,16 @@ export default defineEvent({
 			cronTime: "30 0 * * *",
 			async onTick() {
 				// sync since github can get cranky if you push too many commits too quickly
-				for (const pack of Object.keys(packs))
+				for (const pack of Object.keys(packs)) {
 					await pushTextures(
 						"./downloadedTextures",
 						pack,
-						strings.github.commit_message.autopush.replace("%DATE%", formattedDate()),
+						strings.submission.commit_message.autopush.replace("%DATE%", formattedDate()),
 					);
+				}
 				await backup(
 					client,
-					strings.github.commit_message.backup.replace("%DATE%", formattedDate()),
+					strings.submission.commit_message.backup.replace("%DATE%", formattedDate()),
 				);
 			},
 			start: true,

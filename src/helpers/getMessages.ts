@@ -28,7 +28,6 @@ export default async function getMessages(
 
 		// nothing met criteria
 		if (!out.length) return fetchedMessages.reverse(); // return from oldest -> newest
-
 		fetchedMessages.push(...out);
 
 		// start fetching again from the last message if there were matches

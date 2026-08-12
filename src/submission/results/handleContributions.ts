@@ -53,6 +53,7 @@ export const generateContributionData = (
  * @param contributions contributions to post
  */
 export async function postContributions(...contributions: Contribution[]) {
+	if (!contributions.length) return;
 	try {
 		await axios.post(`${process.env.API_URL}contributions`, contributions, {
 			headers: {

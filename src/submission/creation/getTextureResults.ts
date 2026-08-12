@@ -33,10 +33,7 @@ export default async function getTextureResults(
 	const formattedSearch = id === search ? `[#${id}] ${name}` : search;
 
 	// keep attachment with results so if something gets cancelled things don't shift
-	return {
-		results: await searchTextures(search, formattedSearch),
-		attachment,
-	};
+	return { results: await searchTextures(search, formattedSearch), attachment };
 }
 
 /**

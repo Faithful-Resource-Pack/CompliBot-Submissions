@@ -79,7 +79,7 @@ export async function instapassMessages(messages: Message<true>[], pack: Pack) {
 		pushTextures(
 			basePath,
 			pack.id,
-			strings.github.commit_message.instapass
+			strings.submission.commit_message.instapass
 				.replace("%TEXTURES%", listify(commitNames))
 				.replace("%DATE%", formattedDate()),
 		),

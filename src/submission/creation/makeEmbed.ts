@@ -58,7 +58,7 @@ export default async function makeEmbed(
 	if (description.startsWith("+") || description.startsWith("*+")) {
 		const lastContribution = texture.contributions
 			.filter((contribution) => contribution.pack === pack.id)
-			.sort((a, b) => (a.date > b.date ? -1 : 1))?.[0];
+			.sort((a, b) => b.date - a.date)?.[0];
 
 		if (lastContribution) {
 			for (const author of lastContribution.authors) authors.add(author);
@@ -72,10 +72,10 @@ export default async function makeEmbed(
 			url: `https://faithfulpack.net/user/${message.author.id}`,
 		})
 		.setTitle(`[#${texture.id}] ${texture.name}`)
-		.setColor(settings.colors.blue)
 		.setURL(
 			`https://studio.faithfulpack.net/gallery/${texture.uses[0].edition}/${pack.id}/latest/all/?show=${texture.id}`,
 		)
+		.setColor(settings.colors.blue)
 		.addFields(
 			{
 				name: strings.submission.field[authors.size === 1 ? "author_singular" : "author_plural"],
@@ -89,7 +89,7 @@ export default async function makeEmbed(
 				value: `<:pending:${settings.emojis.pending}> ${strings.submission.status.pending}`,
 				inline: true,
 			},
-			...addPathsToEmbed(texture),
+			...createPathFields(texture),
 		);
 
 	if (description) embed.setDescription(description);
@@ -175,7 +175,7 @@ export async function createEmbedImages(
  * @param texture texture to get paths and uses from
  * @returns usable embed field data
  */
-export function addPathsToEmbed(texture: Texture): APIEmbedField[] {
+export function createPathFields(texture: Texture): APIEmbedField[] {
 	const groupedPaths = texture.uses.reduce<Partial<Record<MinecraftEdition, string[]>>>(
 		(acc, use) => {
 			const paths = texture.paths
