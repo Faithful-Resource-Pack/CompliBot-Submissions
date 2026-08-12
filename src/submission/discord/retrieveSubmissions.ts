@@ -44,6 +44,7 @@ export default async function retrieveSubmissions(
 		);
 	});
 
+	console.log(`Retrieved ${messages.length} submissions`);
 	const mappedMessages: SendableMessage[] = messages.map(mapSendableMessage);
 
 	const messagesUpvoted = mappedMessages.filter(

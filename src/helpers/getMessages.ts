@@ -1,4 +1,4 @@
-import { TextChannel, Message, FetchMessagesOptions, Client } from "discord.js";
+import { Client, TextChannel, Message, FetchMessagesOptions, Collection } from "discord.js";
 
 export type MessageFilter = (message: Message) => boolean;
 
@@ -18,17 +18,17 @@ export default async function getMessages(
 	const channel = client.channels.cache.get(channelID) as TextChannel;
 	if (!channel) return [];
 
-	const fetchedMessages: Message[] = [];
-
 	const options: FetchMessagesOptions = { limit: 100 };
 
+	// this would compose better as a reduce expression but it's async
+	let acc = new Collection<string, Message<true>>();
 	while (true) {
 		const messages = await channel.messages.fetch(options);
-		const out = Array.from(messages.values()).filter(filter);
+		const cur = messages.filter((message, id) => !acc.has(id) && filter(message));
 
-		// nothing met criteria
-		if (!out.length) return fetchedMessages.reverse(); // return from oldest -> newest
-		fetchedMessages.push(...out);
+		// we've exhausted all contiguous items that fit predicate, return from oldest -> newest
+		if (!cur.size) return Array.from(acc.values()).reverse();
+		acc = acc.concat(cur);
 
 		// start fetching again from the last message if there were matches
 		options.before = messages.last()?.id;
