@@ -14,10 +14,11 @@ const DEBUG = process.env.DEBUG.toLowerCase() === "true";
  */
 export default async function invalidate(message: Message, member: User | GuildMember) {
 	if (DEBUG) console.log(`Texture invalidated: ${message.embeds[0].title}`);
+	const status = strings.submission.status.invalidated.replace("%USER%", `<@${member.id}>`);
 
 	// not posted to results
 	await changeStatus(message, {
-		status: strings.submission.status.invalidated.replace("%USER%", `<@${member.id}>`),
+		status: `<:invalid:${settings.emojis.invalid}> ${status}`,
 		color: settings.colors.red,
 		editOriginal: true,
 	});
