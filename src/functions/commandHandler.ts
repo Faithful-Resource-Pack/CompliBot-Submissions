@@ -27,7 +27,7 @@ export async function loadCommands(client: Client<true>) {
 		.put(Routes.applicationCommands(client.user.id), {
 			body: Array.from(client.commands.values(), (command) => command.data.toJSON()),
 		})
-		.then(() => console.log("Slash commands loaded"));
+		.then(() => console.log("Slash commands loaded!"));
 }
 
 /**

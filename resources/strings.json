@@ -118,8 +118,8 @@
 				"plural": "Instapassing %COUNT% textures…"
 			},
 			"finished_title": {
-				"singular": "Instapassed %COUNT% texture…",
-				"plural": "Instapassed %COUNT% textures…"
+				"singular": "Instapassed %COUNT% texture",
+				"plural": "Instapassed %COUNT% textures"
 			},
 			"no_reason": "*No reason provided*"
 		},
