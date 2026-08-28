@@ -44,11 +44,14 @@ export default async function starpass(
 	const status = strings.submission.status.instapassed.replace("%USER%", `<@${message.author.id}>`);
 	const resultMessagesToInstapass = await Promise.all(
 		embedsToInstapass.map((embed) => {
-			// todo: try to merge this with the instapass action
+			// todo: try to merge this with sendMessage
 			const edited = editEmbed(embed, {
 				color: settings.colors.yellow,
 				status: `<:instapass:${settings.emojis.instapass}> ${status}`,
 			});
+			edited.setDescription(
+				`[${strings.submission.field.original_post}](${statusMessage.url})\n${edited.data.description ?? ""}`,
+			);
 			return resultChannel.send({
 				embeds: [edited],
 				components: [submissionButtons],
