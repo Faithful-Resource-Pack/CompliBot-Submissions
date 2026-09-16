@@ -79,6 +79,10 @@ export default async function starpass(
 			value: message.content.slice(1).trim() || strings.submission.starpass.no_reason,
 		});
 
+	// show thumbnail if there's only one texture (no ambiguity)
+	if (embedsToInstapass.length === 1)
+		notificationEmbed.setThumbnail(EmbedBuilder.from(embedsToInstapass[0]).data.thumbnail.url);
+
 	return statusMessage.edit({ embeds: [notificationEmbed] });
 }
 
