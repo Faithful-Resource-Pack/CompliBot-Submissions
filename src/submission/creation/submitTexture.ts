@@ -106,7 +106,7 @@ export async function submitAttachment(
  * @returns array of author's discord IDs
  */
 export async function getAuthors(message: Message) {
-	// submitter always goes first (sets maintain insertion order)
+	// submitter always goes first for permission purposes (sets maintain insertion order)
 	const authors = new Set([message.author.id]);
 
 	// detect text between curly brackets
@@ -114,11 +114,13 @@ export async function getAuthors(message: Message) {
 		.match(/(?<=\{)(.*?)(?=\})/g)
 		?.map((name) => name.toLowerCase().trim());
 
+	// surprisingly faster to fetch all usernames and filter them than send a specialized request
 	if (names?.length) {
 		const users = (await axios.get<User[]>(`${process.env.API_URL}users/names`)).data;
-		// cleaner to use a set since we don't have to filter duplicates
-		for (const user of users)
-			if (names.includes(user.username?.toLowerCase() || "")) authors.add(user.id);
+		const matchedUsers = users.filter(
+			(u) => u.username && names.includes(u.username?.toLowerCase()),
+		);
+		for (const user of matchedUsers) authors.add(user.id);
 	}
 
 	// detect by ping (using regex to ensure users not in the server get included)
