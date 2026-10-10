@@ -1,16 +1,14 @@
 import "dotenv/config";
 import "@interfaces/environment";
 
-import { readdirSync } from "fs";
-import { join } from "path";
-
-import type { Event } from "@interfaces/discord";
+import loadEvents from "@functions/loadEvents";
+import loadCommands from "@functions/loadCommands";
 
 import { fetchSettings } from "@functions/fetchSettings";
 import handleError from "@functions/handleError";
 import { Client, GatewayIntentBits, Partials } from "discord.js";
 
-export default function startClient() {
+export default async function startClient() {
 	const client = new Client({
 		// remove this line to die instantly ~sharkaccino, 2021
 		allowedMentions: { parse: ["users", "roles"], repliedUser: false },
@@ -30,37 +28,27 @@ export default function startClient() {
 			GatewayIntentBits.GuildIntegrations,
 			GatewayIntentBits.GuildPresences,
 			GatewayIntentBits.GuildMessages,
-			GatewayIntentBits.MessageContent,
 			GatewayIntentBits.GuildMessageReactions,
 			GatewayIntentBits.GuildMessageTyping,
 			GatewayIntentBits.DirectMessages,
 			GatewayIntentBits.DirectMessageReactions,
 			GatewayIntentBits.DirectMessageTyping,
+			GatewayIntentBits.MessageContent,
 		],
 	});
 
-	/**
-	 * EVENT HANDLER
-	 * - see the ./events folder
-	 */
-	const eventsFiles = readdirSync(join(__dirname, "events")).filter((f) => f.endsWith(".ts"));
-	for (const file of eventsFiles) {
-		const event: Event<any> = require(join(__dirname, "events", file)).default;
-
-		// catch invalid events
-		if (typeof event !== "object") continue;
-		client.on(event.name, event.execute);
-	}
-
-	/**
-	 * ERROR HANDLER
-	 */
+	// set up error handlers before doing anything in case login fails
 	process.on("unhandledRejection", (reason: any) =>
 		handleError(client, reason, "Unhandled Rejection"),
 	);
 	process.on("uncaughtException", (error) => handleError(client, error, "Uncaught Exception"));
 
-	return client.login(process.env.CLIENT_TOKEN).catch(console.error);
+	try {
+		await client.login(process.env.CLIENT_TOKEN);
+		await Promise.all([loadEvents(client), loadCommands(client)]);
+	} catch (data) {
+		return console.error(data);
+	}
 }
 
 // IMPORTANT: you always need to fetch settings BEFORE you start the bot

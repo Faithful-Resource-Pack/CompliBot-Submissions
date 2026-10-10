@@ -10,15 +10,17 @@ import { Routes, REST, Collection, Client } from "discord.js";
  * @author RobertR11, Evorp
  * @param client client to load commands to
  */
-export async function loadCommands(client: Client<true>) {
+export default async function loadCommands(client: Client<boolean>) {
 	client.commands = new Collection();
 	const commandPaths = walkSync(join(__dirname, "..", "commands")).filter((f) => f.endsWith(".ts"));
 
 	// add to collection in bot so they can be fetched
-	for (const path of commandPaths) {
-		const command: Command = require(path).default;
-		client.commands.set(command.data.name, command);
-	}
+	await Promise.all(
+		commandPaths.map(async (file) => {
+			const command = await import(file).then<Command>(({ default: cmd }) => cmd);
+			client.commands.set(command.data.name, command);
+		}),
+	);
 
 	const rest = new REST({ version: "10" }).setToken(process.env.CLIENT_TOKEN);
 
@@ -27,7 +29,7 @@ export async function loadCommands(client: Client<true>) {
 		.put(Routes.applicationCommands(client.user.id), {
 			body: Array.from(client.commands.values(), (command) => command.data.toJSON()),
 		})
-		.then(() => console.log("Slash commands loaded!"));
+		.then(() => console.log("Loaded slash commands!"));
 }
 
 /**

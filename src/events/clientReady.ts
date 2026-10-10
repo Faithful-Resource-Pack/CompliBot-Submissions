@@ -3,19 +3,17 @@ import strings from "@resources/strings.json";
 import { defineEvent } from "@interfaces/discord";
 import type { PackFile } from "@interfaces/database";
 
-import { loadCommands } from "@functions/commandHandler";
-import { fetchSettings } from "@functions/fetchSettings";
-
 import sendResults from "@submission/results/sendResults";
 import downloadResults from "@submission/results/downloadResults";
 import pushTextures from "@submission/results/pushTextures";
 
+import { fetchSettings } from "@functions/fetchSettings";
 import backup from "@functions/backup";
 import handleError from "@functions/handleError";
+import formattedDate from "@helpers/formattedDate";
 
 import { CronJob } from "cron";
 import { ActivityType } from "discord.js";
-import formattedDate from "@helpers/formattedDate";
 
 const DEV = process.env.DEV.toLowerCase() === "true";
 const MAINTENANCE = process.env.MAINTENANCE.toLowerCase() === "true";
@@ -29,8 +27,6 @@ export default defineEvent({
 		console.log(`│   TypeScript is a pain, but I'm fine, I hope...   │`);
 		console.log(`│                                                   │`);
 		console.log(`└───────────────────────────────────────────────────┘\n`);
-
-		await loadCommands(client);
 
 		if (MAINTENANCE)
 			client.user.setPresence({ activities: [{ name: "maintenance" }], status: "dnd" });

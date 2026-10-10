@@ -67,7 +67,7 @@ Registering a custom pack for the submission process is relatively simple. [`res
 			// You can omit an edition if you don't provide support for it
 			"bedrock": {
 				"org": "Faithful-Resource-Pack",
-				"repo": "Faithful-32x-Java"
+				"repo": "Faithful-32x-Bedrock"
 			}
 		},
 		// Discord submission data
