@@ -110,13 +110,12 @@ export function getPercentage(upvotes: number, downvotes: number) {
 	// normalize
 	upvotes -= DEFAULT_REACTION_COUNT;
 	downvotes -= DEFAULT_REACTION_COUNT;
+	const totalVotes = upvotes + downvotes;
 
 	// prevent division by zero if nobody voted
-	if (upvotes === 0 && downvotes === 0) return strings.submission.status.no_votes;
-
-	const upvoteRatio = upvotes / (upvotes + downvotes);
+	if (totalVotes === 0) return strings.submission.status.no_votes;
 
 	// re-cast to number to remove unnecessary decimals (100.00 -> 100)
-	const upvotePercentage = Number((upvoteRatio * 100).toFixed(2));
+	const upvotePercentage = Number(((upvotes * 100) / totalVotes).toFixed(2));
 	return strings.submission.status.upvote_percentage.replace("%d", String(upvotePercentage));
 }
