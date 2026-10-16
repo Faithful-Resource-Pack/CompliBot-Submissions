@@ -3,13 +3,13 @@ import settings from "@resources/settings.json";
 import { getEmbedStatus, SubmissionStatus } from "@submission/discord/getEmbedStatus";
 import getMessages from "@helpers/getMessages";
 
-import { ActionRow, Client, Embed, Message, MessageActionRowComponent } from "discord.js";
+import { Client, Embed, Message, type TopLevelComponent } from "discord.js";
 
 export interface SendableMessage {
 	upvotes: number;
 	downvotes: number;
 	embed: Embed;
-	components: ActionRow<MessageActionRowComponent>[];
+	components: TopLevelComponent[];
 	message: Message;
 }
 
@@ -73,7 +73,6 @@ export const mapSendableMessage = (message: Message): SendableMessage => ({
 	upvotes: message.reactions.cache.get(settings.emojis.upvote)?.count ?? DEFAULT_REACTION_COUNT,
 	downvotes: message.reactions.cache.get(settings.emojis.downvote)?.count ?? DEFAULT_REACTION_COUNT,
 	embed: message.embeds[0],
-	// djs v14.19 workaround
-	components: message.components as ActionRow<MessageActionRowComponent>[],
+	components: message.components,
 	message,
 });
