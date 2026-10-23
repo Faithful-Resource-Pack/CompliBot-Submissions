@@ -9,10 +9,9 @@
   <h1>CompliBot Submissions</h1>
   <h3>Fully automated texture pushing and submission system for the Faithful Discord servers.</h3>
 
-![RepoSize](https://img.shields.io/github/repo-size/Faithful-Resource-Pack/CompliBot-Submissions)
-![Issues](https://img.shields.io/github/issues/Faithful-Resource-Pack/CompliBot-Submissions)
-![PullRequests](https://img.shields.io/github/issues-pr/Faithful-Resource-Pack/CompliBot-Submissions)
-
+  ![RepoSize](https://img.shields.io/github/repo-size/Faithful-Resource-Pack/CompliBot-Submissions)
+  ![Issues](https://img.shields.io/github/issues/Faithful-Resource-Pack/CompliBot-Submissions)
+  ![PullRequests](https://img.shields.io/github/issues-pr/Faithful-Resource-Pack/CompliBot-Submissions)
 </div>
 
 ---
@@ -33,7 +32,7 @@ pnpm dev
 ```
 
 > [!WARNING]
-> While CompliBot is designed to be reasonably easy to fork and run your own instance of, we can't offer individual support for your specific use case.
+> While CompliBot Submissions is designed to be reasonably easy to fork and run your own instance of, we can't offer individual support for your specific use case.
 > _Your mileage may vary in terms of necessary code modifications!_
 
 1. Log into the **[Discord Developer Portal](https://discord.com/developers/applications)**.
@@ -49,7 +48,7 @@ Registering a custom pack for the submission process is relatively simple. [`res
 > [!IMPORTANT]
 > Make sure to set `DYNAMIC_PACK_DATA` in your `.env` file to `false` if you're adding your own resource packs locally. Otherwise, your custom configuration will be immediately overwritten when the bot is started!
 
-```json
+```jsonc
 // Pack JSON template (make sure to remove these comments afterwards)
 {
 	// unique pack identifier
