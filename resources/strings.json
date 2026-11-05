@@ -135,15 +135,16 @@
 			"title": "Submit textures",
 			"description": {
 				"label": "Description",
-				"description": "See The Faithful Contributor's Handbook for more information about crediting co-authors."
+				"description": "See the Faithful Contributor's Handbook for special shortcuts and how to credit co-authors.",
+				"placeholder": "+Fixed a false line. Special thanks to {Author} for some help with the color placement."
 			},
 			"attachments": {
 				"label": "Texture files",
-				"description": "Upload up to ten texture files."
+				"description": "Submit up to ten texture files at once with the same co-authors and description."
 			},
 			"starpass": {
 				"label": "Instapass",
-				"description": "Instantly pass the textures (manager/council only)"
+				"description": "Immediately push the submitted textures (manager/council only)"
 			}
 		},
 		"field": {

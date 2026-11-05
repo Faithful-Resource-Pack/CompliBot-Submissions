@@ -47,6 +47,7 @@ export default defineCommand({
 						new TextInputBuilder()
 							.setCustomId("description")
 							.setStyle(TextInputStyle.Paragraph)
+							.setPlaceholder(strings.submission.modal.description.placeholder)
 							.setRequired(false)
 							.setMaxLength(1024),
 					),
