@@ -3,19 +3,19 @@ import strings from "@resources/strings.json";
 import { Texture } from "@interfaces/database";
 
 import axios from "axios";
-import { Attachment, Message } from "discord.js";
+import { Attachment } from "discord.js";
 
 /**
  * Turns a message and attachment into an embed result
  * - Throws detailed error string if the message is invalid
  * @author Juknum, Evorp
- * @param message message to embed
  * @param attachment image to process
+ * @param content message content to read as fallback
  * @returns texture result array or an error string
  */
 export default async function getTextureResults(
-	message: Message<true>,
 	attachment: Attachment,
+	content: string,
 ): Promise<{ results: Texture[]; attachment: Attachment }> {
 	// remove extra metadata
 	const url = attachment.url.split("?")[0];
@@ -25,7 +25,7 @@ export default async function getTextureResults(
 	if (!url.endsWith(".png")) throw strings.submission.error.invalid_format;
 
 	// prioritize id if exists, otherwise use texture name
-	const id = message.content.match(/(?<=\[#)(.+?)(?=\])/)?.[0];
+	const id = content.match(/(?<=\[#)(.+?)(?=\])/)?.[0];
 	const search = id ?? name;
 
 	// if there's no search and no id the submission can't be valid

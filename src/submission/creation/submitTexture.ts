@@ -27,7 +27,7 @@ export async function submitMessage(message: Message<true>) {
 	const textureResults = (
 		await Promise.all(
 			Array.from(message.attachments.values(), (attachment) =>
-				getTextureResults(message, attachment).catch((err: string) =>
+				getTextureResults(attachment, message.content).catch((err: string) =>
 					cancelSubmission(message, err),
 				),
 			),
