@@ -20,7 +20,7 @@ const DEBUG = process.env.DEBUG.toLowerCase() === "true";
  * @author Evorp
  * @param message message to embed
  */
-export default async function submitTexture(message: Message<true>) {
+export async function submitMessage(message: Message<true>) {
 	if (!message.attachments.size)
 		return cancelSubmission(message, strings.submission.error.image_not_attached);
 

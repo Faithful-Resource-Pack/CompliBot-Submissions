@@ -4,7 +4,7 @@ import strings from "@resources/strings.json";
 import { defineEvent } from "@interfaces/discord";
 import type { PackFile } from "@interfaces/database";
 
-import submitTexture from "@submission/creation/submitTexture";
+import { submitMessage } from "@submission/creation/submitTexture";
 import cancelSubmission from "@submission/creation/cancelSubmission";
 
 const MAINTENANCE = process.env.MAINTENANCE.toLowerCase() === "true";
@@ -20,7 +20,7 @@ export default defineEvent({
 		 * TEXTURE SUBMISSION
 		 */
 		if (Object.values(packs).some((pack) => pack.submission.channels.submit === message.channel.id))
-			return submitTexture(message);
+			return submitMessage(message);
 
 		/**
 		 * BASIC AUTOREACT
