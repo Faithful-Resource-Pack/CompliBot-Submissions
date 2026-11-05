@@ -5,10 +5,12 @@ export default defineEvent({
 	name: "modalSubmit",
 	async execute(interaction) {
 		switch (interaction.customId) {
-			case "bugTicket":
+			case "bugTicket": {
 				return feedbackBug(interaction);
-			case "suggestionTicket":
+			}
+			case "suggestionTicket": {
 				return feedbackSuggestion(interaction);
+			}
 		}
 	},
 });

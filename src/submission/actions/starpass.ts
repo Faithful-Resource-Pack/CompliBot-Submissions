@@ -14,10 +14,12 @@ import { hasPermission, PermissionType } from "@helpers/permissions";
  * Instapass submission embeds with a progress bar
  * @author Evorp
  * @param message Original submission message
+ * @param reason Submission description to use as reason
  * @param embedsToInstapass Generated embeds
  */
 export default async function starpass(
 	message: Message<true>,
+	reason: string,
 	embedsToInstapass: MessageCreateOptions["embeds"],
 ) {
 	const style = embedsToInstapass.length === 1 ? "singular" : "plural";
@@ -76,7 +78,7 @@ export default async function starpass(
 		.setColor(settings.colors.yellow)
 		.addFields({
 			name: strings.submission.field.reason,
-			value: message.content.slice(1).trim() || strings.submission.starpass.no_reason,
+			value: reason || strings.submission.starpass.no_reason,
 		});
 
 	// show thumbnail if there's only one texture (no ambiguity)

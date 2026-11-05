@@ -64,7 +64,8 @@ export async function submitMessage(message: Message<true>) {
 
 	// only delete message after every embed has been resolved (attachment urls can expire)
 	if (message.deletable) message.delete();
-	if (doInstapass && starpassEmbeds.length) return starpass(message, starpassEmbeds);
+	if (doInstapass && starpassEmbeds.length)
+		return starpass(message, message.content.slice(1).trim(), starpassEmbeds);
 }
 
 /**
