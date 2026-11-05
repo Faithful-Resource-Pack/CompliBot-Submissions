@@ -2,6 +2,7 @@ import settings from "@resources/settings.json";
 import strings from "@resources/strings.json";
 
 import type { MinecraftEdition, Pack, Texture } from "@interfaces/database";
+import type { SubmissionSource } from "@interfaces/discord";
 
 import generateComparison from "@submission/creation/generateComparison";
 import getPackByChannel from "@submission/discord/getPackByChannel";
@@ -48,11 +49,12 @@ export interface EmbedImageParams {
  * @returns embed and components to send
  */
 export default async function makeEmbed(
-	message: Message<true>,
+	message: SubmissionSource,
 	texture: Texture,
 	{ attachment, description, authors }: EmbedCreationParams,
 ): Promise<MessageCreateOptions> {
 	const pack = getPackByChannel(message.channel.id);
+	const author = message instanceof Message ? message.author : message.user;
 
 	// load previous contributions if applicable
 	if (description.startsWith("+") || description.startsWith("*+")) {
@@ -67,9 +69,9 @@ export default async function makeEmbed(
 
 	const embed = new EmbedBuilder()
 		.setAuthor({
-			name: message.author.username,
-			iconURL: message.author.displayAvatarURL(),
-			url: `https://faithfulpack.net/user/${message.author.id}`,
+			name: author.username,
+			iconURL: author.displayAvatarURL(),
+			url: `https://faithfulpack.net/user/${author.id}`,
 		})
 		.setTitle(`[#${texture.id}] ${texture.name}`)
 		.setURL(

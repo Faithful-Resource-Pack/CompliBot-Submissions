@@ -2,6 +2,7 @@ import settings from "@resources/settings.json";
 import strings from "@resources/strings.json";
 
 import type { Texture } from "@interfaces/database";
+import type { SubmissionSource } from "@interfaces/discord";
 
 import makeEmbed, { EmbedCreationParams } from "@submission/creation/makeEmbed";
 
@@ -38,7 +39,7 @@ export const MAX_CHOICE_PER_ROW = 25;
  * @param params additional options for the submission embed
  */
 export default async function choiceEmbed(
-	message: Message<true>,
+	message: SubmissionSource,
 	results: Texture[],
 	params: EmbedCreationParams,
 ) {
@@ -49,7 +50,7 @@ export default async function choiceEmbed(
 		interaction.customId.startsWith("choiceEmbed") &&
 		interaction.message.id === choiceMessage.id &&
 		// admins can interact with choice embeds always
-		(interaction.user.id === message.author.id ||
+		(interaction.user.id === message.member.id ||
 			hasPermission(message.member, PermissionType.Administrator));
 
 	const collector = message.channel.createMessageComponentCollector<ComponentType.StringSelect>({
@@ -60,7 +61,7 @@ export default async function choiceEmbed(
 	// only resolves once selected
 	return new Promise<MessageCreateOptions>((resolve, reject) => {
 		collector.once("collect", async (interaction: StringSelectMenuInteraction) => {
-			if (!message.deletable) {
+			if (message instanceof Message && !message.deletable) {
 				if (choiceMessage.deletable) choiceMessage.delete();
 				return reject(strings.submission.error.already_deleted);
 			}
@@ -94,7 +95,7 @@ export default async function choiceEmbed(
  * @param results texture results to choose between
  */
 export async function sendChoiceEmbed(
-	message: Message<true>,
+	message: SubmissionSource,
 	attachment: Attachment,
 	results: Texture[],
 ) {
@@ -151,10 +152,10 @@ export async function sendChoiceEmbed(
 		.setColor(settings.colors.blue)
 		.setThumbnail(attachment.url);
 
-	const choiceMessage = await message.reply({
-		embeds: [embed],
-		components: addDeleteButton(components),
-	});
+	const choiceMessage =
+		message instanceof Message && message.deletable
+			? message.reply({ embeds: [embed], components: addDeleteButton(components) })
+			: message.channel.send({ embeds: [embed], components: addDeleteButton(components) });
 
 	return choiceMessage;
 }

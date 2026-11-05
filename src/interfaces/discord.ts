@@ -6,6 +6,7 @@ import {
 	StringSelectMenuInteraction,
 	SlashCommandOptionsOnlyBuilder,
 	ClientEvents,
+	Message,
 } from "discord.js";
 
 declare module "discord.js" {
@@ -45,6 +46,9 @@ export type AnyInteraction =
 	| ButtonInteraction
 	| ModalSubmitInteraction
 	| StringSelectMenuInteraction;
+
+/** these share a lot of properties so a lot of functions work with both messages/interactions */
+export type SubmissionSource = Message<true> | ModalSubmitInteraction<"cached">;
 
 /** Useful macros for type-safe exports */
 export const defineCommand = (data: Command) => data;

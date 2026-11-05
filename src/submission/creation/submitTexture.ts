@@ -1,6 +1,7 @@
 import strings from "@resources/strings.json";
 
 import { Texture, User } from "@interfaces/database";
+import type { SubmissionSource } from "@interfaces/discord";
 
 import cancelSubmission from "@submission/creation/cancelSubmission";
 import getTextureResults from "@submission/creation/getTextureResults";
@@ -10,10 +11,33 @@ import starpass, { shouldStarpass } from "@submission/actions/starpass";
 
 import { submissionReactions } from "@helpers/interactions";
 
-import { Message, MessageCreateOptions } from "discord.js";
+import {
+	Attachment,
+	Message,
+	MessageCreateOptions,
+	ModalSubmitInteraction,
+	ReadonlyCollection,
+} from "discord.js";
 import axios from "axios";
 
 const DEBUG = process.env.DEBUG.toLowerCase() === "true";
+
+/**
+ * Create submission embeds from a modal interaction
+ * @author Evorp
+ * @param interaction interaction to embed
+ */
+export async function submitModal(interaction: ModalSubmitInteraction<"cached">) {
+	const { resource } = await interaction.reply({ content: "** **", withResponse: true });
+	resource.message.delete();
+
+	return submitTexture(
+		interaction,
+		interaction.fields.getTextInputValue("description"),
+		interaction.fields.getUploadedFiles("attachments"),
+		interaction.fields.getCheckbox("starpass"),
+	);
+}
 
 /**
  * Create submission embeds from a message
@@ -24,10 +48,28 @@ export async function submitMessage(message: Message<true>) {
 	if (!message.attachments.size)
 		return cancelSubmission(message, strings.submission.error.image_not_attached);
 
+	await submitTexture(message, message.content, message.attachments, shouldStarpass(message));
+	if (message.deletable) return message.delete();
+}
+
+/**
+ * Create submission embeds from provided information
+ * @author Evorp
+ * @param message message to reference
+ * @param description submission description
+ * @param attachments texture files
+ * @param doInstapass whether to instapass the texture after creating it
+ */
+export async function submitTexture(
+	message: SubmissionSource,
+	description: string,
+	attachments: ReadonlyCollection<string, Attachment>,
+	doInstapass: boolean,
+) {
 	const textureResults = (
 		await Promise.all(
-			Array.from(message.attachments.values(), (attachment) =>
-				getTextureResults(attachment, message.content).catch((err: string) =>
+			Array.from(attachments.values(), (attachment) =>
+				getTextureResults(attachment, description).catch((err: string) =>
 					cancelSubmission(message, err),
 				),
 			),
@@ -36,16 +78,15 @@ export async function submitMessage(message: Message<true>) {
 
 	if (DEBUG)
 		console.log(
-			`Loaded all submission results: ${textureResults.length} found of ${message.attachments.size} total`,
+			`Loaded all submission results: ${textureResults.length} found of ${attachments.size} total`,
 		);
 
 	// every attachment was invalid (lol)
 	if (!textureResults.length) return;
 
 	// only need to get once for all submissions (same message)
-	const authors = await getAuthors(message);
-	const description = message.content.replace(/\[#(.*?)\]/g, "");
-	const doInstapass = shouldStarpass(message);
+	const authors = await getAuthors(message.member.id, description);
+	description = description.replace(/\[#(.*?)\]/g, "");
 
 	const starpassEmbeds = (
 		await Promise.all(
@@ -60,12 +101,8 @@ export async function submitMessage(message: Message<true>) {
 		)
 	).filter((e) => e !== undefined);
 
-	if (DEBUG) console.log("All submissions resolved, deleting message...");
-
-	// only delete message after every embed has been resolved (attachment urls can expire)
-	if (message.deletable) message.delete();
-	if (doInstapass && starpassEmbeds.length)
-		return starpass(message, message.content.slice(1).trim(), starpassEmbeds);
+	if (DEBUG) console.log("All submissions resolved...");
+	if (doInstapass && starpassEmbeds.length) return starpass(message, description, starpassEmbeds);
 }
 
 /**
@@ -77,7 +114,7 @@ export async function submitMessage(message: Message<true>) {
  * @returns embed to instapass if one exists
  */
 export async function submitAttachment(
-	message: Message<true>,
+	message: SubmissionSource,
 	results: Texture[],
 	doInstapass: boolean,
 	params: EmbedCreationParams,
@@ -103,17 +140,16 @@ export async function submitAttachment(
 /**
  * Detects co-authors from pings and curly bracket syntax in a given message
  * @author Evorp
- * @param message message to detect co-authors from
+ * @param userID user submitting the texture (they always get included)
+ * @param description content to take further coauthors from
  * @returns array of author's discord IDs
  */
-export async function getAuthors(message: Pick<Message, "author" | "content">) {
+export async function getAuthors(userID: string, description: string) {
 	// submitter always goes first for permission purposes (sets maintain insertion order)
-	const authors = new Set([message.author.id]);
+	const authors = new Set([userID]);
 
 	// detect text between curly brackets
-	const names = message.content
-		.match(/(?<=\{)(.*?)(?=\})/g)
-		?.map((name) => name.toLowerCase().trim());
+	const names = description.match(/(?<=\{)(.*?)(?=\})/g)?.map((name) => name.toLowerCase().trim());
 
 	// surprisingly faster to fetch all usernames and filter them than send a specialized request
 	if (names?.length) {
@@ -125,7 +161,7 @@ export async function getAuthors(message: Pick<Message, "author" | "content">) {
 	}
 
 	// detect by ping (using regex to ensure users not in the server get included)
-	const mentions = message.content.match(/(?<=<@|<@!)(\d+?)(?=>)/g) ?? [];
+	const mentions = description.match(/(?<=<@|<@!)(\d+?)(?=>)/g) ?? [];
 	for (const mention of mentions) authors.add(mention);
 
 	return authors;

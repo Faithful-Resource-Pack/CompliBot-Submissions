@@ -1,6 +1,8 @@
 import settings from "@resources/settings.json";
 import strings from "@resources/strings.json";
 
+import type { SubmissionSource } from "@interfaces/discord";
+
 import { instapassMessages } from "@submission/actions/instapass";
 import { editEmbed } from "@submission/discord/changeStatus";
 import getPackByChannel from "@submission/discord/getPackByChannel";
@@ -18,7 +20,7 @@ import { hasPermission, PermissionType } from "@helpers/permissions";
  * @param embedsToInstapass Generated embeds
  */
 export default async function starpass(
-	message: Message<true>,
+	message: SubmissionSource,
 	reason: string,
 	embedsToInstapass: MessageCreateOptions["embeds"],
 ) {
@@ -43,7 +45,7 @@ export default async function starpass(
 		pack.submission.channels.results,
 	) as TextChannel;
 
-	const status = strings.submission.status.instapassed.replace("%USER%", `<@${message.author.id}>`);
+	const status = strings.submission.status.instapassed.replace("%USER%", `<@${message.member.id}>`);
 	const resultMessagesToInstapass = await Promise.all(
 		embedsToInstapass.map((embed) => {
 			// todo: try to merge this with sendMessage
@@ -62,8 +64,10 @@ export default async function starpass(
 	);
 
 	await instapassMessages(resultMessagesToInstapass, pack);
+
+	const author = message instanceof Message ? message.author : message.user;
 	const notificationEmbed = new EmbedBuilder()
-		.setAuthor({ name: message.author.username, iconURL: message.author.displayAvatarURL() })
+		.setAuthor({ name: author.username, iconURL: author.displayAvatarURL() })
 		.setTitle(
 			strings.submission.starpass.finished_title[style].replace(
 				"%COUNT%",

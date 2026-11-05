@@ -28,6 +28,7 @@
 			"reply": "Reply to a message with the bot.",
 			"say": "Make the bot say something.",
 			"shutdown": "Stops the bot.",
+			"submit": "Submit textures to be added to Faithful.",
 			"status": "Changes the bot's status."
 		},
 		"feedback": {
@@ -110,7 +111,8 @@
 			"invalid_format": "Please provide a valid `.png` file. Other file formats like `.zip` or `.tga` are currently not supported.",
 			"already_deleted": "Could not find original submission message.",
 			"no_result_channel": "Could not fetch corresponding result channel! Please make sure that the pack data has been set up correctly on the Faithful Studio pack page.",
-			"timed_out": "Select menu timed out, canceling submission…"
+			"timed_out": "Select menu timed out, canceling submission…",
+			"wrong_command_channel": "You can only use `/submit` from within a submission channel!"
 		},
 		"starpass": {
 			"progress_title": {
@@ -128,6 +130,21 @@
 			"long_title": "Showing 1–%SHOWN% of %COUNT% results",
 			"description": "If you can't find what you're looking for, please be more specific!",
 			"placeholder": "Select a texture…"
+		},
+		"modal": {
+			"title": "Submit textures",
+			"description": {
+				"label": "Description",
+				"description": "See The Faithful Contributor's Handbook for more information about crediting co-authors."
+			},
+			"attachments": {
+				"label": "Texture files",
+				"description": "Upload up to ten texture files."
+			},
+			"starpass": {
+				"label": "Instapass",
+				"description": "Instantly pass the textures (manager/council only)"
+			}
 		},
 		"field": {
 			"author_singular": "Author",

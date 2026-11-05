@@ -1,6 +1,8 @@
 import settings from "@resources/settings.json";
 import strings from "@resources/strings.json";
 
+import type { SubmissionSource } from "@interfaces/discord";
+
 import addDeleteButton from "@helpers/addDeleteButton";
 import { hasPermission, PermissionType } from "@helpers/permissions";
 
@@ -17,7 +19,7 @@ const EMBED_VISIBLE_SECONDS = 30;
  * @param error error message
  */
 export default async function cancelSubmission(
-	message: Message<true>,
+	message: SubmissionSource,
 	error: unknown = strings.submission.error.unknown,
 	// returning undefined makes Promise.all behave better with types
 ): Promise<undefined> {
@@ -47,14 +49,15 @@ export default async function cancelSubmission(
 	};
 
 	try {
-		const noticeMessage = message.deletable
-			? await message.reply(options)
-			: await message.channel.send(options);
+		const noticeMessage =
+			message instanceof Message && message.deletable
+				? await message.reply(options)
+				: await message.channel.send(options);
 
 		setTimeout(() => {
 			// throws error if already deleted
 			noticeMessage.delete().catch(() => {});
-			message.delete().catch(() => {});
+			if (message instanceof Message) message.delete().catch(() => {});
 		}, EMBED_VISIBLE_SECONDS * 1000);
 	} catch {
 		// message couldn't be deleted
