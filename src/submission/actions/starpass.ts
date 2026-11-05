@@ -89,12 +89,12 @@ export default async function starpass(
 }
 
 /**
- * Check whether a message can be instapassed immediately
+ * Check whether a message should be instapassed immediately
  * @author Evorp
  * @param message Submission message
  * @returns whether the user requested and is allowed to instapass the texture
  */
-export const canStarpass = (message: Message<true>) =>
+export const shouldStarpass = (message: Message<true>) =>
 	message.content.startsWith("*") &&
 	// don't match italics
 	message.content.match(/\*/g)?.length === 1 &&

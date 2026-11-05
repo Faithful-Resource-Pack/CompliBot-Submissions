@@ -6,7 +6,7 @@ import cancelSubmission from "@submission/creation/cancelSubmission";
 import getTextureResults from "@submission/creation/getTextureResults";
 import choiceEmbed from "@submission/creation/choiceEmbed";
 import makeEmbed, { EmbedCreationParams } from "@submission/creation/makeEmbed";
-import starpass, { canStarpass } from "@submission/actions/starpass";
+import starpass, { shouldStarpass } from "@submission/actions/starpass";
 
 import { submissionReactions } from "@helpers/interactions";
 
@@ -45,7 +45,7 @@ export async function submitMessage(message: Message<true>) {
 	// only need to get once for all submissions (same message)
 	const authors = await getAuthors(message);
 	const description = message.content.replace(/\[#(.*?)\]/g, "");
-	const doInstapass = canStarpass(message);
+	const doInstapass = shouldStarpass(message);
 
 	const starpassEmbeds = (
 		await Promise.all(
