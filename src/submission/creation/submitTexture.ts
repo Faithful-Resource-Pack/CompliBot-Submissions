@@ -105,7 +105,7 @@ export async function submitAttachment(
  * @param message message to detect co-authors from
  * @returns array of author's discord IDs
  */
-export async function getAuthors(message: Message) {
+export async function getAuthors(message: Pick<Message, "author" | "content">) {
 	// submitter always goes first for permission purposes (sets maintain insertion order)
 	const authors = new Set([message.author.id]);
 
