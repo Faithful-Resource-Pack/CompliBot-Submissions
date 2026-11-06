@@ -5,6 +5,8 @@ import getMessages from "@helpers/getMessages";
 
 import { Client, Embed, Message, type TopLevelComponent } from "discord.js";
 
+const DEBUG = process.env.DEBUG.toLowerCase() === "true";
+
 export interface SendableMessage {
 	upvotes: number;
 	downvotes: number;
@@ -44,7 +46,7 @@ export default async function retrieveSubmissions(
 		);
 	});
 
-	console.log(`Retrieved ${messages.length} submissions`);
+	if (DEBUG) console.log(`Retrieved ${messages.length} submissions`);
 	const mappedMessages: SendableMessage[] = messages.map(mapSendableMessage);
 
 	const messagesUpvoted = mappedMessages.filter(
