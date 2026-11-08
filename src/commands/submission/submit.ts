@@ -2,9 +2,10 @@ import settings from "@resources/settings.json";
 import strings from "@resources/strings.json";
 
 import { defineCommand } from "@interfaces/discord";
-import getPackByChannel from "@submission/discord/getPackByChannel";
+import { PackFile } from "@interfaces/database";
 
 import { hasPermission, PermissionType } from "@helpers/permissions";
+
 import {
 	CheckboxBuilder,
 	EmbedBuilder,
@@ -24,7 +25,13 @@ export default defineCommand({
 		.setDescription(strings.command.description.submit)
 		.setDMPermission(false),
 	execute(interaction) {
-		if (!getPackByChannel(interaction.channel.id))
+		const packs: PackFile = require("@resources/packs.json");
+
+		if (
+			!Object.values(packs).some(
+				(pack) => pack.submission.channels.submit === interaction.channel.id,
+			)
+		)
 			return interaction.reply({
 				embeds: [
 					new EmbedBuilder()
