@@ -10,6 +10,7 @@ import makeEmbed, { EmbedCreationParams } from "@submission/creation/makeEmbed";
 import starpass, { shouldStarpass } from "@submission/actions/starpass";
 
 import { submissionReactions } from "@helpers/interactions";
+import { hasPermission, PermissionType } from "@helpers/permissions";
 
 import {
 	Attachment,
@@ -35,7 +36,9 @@ export async function submitModal(interaction: ModalSubmitInteraction<"cached">)
 		interaction,
 		interaction.fields.getTextInputValue("description"),
 		interaction.fields.getUploadedFiles("attachments"),
-		interaction.fields.getCheckbox("starpass"),
+		// short circuit since the checkbox is omitted on modals
+		hasPermission(interaction.member, PermissionType.Submission) &&
+			interaction.fields.getCheckbox("starpass"),
 	);
 }
 
