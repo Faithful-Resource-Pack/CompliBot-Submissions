@@ -37,9 +37,9 @@ pnpm dev
 
 1. Log into the **[Discord Developer Portal](https://discord.com/developers/applications)**.
 2. Create an application, navigate to the **Bot** tab in its settings, and copy its token.
-3. Rename the **.env.example** file to **.env** and open it using any text editor.
-4. Paste your token after `CLIENT_TOKEN`.
-5. Create two files in `resources/` called `settings.json` and `packs.json`, both of which can be just a set of curly brackets `{}`. These will be loaded dynamically later but need to be created first because of GitHub limitations.
+3. Rename the [`.env.example`](.env.example) file to `.env` and open it using any text editor.
+4. Paste your token after `CLIENT_TOKEN=`.
+5. Create two files in `resources/` called `settings.json` and `packs.json`, both of which can be just a set of curly brackets `{}`. These will be loaded dynamically later, but need to be created before starting the bot due to limitations with `.gitignore`.
 
 ## Configuration
 
