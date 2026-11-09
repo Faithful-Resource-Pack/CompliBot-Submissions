@@ -23,23 +23,27 @@
 
 ## Running
 
-```bash
-pnpm install
-```
-
-```bash
-pnpm dev
-```
-
 > [!WARNING]
 > While CompliBot Submissions is designed to be reasonably easy to fork and run your own instance of, we can't offer individual support for your specific use case.
-> _Your mileage may vary in terms of necessary code modifications!_
+> *Your mileage may vary in terms of necessary code modifications!*
 
 1. Log into the **[Discord Developer Portal](https://discord.com/developers/applications)**.
 2. Create an application, navigate to the **Bot** tab in its settings, and copy its token.
 3. Rename the [`.env.example`](.env.example) file to `.env` and open it using any text editor.
-4. Paste your token after `CLIENT_TOKEN=`.
+4. Paste your token after `CLIENT_TOKEN=` in the newly-created `.env` file.
 5. Create two files in `resources/` called `settings.json` and `packs.json`, both of which can be just a set of curly brackets `{}`. These will be loaded dynamically later, but need to be created before starting the bot due to limitations with `.gitignore`.
+
+From there, install the project dependencies by running:
+
+```bash
+pnpm install
+```
+
+To start the bot, run:
+
+```bash
+pnpm dev
+```
 
 ## Configuration
 
