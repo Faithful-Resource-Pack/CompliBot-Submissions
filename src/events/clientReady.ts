@@ -29,8 +29,11 @@ export default defineEvent({
 		console.log(`└───────────────────────────────────────────────────┘\n`);
 
 		if (MAINTENANCE)
-			client.user.setPresence({ activities: [{ name: "maintenance" }], status: "dnd" });
-		else client.user.setActivity({ name: "for submissions", type: ActivityType.Watching });
+			client.user.setPresence({
+				activities: [{ name: "maintenance", type: ActivityType.Custom }],
+				status: "dnd",
+			});
+		else client.user.setActivity({ name: "/submit", type: ActivityType.Watching });
 
 		if (DEV) return setInterval(fetchSettings, 20000); // 20 seconds
 
