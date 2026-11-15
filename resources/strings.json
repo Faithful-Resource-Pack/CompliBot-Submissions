@@ -92,7 +92,8 @@
 			"subtitle": "And I think I turned out pretty well.",
 			"submitting": {
 				"title": "Submitting",
-				"description": "- Upload an image file to a submission channel to submit a texture.\n- Add co-authors using Discord mentions or curly brackets.\n- View and vote on textures using the provided voting reactions and image manipulation buttons.\n- [*More Information*](https://docs.faithfulpack.net/pages/manuals/contributor-handbook)"
+				"description": "- Run `/submit` in a submission channel to upload your textures.\n- Add co-authors using Discord mentions or curly brackets.\n- View and vote on textures using the provided voting reactions and image manipulation buttons.\n- [*More Information*](https://docs.faithfulpack.net/pages/manuals/contributor-handbook)",
+				"description_old": "- Upload an image file to a submission channel to submit a texture.\n- Add co-authors using Discord mentions or curly brackets.\n- View and vote on textures using the provided voting reactions and image manipulation buttons.\n- [*More Information*](https://docs.faithfulpack.net/pages/manuals/contributor-handbook)"
 			},
 			"developing": {
 				"title": "Developing",
