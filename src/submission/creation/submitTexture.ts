@@ -48,8 +48,14 @@ export async function submitModal(interaction: ModalSubmitInteraction<"cached">)
  * @param message message to embed
  */
 export async function submitMessage(message: Message<true>) {
+	// if it's a fully blank message (no content + attachments) intents are probably disabled
 	if (!message.attachments.size)
-		return cancelSubmission(message, strings.submission.error.image_not_attached);
+		return cancelSubmission(
+			message,
+			message.content
+				? strings.submission.error.image_not_attached
+				: strings.submission.error.use_command,
+		);
 
 	await submitTexture(message, message.content, message.attachments, shouldStarpass(message));
 	if (message.deletable) return message.delete();
