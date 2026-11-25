@@ -23,10 +23,11 @@ export default async function cancelSubmission(
 	error: unknown = strings.submission.error.unknown,
 	// returning undefined makes Promise.all behave better with types
 ): Promise<undefined> {
+	const errorStrings = strings.submission.error;
 	if (
 		hasPermission(message.member, PermissionType.Submission) &&
 		// fix no error messages showing for council+
-		error === strings.submission.error.image_not_attached
+		[errorStrings.image_not_attached, errorStrings.use_command].includes(String(error))
 	)
 		// allow managers and council to talk in submit channels
 		return;
@@ -36,12 +37,12 @@ export default async function cancelSubmission(
 	const options = {
 		embeds: [
 			new EmbedBuilder()
-				.setTitle(strings.submission.error.title)
+				.setTitle(errorStrings.title)
 				.setDescription(String(error))
 				.setColor(settings.colors.red)
 				.setThumbnail(settings.images.warning)
 				.setFooter({
-					text: strings.submission.error.footer.replace("%SECONDS%", String(EMBED_VISIBLE_SECONDS)),
+					text: errorStrings.footer.replace("%SECONDS%", String(EMBED_VISIBLE_SECONDS)),
 					iconURL: message.client.user.displayAvatarURL(),
 				}),
 		],
